@@ -30,8 +30,8 @@ function searchNameRegexp(name) {
     ))
 }
 
-function onErr(res, msg, code = 500) {
-    res.status(code)
+function onErr(res, msg, code) {
+    res.status(code || 500)
     res.send({
         status: 'error',
         msg,
