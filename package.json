@@ -1,0 +1,31 @@
+{
+  "name": "neomoose",
+  "version": "1.0.0",
+  "description": "next gen moose technology including infinite scroll gallary, range searchable titles, author notices, etc.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adedomin/neomoose.git"
+  },
+  "keywords": [
+    "moose",
+    "irc",
+    "nextgen"
+  ],
+  "author": "Anthony DeDominic <anthony@dedominic.pw>",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/adedomin/neomoose/issues"
+  },
+  "homepage": "https://github.com/adedomin/neomoose#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "level": "^1.7.0",
+    "linvodb3": "^3.25.0",
+    "yargs": "^8.0.1"
+  }
+}
