@@ -30,9 +30,7 @@ var path = require('path'),
     .argv
 
 if (argv.c) {
-    if (!/^[./\\]|([a-zA-Z]:\\)/.test(argv.c))
-        argv.c = path.join(process.cwd(), argv.c)
-    process.env.CONFIG_PATH = argv.c
+    process.env.CONFIG_PATH = path.resolve(argv.c)
 } 
 else if (process.env.XDG_CONFIG_HOME) {
     process.env.CONFIG_PATH = path.join(

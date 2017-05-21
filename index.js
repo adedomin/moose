@@ -15,10 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var moosedb = require('./lib/db.js'),
-    web = require('./lib/web.js'),
+var MooseDB = require('./lib/db.js'),
+    Web = require('./lib/web.js'),
     // escape specials for moose searching
     matchOperatorsRegExp = /[|\\{()[^$+*?.-]/g
+
+var moosedb = MooseDB(),
+    web = Web()
 
 function searchNameRegexp(name) {
     return new RegExp(name.replace(
@@ -43,6 +46,19 @@ function onOk(res, msg) {
 } 
 
 web.on('new-moose', (moose, res) => {
+
+    if (!moose || !moose.name || !moose.image) {
+        return onErr(res, 
+            'moose must have a name and image field'
+        )
+    }
+
+    if (moose.name == '' || moose.image == '') {
+        return onErr(res,
+            'moose cannot be blank or have a blank name'
+        )
+    }
+
     moosedb.save(moose, (err, newmoose) => {
         if (err || !newmoose) 
             return onErr(res, err || 'could not save moose')
