@@ -1,6 +1,6 @@
 {
   "name": "neomoose",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "next gen moose technology including infinite scroll gallary, range searchable titles, author notices, etc.",
   "main": "index.js",
   "scripts": {
