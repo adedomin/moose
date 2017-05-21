@@ -66,6 +66,28 @@ web.on('new-moose', (moose, res) => {
     })
 })
 
+web.on('get-random', (res) => {
+    moosedb.find({})
+        .map((moose) => [ moose, Math.random() ] )
+        .reduce((curr, next) => {
+            return curr[1] > next[1] ? curr : next
+        }, [{}, Number.NEGATIVE_INFINITY])
+        .exec((err, moose) => {
+            if (err || !moose)
+                return onErr(res, err || 'unknown random error')
+            res.send(moose[0])
+        })
+})
+
+var latest_moose = moosedb.find({})
+    .sort({ created: -1 })
+    .limit(1)
+    .live()
+
+web.on('get-latest', (res) => {
+    res.send(latest_moose.res[0])
+})
+
 web.on('get-moose', (name, res) => {
     moosedb.findOne({ name }, (err, moose) => {
         if (err || !moose)
