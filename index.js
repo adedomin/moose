@@ -17,6 +17,9 @@
 
 var MooseDB = require('./lib/db.js'),
     Web = require('./lib/web.js'),
+    config = require(process.env.CONFIG_PATH),
+    join = require('path').join,
+    fs = require('fs'),
     // escape specials for moose searching
     matchOperatorsRegExp = /[|\\{()[^$+*?.-]/g
 
@@ -109,10 +112,15 @@ web.on('get-gallery', (name, page, age, res) => {
     })
 })
 
-web.on('get-all', (res) => {
+if (config.moose_dump) {
+    setInterval(() => moosedb.find({}, (err, meese) => {
+        if (err) return
+        fs.createWriteStream(join(config.moose_db, 'dump.js'))
+            .write(JSON.stringify(meese))
+    }), 1000 * 60 * 60 * 2) // 2 hours
     moosedb.find({}, (err, meese) => {
-        if (err || !meese)
-            return onErr(res, err || 'could not dump moosedb')
-        res.send(meese)
+        if (err) return
+        fs.createWriteStream(join(config.moose_db, 'dump.json'))
+            .write(JSON.stringify(meese))
     })
-})
+}

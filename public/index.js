@@ -70,6 +70,7 @@ app.use((state, emitter) => {
     state.painter.tool = 'pencil'
     state.painter.color = 1
     state.painter.colour = 'transparent'
+    state.painter.grid = true
 
     emitter.on('color-select', (color) => {
         state.painter.colour = state.painter.palette.indexOf(color)

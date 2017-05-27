@@ -2,6 +2,9 @@ var config = {}
 
 // where your moose are kept safe
 config.moose_db = './'
+// dump moose db every 2 hours if enables to same path as moose_db
+// as dump.json
+config.moose_dump = true
 
 config.web = {
     port: 7512,
