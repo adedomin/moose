@@ -46,16 +46,15 @@ function onOk(res, msg) {
 } 
 
 web.on('new-moose', (moose, res) => {
-
     if (!moose || !moose.name || !moose.image) {
         return onErr(res, 
-            'moose must have a name and image field'
+            'moose cannot be blank or have a blank name'
         )
     }
 
-    if (moose.name == '' || moose.image == '') {
+    if (moose.image.length < 300) {
         return onErr(res,
-            'moose cannot be blank or have a blank name'
+            'moose should at least be 300 characters'
         )
     }
 

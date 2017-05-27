@@ -492,7 +492,7 @@ var objectKeys = Object.keys || function (obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"util/":41}],2:[function(require,module,exports){
+},{"util/":45}],2:[function(require,module,exports){
 var document = require('global/document')
 var hyperx = require('hyperx')
 var onload = require('on-load')
@@ -647,7 +647,7 @@ module.exports = hyperx(belCreateElement, {comments: true})
 module.exports.default = module.exports
 module.exports.createElement = belCreateElement
 
-},{"global/document":13,"hyperx":25,"on-load":37}],3:[function(require,module,exports){
+},{"global/document":14,"hyperx":26,"on-load":39}],3:[function(require,module,exports){
 
 },{}],4:[function(require,module,exports){
 'use strict';
@@ -874,7 +874,7 @@ function createLocation () {
   return pathname + hash
 }
 
-},{"assert":1,"document-ready":10,"nanobus":27,"nanohistory":28,"nanohref":29,"nanomorph":30,"nanomount":33,"nanoraf":34,"nanorouter":35}],9:[function(require,module,exports){
+},{"assert":1,"document-ready":10,"nanobus":29,"nanohistory":30,"nanohref":31,"nanomorph":32,"nanomount":35,"nanoraf":36,"nanorouter":37}],9:[function(require,module,exports){
 (function (global){
 /*!
  * deep-diff.
@@ -1814,6 +1814,54 @@ if (typeof module !== "undefined" && module.exports) {
 }
 
 },{}],13:[function(require,module,exports){
+var isFunction = require('is-function')
+
+module.exports = forEach
+
+var toString = Object.prototype.toString
+var hasOwnProperty = Object.prototype.hasOwnProperty
+
+function forEach(list, iterator, context) {
+    if (!isFunction(iterator)) {
+        throw new TypeError('iterator must be a function')
+    }
+
+    if (arguments.length < 3) {
+        context = this
+    }
+    
+    if (toString.call(list) === '[object Array]')
+        forEachArray(list, iterator, context)
+    else if (typeof list === 'string')
+        forEachString(list, iterator, context)
+    else
+        forEachObject(list, iterator, context)
+}
+
+function forEachArray(array, iterator, context) {
+    for (var i = 0, len = array.length; i < len; i++) {
+        if (hasOwnProperty.call(array, i)) {
+            iterator.call(context, array[i], i, array)
+        }
+    }
+}
+
+function forEachString(string, iterator, context) {
+    for (var i = 0, len = string.length; i < len; i++) {
+        // no such thing as a sparse string.
+        iterator.call(context, string.charAt(i), i, string)
+    }
+}
+
+function forEachObject(object, iterator, context) {
+    for (var k in object) {
+        if (hasOwnProperty.call(object, k)) {
+            iterator.call(context, object[k], k, object)
+        }
+    }
+}
+
+},{"is-function":28}],14:[function(require,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
@@ -1834,7 +1882,7 @@ if (typeof document !== 'undefined') {
 module.exports = doccy;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"min-document":3}],14:[function(require,module,exports){
+},{"min-document":3}],15:[function(require,module,exports){
 (function (global){
 var win;
 
@@ -1851,7 +1899,7 @@ if (typeof window !== "undefined") {
 module.exports = win;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 (function (process){
 /*
  * gridpaint - a canvas for creating grid-based art in the browser
@@ -1984,7 +2032,7 @@ GridPaint.prototype.destroy = function () {
 module.exports = GridPaint;
 
 }).call(this,require('_process'))
-},{"./lib/canvas":17,"./lib/draw":19,"./lib/handlers":20,"./lib/save":22,"./lib/tools":23,"_process":38,"events":11,"inherits":26}],16:[function(require,module,exports){
+},{"./lib/canvas":18,"./lib/draw":20,"./lib/handlers":21,"./lib/save":23,"./lib/tools":24,"_process":41,"events":11,"inherits":27}],17:[function(require,module,exports){
 // fill in surrounding, like-coloured grid units
 module.exports = function (replace, x, y) {
     var colour = this.colour;
@@ -2016,7 +2064,7 @@ module.exports = function (replace, x, y) {
     }
 };
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 (function (process){
 if (process.browser) {
     module.exports = function (width, height) {
@@ -2030,7 +2078,7 @@ if (process.browser) {
 }
 
 }).call(this,require('_process'))
-},{"_process":38,"canvas":3}],18:[function(require,module,exports){
+},{"_process":41,"canvas":3}],19:[function(require,module,exports){
 function clone(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
@@ -2057,7 +2105,7 @@ module.exports = function () {
     this.emit('clear');
 };
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 // draw the checkered pattern to indicate transparency
 exports.background = function () {
     var odd = false,
@@ -2157,7 +2205,7 @@ exports.tick = function () {
     }
 };
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 (function (process){
 function clone(obj) {
     return JSON.parse(JSON.stringify(obj));
@@ -2231,7 +2279,7 @@ module.exports.detach = function () {
 };
 
 }).call(this,require('_process'))
-},{"_process":38}],21:[function(require,module,exports){
+},{"_process":41}],22:[function(require,module,exports){
 function clone(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
@@ -2267,7 +2315,7 @@ module.exports = function (old, replace) {
     this.emit('replace');
 };
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 (function (process){
 var FileSaver = require('file-saver'),
 
@@ -2295,7 +2343,7 @@ module.exports = function (file, scale) {
 };
 
 }).call(this,require('_process'))
-},{"./canvas":17,"_process":38,"file-saver":12,"fs":5}],23:[function(require,module,exports){
+},{"./canvas":18,"_process":41,"file-saver":12,"fs":5}],24:[function(require,module,exports){
 var FileSaver = require('file-saver'),
     deepDiff = require('deep-diff'),
 
@@ -2394,7 +2442,7 @@ exports.undo = function () {
     this.emit('undo');
 };
 
-},{"./bucket":16,"./clear":18,"./replace":21,"deep-diff":9,"file-saver":12}],24:[function(require,module,exports){
+},{"./bucket":17,"./clear":19,"./replace":22,"deep-diff":9,"file-saver":12}],25:[function(require,module,exports){
 module.exports = attributeToProperty
 
 var transform = {
@@ -2415,7 +2463,7 @@ function attributeToProperty (h) {
   }
 }
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var attrToProp = require('hyperscript-attribute-to-property')
 
 var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
@@ -2695,7 +2743,7 @@ var closeRE = RegExp('^(' + [
 ].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
 function selfClosing (tag) { return closeRE.test(tag) }
 
-},{"hyperscript-attribute-to-property":24}],26:[function(require,module,exports){
+},{"hyperscript-attribute-to-property":25}],27:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2720,7 +2768,24 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
+module.exports = isFunction
+
+var toString = Object.prototype.toString
+
+function isFunction (fn) {
+  var string = toString.call(fn)
+  return string === '[object Function]' ||
+    (typeof fn === 'function' && string !== '[object RegExp]') ||
+    (typeof window !== 'undefined' &&
+     // IE8 and below
+     (fn === window.setTimeout ||
+      fn === window.alert ||
+      fn === window.confirm ||
+      fn === window.prompt))
+};
+
+},{}],29:[function(require,module,exports){
 var nanotiming = require('nanotiming')
 var assert = require('assert')
 
@@ -2868,7 +2933,7 @@ Nanobus.prototype._emit = function (arr, eventName, data) {
   }
 }
 
-},{"assert":1,"nanotiming":36}],28:[function(require,module,exports){
+},{"assert":1,"nanotiming":38}],30:[function(require,module,exports){
 var assert = require('assert')
 
 module.exports = history
@@ -2882,7 +2947,7 @@ function history (cb) {
   }
 }
 
-},{"assert":1}],29:[function(require,module,exports){
+},{"assert":1}],31:[function(require,module,exports){
 var assert = require('assert')
 
 module.exports = href
@@ -2918,7 +2983,7 @@ function href (cb, root) {
   }
 }
 
-},{"assert":1}],30:[function(require,module,exports){
+},{"assert":1}],32:[function(require,module,exports){
 var assert = require('assert')
 var morph = require('./lib/morph')
 var rootLabelRegex = /^data-onloadid/
@@ -3013,7 +3078,7 @@ function persistStatefulRoot (newNode, oldNode) {
   }
 }
 
-},{"./lib/morph":32,"assert":1}],31:[function(require,module,exports){
+},{"./lib/morph":34,"assert":1}],33:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
@@ -3053,7 +3118,7 @@ module.exports = [
   'onfocusout'
 ]
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var events = require('./events')
 var eventsLength = events.length
 
@@ -3228,7 +3293,7 @@ function updateAttribute (newNode, oldNode, name) {
   }
 }
 
-},{"./events":31}],33:[function(require,module,exports){
+},{"./events":33}],35:[function(require,module,exports){
 var nanomorph = require('nanomorph')
 var assert = require('assert')
 
@@ -3250,7 +3315,7 @@ function nanomount (target, newTree) {
     target.outerHTML.nodeName + '.')
 }
 
-},{"assert":1,"nanomorph":30}],34:[function(require,module,exports){
+},{"assert":1,"nanomorph":32}],36:[function(require,module,exports){
 'use strict'
 
 var assert = require('assert')
@@ -3287,7 +3352,7 @@ function nanoraf (render, raf) {
   }
 }
 
-},{"assert":1}],35:[function(require,module,exports){
+},{"assert":1}],37:[function(require,module,exports){
 var wayfarer = require('wayfarer')
 
 var isLocalFile = (/file:\/\//.test(typeof window === 'object' &&
@@ -3347,7 +3412,7 @@ function pathname (route, isElectron) {
   return route.replace(suffix, '').replace(normalize, '/')
 }
 
-},{"wayfarer":42}],36:[function(require,module,exports){
+},{"wayfarer":46}],38:[function(require,module,exports){
 var assert = require('assert')
 
 module.exports = Nanotiming
@@ -3373,7 +3438,7 @@ Nanotiming.prototype.end = function (partial) {
   window.performance.measure(name, name + '-start', name + '-end')
 }
 
-},{"assert":1}],37:[function(require,module,exports){
+},{"assert":1}],39:[function(require,module,exports){
 /* global MutationObserver */
 var document = require('global/document')
 var window = require('global/window')
@@ -3462,7 +3527,39 @@ function eachMutation (nodes, fn) {
   }
 }
 
-},{"global/document":13,"global/window":14}],38:[function(require,module,exports){
+},{"global/document":14,"global/window":15}],40:[function(require,module,exports){
+var trim = require('trim')
+  , forEach = require('for-each')
+  , isArray = function(arg) {
+      return Object.prototype.toString.call(arg) === '[object Array]';
+    }
+
+module.exports = function (headers) {
+  if (!headers)
+    return {}
+
+  var result = {}
+
+  forEach(
+      trim(headers).split('\n')
+    , function (row) {
+        var index = row.indexOf(':')
+          , key = trim(row.slice(0, index)).toLowerCase()
+          , value = trim(row.slice(index + 1))
+
+        if (typeof(result[key]) === 'undefined') {
+          result[key] = value
+        } else if (isArray(result[key])) {
+          result[key].push(value)
+        } else {
+          result[key] = [ result[key], value ]
+        }
+      }
+  )
+
+  return result
+}
+},{"for-each":13,"trim":42}],41:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -3648,16 +3745,32 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],39:[function(require,module,exports){
-arguments[4][26][0].apply(exports,arguments)
-},{"dup":26}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
+
+exports = module.exports = trim;
+
+function trim(str){
+  return str.replace(/^\s*|\s*$/g, '');
+}
+
+exports.left = function(str){
+  return str.replace(/^\s*/, '');
+};
+
+exports.right = function(str){
+  return str.replace(/\s*$/, '');
+};
+
+},{}],43:[function(require,module,exports){
+arguments[4][27][0].apply(exports,arguments)
+},{"dup":27}],44:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],41:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4247,7 +4360,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":40,"_process":38,"inherits":39}],42:[function(require,module,exports){
+},{"./support/isBuffer":44,"_process":41,"inherits":43}],46:[function(require,module,exports){
 var assert = require('assert')
 var trie = require('./trie')
 
@@ -4314,7 +4427,7 @@ function Wayfarer (dft) {
   }
 }
 
-},{"./trie":43,"assert":1}],43:[function(require,module,exports){
+},{"./trie":47,"assert":1}],47:[function(require,module,exports){
 var mutate = require('xtend/mutable')
 var assert = require('assert')
 var xtend = require('xtend')
@@ -4454,7 +4567,250 @@ Trie.prototype.mount = function (route, trie) {
   }
 }
 
-},{"assert":1,"xtend":44,"xtend/mutable":45}],44:[function(require,module,exports){
+},{"assert":1,"xtend":49,"xtend/mutable":50}],48:[function(require,module,exports){
+"use strict";
+var window = require("global/window")
+var isFunction = require("is-function")
+var parseHeaders = require("parse-headers")
+var xtend = require("xtend")
+
+module.exports = createXHR
+createXHR.XMLHttpRequest = window.XMLHttpRequest || noop
+createXHR.XDomainRequest = "withCredentials" in (new createXHR.XMLHttpRequest()) ? createXHR.XMLHttpRequest : window.XDomainRequest
+
+forEachArray(["get", "put", "post", "patch", "head", "delete"], function(method) {
+    createXHR[method === "delete" ? "del" : method] = function(uri, options, callback) {
+        options = initParams(uri, options, callback)
+        options.method = method.toUpperCase()
+        return _createXHR(options)
+    }
+})
+
+function forEachArray(array, iterator) {
+    for (var i = 0; i < array.length; i++) {
+        iterator(array[i])
+    }
+}
+
+function isEmpty(obj){
+    for(var i in obj){
+        if(obj.hasOwnProperty(i)) return false
+    }
+    return true
+}
+
+function initParams(uri, options, callback) {
+    var params = uri
+
+    if (isFunction(options)) {
+        callback = options
+        if (typeof uri === "string") {
+            params = {uri:uri}
+        }
+    } else {
+        params = xtend(options, {uri: uri})
+    }
+
+    params.callback = callback
+    return params
+}
+
+function createXHR(uri, options, callback) {
+    options = initParams(uri, options, callback)
+    return _createXHR(options)
+}
+
+function _createXHR(options) {
+    if(typeof options.callback === "undefined"){
+        throw new Error("callback argument missing")
+    }
+
+    var called = false
+    var callback = function cbOnce(err, response, body){
+        if(!called){
+            called = true
+            options.callback(err, response, body)
+        }
+    }
+
+    function readystatechange() {
+        if (xhr.readyState === 4) {
+            setTimeout(loadFunc, 0)
+        }
+    }
+
+    function getBody() {
+        // Chrome with requestType=blob throws errors arround when even testing access to responseText
+        var body = undefined
+
+        if (xhr.response) {
+            body = xhr.response
+        } else {
+            body = xhr.responseText || getXml(xhr)
+        }
+
+        if (isJson) {
+            try {
+                body = JSON.parse(body)
+            } catch (e) {}
+        }
+
+        return body
+    }
+
+    function errorFunc(evt) {
+        clearTimeout(timeoutTimer)
+        if(!(evt instanceof Error)){
+            evt = new Error("" + (evt || "Unknown XMLHttpRequest Error") )
+        }
+        evt.statusCode = 0
+        return callback(evt, failureResponse)
+    }
+
+    // will load the data & process the response in a special response object
+    function loadFunc() {
+        if (aborted) return
+        var status
+        clearTimeout(timeoutTimer)
+        if(options.useXDR && xhr.status===undefined) {
+            //IE8 CORS GET successful response doesn't have a status field, but body is fine
+            status = 200
+        } else {
+            status = (xhr.status === 1223 ? 204 : xhr.status)
+        }
+        var response = failureResponse
+        var err = null
+
+        if (status !== 0){
+            response = {
+                body: getBody(),
+                statusCode: status,
+                method: method,
+                headers: {},
+                url: uri,
+                rawRequest: xhr
+            }
+            if(xhr.getAllResponseHeaders){ //remember xhr can in fact be XDR for CORS in IE
+                response.headers = parseHeaders(xhr.getAllResponseHeaders())
+            }
+        } else {
+            err = new Error("Internal XMLHttpRequest Error")
+        }
+        return callback(err, response, response.body)
+    }
+
+    var xhr = options.xhr || null
+
+    if (!xhr) {
+        if (options.cors || options.useXDR) {
+            xhr = new createXHR.XDomainRequest()
+        }else{
+            xhr = new createXHR.XMLHttpRequest()
+        }
+    }
+
+    var key
+    var aborted
+    var uri = xhr.url = options.uri || options.url
+    var method = xhr.method = options.method || "GET"
+    var body = options.body || options.data
+    var headers = xhr.headers = options.headers || {}
+    var sync = !!options.sync
+    var isJson = false
+    var timeoutTimer
+    var failureResponse = {
+        body: undefined,
+        headers: {},
+        statusCode: 0,
+        method: method,
+        url: uri,
+        rawRequest: xhr
+    }
+
+    if ("json" in options && options.json !== false) {
+        isJson = true
+        headers["accept"] || headers["Accept"] || (headers["Accept"] = "application/json") //Don't override existing accept header declared by user
+        if (method !== "GET" && method !== "HEAD") {
+            headers["content-type"] || headers["Content-Type"] || (headers["Content-Type"] = "application/json") //Don't override existing accept header declared by user
+            body = JSON.stringify(options.json === true ? body : options.json)
+        }
+    }
+
+    xhr.onreadystatechange = readystatechange
+    xhr.onload = loadFunc
+    xhr.onerror = errorFunc
+    // IE9 must have onprogress be set to a unique function.
+    xhr.onprogress = function () {
+        // IE must die
+    }
+    xhr.onabort = function(){
+        aborted = true;
+    }
+    xhr.ontimeout = errorFunc
+    xhr.open(method, uri, !sync, options.username, options.password)
+    //has to be after open
+    if(!sync) {
+        xhr.withCredentials = !!options.withCredentials
+    }
+    // Cannot set timeout with sync request
+    // not setting timeout on the xhr object, because of old webkits etc. not handling that correctly
+    // both npm's request and jquery 1.x use this kind of timeout, so this is being consistent
+    if (!sync && options.timeout > 0 ) {
+        timeoutTimer = setTimeout(function(){
+            if (aborted) return
+            aborted = true//IE9 may still call readystatechange
+            xhr.abort("timeout")
+            var e = new Error("XMLHttpRequest timeout")
+            e.code = "ETIMEDOUT"
+            errorFunc(e)
+        }, options.timeout )
+    }
+
+    if (xhr.setRequestHeader) {
+        for(key in headers){
+            if(headers.hasOwnProperty(key)){
+                xhr.setRequestHeader(key, headers[key])
+            }
+        }
+    } else if (options.headers && !isEmpty(options.headers)) {
+        throw new Error("Headers cannot be set on an XDomainRequest object")
+    }
+
+    if ("responseType" in options) {
+        xhr.responseType = options.responseType
+    }
+
+    if ("beforeSend" in options &&
+        typeof options.beforeSend === "function"
+    ) {
+        options.beforeSend(xhr)
+    }
+
+    // Microsoft Edge browser sends "undefined" when send is called with undefined value.
+    // XMLHttpRequest spec says to pass null as body to indicate no body
+    // See https://github.com/naugtur/xhr/issues/100.
+    xhr.send(body || null)
+
+    return xhr
+
+
+}
+
+function getXml(xhr) {
+    if (xhr.responseType === "document") {
+        return xhr.responseXML
+    }
+    var firefoxBugTakenEffect = xhr.responseXML && xhr.responseXML.documentElement.nodeName === "parsererror"
+    if (xhr.responseType === "" && !firefoxBugTakenEffect) {
+        return xhr.responseXML
+    }
+
+    return null
+}
+
+function noop() {}
+
+},{"global/window":15,"is-function":28,"parse-headers":40,"xtend":49}],49:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -4475,7 +4831,7 @@ function extend() {
     return target
 }
 
-},{}],45:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -4494,7 +4850,7 @@ function extend(target) {
     return target
 }
 
-},{}],46:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -4518,7 +4874,15 @@ require('./moose-style.css')
 
 var choo = require('choo'),
     html = require('choo/html'),
+    http = require('xhr'),
     GridPaint = require('gridpaint'),
+    colorToMooseString = [
+        't',
+        '0', '1', '2', '3', 
+        '4', '5', '6', '7',
+        '8', '9', 'a', 'b',
+        'c', 'd', 'e', 'f',
+    ],
     app = choo()
 
 app.use((state, emitter) => {
@@ -4529,7 +4893,7 @@ app.use((state, emitter) => {
     }
 
     state.moose = {
-        name: 'moose-name',
+        name: '',
     }
 
 
@@ -4578,14 +4942,47 @@ app.use((state, emitter) => {
         emitter.emit('render')
     })
 
-    emitter.on('moose-name', (name) => {
+    emitter.on('moose-name-change', (name) => {
         state.moose.name = name
     })
 
     emitter.on('moose-save', () => {
-        state.title.msg = `failed to save moose: ${state.moose.name}`
-        state.title.status = 'danger'
-        emitter.emit('render')
+        state.moose.image = state.painter.painting.map(arr => {
+            return arr.map(char => {
+                return colorToMooseString[char]
+            }).join('')
+        }).join('\n')
+
+        http({
+            uri: 'new',
+            method: 'put',
+            body: JSON.stringify(state.moose),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }, (err, res, body) => {
+            try {
+                body = JSON.parse(body)
+            }
+            catch (e) {
+                body = { status: 'error', msg: e.toString() }
+            }
+
+            if (err || res.statusCode != 200 
+                || !body || body.status == 'error') {
+
+                if (!body) body = { msg: 'unknown error' }
+                if (typeof body.msg == 'object') body.msg = JSON.stringify(body.msg)
+                state.title.msg = `failed to save moose: ${body.msg}`
+                state.title.status = 'danger'
+            }
+            else {
+                state.title.msg = body.msg
+                state.title.status = 'success'
+            }
+             
+            emitter.emit('render')
+        })
     })
 
     state.painter.init()
@@ -4691,7 +5088,7 @@ app.route('/', (state, emit) => {
     `
 
     function mooseName(e) {
-        emit('moose-change', e.target.value)
+        emit('moose-name-change', e.target.value)
     }
 
     function mooseSave() {
@@ -4709,6 +5106,6 @@ app.route('/', (state, emit) => {
 
 document.body.appendChild(app.start())
 
-},{"../node_modules/bulma/css/bulma.css":6,"./moose-style.css":47,"choo":8,"choo/html":7,"gridpaint":15}],47:[function(require,module,exports){
+},{"../node_modules/bulma/css/bulma.css":6,"./moose-style.css":52,"choo":8,"choo/html":7,"gridpaint":16,"xhr":48}],52:[function(require,module,exports){
 var css = "body {\n  background-color: #eee;\n}\n.moose-wrap {\n  margin-left: auto;\n  margin-right: auto;\n  min-width: 430px;\n  text-align: center;\n  width: 70%;\n  max-width: 760px;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
-},{"browserify-css":4}]},{},[46]);
+},{"browserify-css":4}]},{},[51]);

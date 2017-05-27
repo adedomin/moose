@@ -21,7 +21,15 @@ require('./moose-style.css')
 
 var choo = require('choo'),
     html = require('choo/html'),
+    http = require('xhr'),
     GridPaint = require('gridpaint'),
+    colorToMooseString = [
+        't',
+        '0', '1', '2', '3', 
+        '4', '5', '6', '7',
+        '8', '9', 'a', 'b',
+        'c', 'd', 'e', 'f',
+    ],
     app = choo()
 
 app.use((state, emitter) => {
@@ -32,7 +40,7 @@ app.use((state, emitter) => {
     }
 
     state.moose = {
-        name: 'moose-name',
+        name: '',
     }
 
 
@@ -81,14 +89,47 @@ app.use((state, emitter) => {
         emitter.emit('render')
     })
 
-    emitter.on('moose-name', (name) => {
+    emitter.on('moose-name-change', (name) => {
         state.moose.name = name
     })
 
     emitter.on('moose-save', () => {
-        state.title.msg = `failed to save moose: ${state.moose.name}`
-        state.title.status = 'danger'
-        emitter.emit('render')
+        state.moose.image = state.painter.painting.map(arr => {
+            return arr.map(char => {
+                return colorToMooseString[char]
+            }).join('')
+        }).join('\n')
+
+        http({
+            uri: 'new',
+            method: 'put',
+            body: JSON.stringify(state.moose),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }, (err, res, body) => {
+            try {
+                body = JSON.parse(body)
+            }
+            catch (e) {
+                body = { status: 'error', msg: e.toString() }
+            }
+
+            if (err || res.statusCode != 200 
+                || !body || body.status == 'error') {
+
+                if (!body) body = { msg: 'unknown error' }
+                if (typeof body.msg == 'object') body.msg = JSON.stringify(body.msg)
+                state.title.msg = `failed to save moose: ${body.msg}`
+                state.title.status = 'danger'
+            }
+            else {
+                state.title.msg = body.msg
+                state.title.status = 'success'
+            }
+             
+            emitter.emit('render')
+        })
     })
 
     state.painter.init()
@@ -194,7 +235,7 @@ app.route('/', (state, emit) => {
     `
 
     function mooseName(e) {
-        emit('moose-change', e.target.value)
+        emit('moose-name-change', e.target.value)
     }
 
     function mooseSave() {
