@@ -1,0 +1,36 @@
+body {
+    background-color: #eee;
+}
+
+.moose-wrap {
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 430px;
+    text-align: center;
+    width: 70%;
+    max-width: 760px;
+}
+
+.moose-button {
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+.moose-palette {
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+.moose-palette-color {
+    width: 35px;
+    height: 35px;
+    margin-right: 5px;
+    border-style: none;
+    border-radius: 5px;
+}
+
+.moose-palette-color-selected {
+    border-width: 3px;
+    border-color: black;
+    border-style: dashed;
+}
