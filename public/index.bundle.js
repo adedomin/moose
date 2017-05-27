@@ -4532,38 +4532,45 @@ app.use((state, emitter) => {
         name: 'moose-name',
     }
 
+
     state.painter = new GridPaint({
         width: 26, 
         height: 15, 
         cellWidth: 16,
         cellHeight: 24,
+        palette: [
+            'transparent', 'white', 'black', 
+            'navy', 'green', 'red', 'brown',
+            'purple', 'olive', 'yellow', 'lime', 
+            'teal', 'cyan', 'blue', 'fuchsia',
+            'grey', 'lightgrey',
+        ],
     }) 
 
-    state.painter.palette = [
-        'transparent', 'white', 'black', 'navy', 'green', 'red', 'brown',
-        'purple', 'olive', 'yellow', 'lime', 'teal', 'cyan', 'blue', 'fuchsia',
-        'grey', 'lightgrey',
-    ]
-
-    state.painter.tools = [ 
+    state.tools = [ 
         'pencil', 
         'bucket', 
+        'grid',
         'undo', 
         'redo', 
         'clear',
     ]
 
     state.painter.tool = 'pencil'
-    state.painter.color = 'transparent'
+    state.painter.color = 1
+    state.painter.colour = 'transparent'
 
     emitter.on('color-select', (color) => {
-        state.painter.color = color
+        state.painter.colour = state.painter.palette.indexOf(color)
         emitter.emit('render')
     })
 
     emitter.on('tool-select', (action) => {
         if (action == 'pencil' || action == 'bucket') {
             state.painter.tool = action
+        }
+        else if (action == 'grid') {
+            state.painter.grid = !state.painter.grid
         }
         else {
             state.painter[action]()
@@ -4639,7 +4646,7 @@ app.route('/', (state, emit) => {
                                 extra += 'moose-palette-color-transparent'
                                 style = 'background: transparent url(\'transparent.png\') repeat'
                             }
-                            if (color == state.painter.color)
+                            if (color == state.painter.palette[state.painter.colour])
                                 extra += ' moose-palette-color-selected'
                             return html`<button 
                                 onclick=${colorSelect}
@@ -4649,7 +4656,7 @@ app.route('/', (state, emit) => {
                         })}
                         <br>
                         <br>
-                        ${state.painter.tools.map(tool => {
+                        ${state.tools.map(tool => {
                             var extra = ''
                             if (tool == state.painter.tool)
                                 extra += ' is-info'
