@@ -4885,6 +4885,16 @@ var choo = require('choo'),
     ],
     app = choo()
 
+function getParameterByName(name) {
+    var url = window.location.href
+    name = name.replace(/[[]]/g, '\\$&')
+    var regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
+        results = regex.exec(url)
+    if (!results) return null
+    if (!results[2]) return ''
+    return decodeURIComponent(results[2].replace(/\+/g, ' '))
+}
+
 app.use((state, emitter) => {
 
     state.title = {
@@ -4895,7 +4905,6 @@ app.use((state, emitter) => {
     state.moose = {
         name: '',
     }
-
 
     state.painter = new GridPaint({
         width: 26, 
@@ -4987,6 +4996,27 @@ app.use((state, emitter) => {
     })
 
     state.painter.init()
+
+    var editmoose = getParameterByName('edit')
+    if (editmoose) {
+        http({
+            uri: `moose/${editmoose}`,
+            method: 'get',
+        }, (err, res, body) => {
+            try {
+                body = JSON.parse(body)
+            }
+            catch (e) {
+                body = null
+            }
+            if (err || !body || !body.image) return
+            state.painter.painting = body.image.split('\n').map(str => {
+                return str.split('').map(char => {
+                    return colorToMooseString.indexOf(char)
+                })
+            })
+        })
+    }
 })
 
 app.route('/', (state, emit) => {
