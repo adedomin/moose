@@ -5015,6 +5015,9 @@ app.use((state, emitter) => {
                     return colorToMooseString.indexOf(char)
                 })
             })
+            state.moose.name = body.name || ''
+            state.title.msg = `editing ${state.moose.name}...`
+            emitter.emit('render')
         })
     }
 })
