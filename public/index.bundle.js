@@ -4897,6 +4897,8 @@ function getParameterByName(name) {
 
 app.use((state, emitter) => {
 
+    state.gallery = []
+
     state.title = {
         msg: 'Make a Moose today',
         status: 'primary',
@@ -4995,10 +4997,7 @@ app.use((state, emitter) => {
         })
     })
 
-    state.painter.init()
-
-    var editmoose = getParameterByName('edit')
-    if (editmoose) {
+    emitter.on('moose-edit', (editmoose) => {
         http({
             uri: `moose/${editmoose}`,
             method: 'get',
@@ -5019,7 +5018,11 @@ app.use((state, emitter) => {
             state.title.msg = `editing ${state.moose.name}...`
             emitter.emit('render')
         })
-    }
+    })
+
+    state.painter.init()
+    if (getParameterByName('edit')) 
+        emitter.emit('moose-edit', getParameterByName('edit'))
 })
 
 app.route('/', (state, emit) => {
