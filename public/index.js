@@ -133,8 +133,11 @@ app.use((state, emitter) => {
     })
 
     emitter.on('gallery-bottom', () => {
-        state.timeoutScroll = true
+        // no more meese to show
+        if (state.gallery.length < 9 || state.gallery.length % 9 != 0) 
+            return
         var pagenum = Math.ceil(state.gallery.length / 9)
+        state.timeoutScroll = true
         http({
             uri: `gallery/${state.query.age}?q=${state.query.name}&p=${pagenum}`,
             method: 'get',
