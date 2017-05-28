@@ -5128,19 +5128,12 @@ app.route('/gallery', (state, emit) => {
             <div class="container">
                 <div class="field has-addons">
                     <p class="control">
-                        <span class="select">
-                        <select
-                            id="age-query"
-                            oninput=${queryAge} 
+                        <button value="oldest" 
+                                onclick=${queryAge} 
+                                class="button ${state.query.age == 'oldest' ? 'is-info' : ''}"
                         >
-                            <option selected value="newest">
-                                newest
-                            </option>
-                            <option selected value="oldest">
-                                oldest
-                            </option>
-                        </select>
-                        </span>
+                            oldest
+                        </button>
                     </p>
                     <p class="control is-expanded">
                         <input 
@@ -5149,6 +5142,14 @@ app.route('/gallery', (state, emit) => {
                             value="${state.query.name}"
                             oninput=${queryName}
                         >
+                    </p>
+                    <p class="control">
+                        <button value="newest" 
+                                onclick=${queryAge} 
+                                class="button ${state.query.age == 'newest' ? 'is-info' : ''}"
+                        >
+                            newest
+                        </button>
                     </p>
                 </div>
                 <div class="columns is-multiline">
@@ -5174,9 +5175,7 @@ app.route('/gallery', (state, emit) => {
     `
 
     function queryAge(e) {
-        emit('gallery-age', 
-            e.target.options[e.target.selectedIndex].value
-        )
+        emit('gallery-age', e.target.value)
     }
 
     function queryName(e) {
