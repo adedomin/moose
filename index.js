@@ -49,16 +49,25 @@ function onOk(res, msg) {
 } 
 
 web.on('new-moose', (moose, res) => {
+    if (moose._id) delete moose._id
+    if (moose.created) delete moose.created
+
     if (!moose || !moose.name || !moose.image) {
         return onErr(res, 
             'moose cannot be blank or have a blank name'
         )
     }
 
-    if (moose.image.length < 300) {
-        return onErr(res,
-            'moose should at least be 300 characters'
-        )
+    // check there are 15 rows
+    var test_moose = moose.image.split('\n')
+    if (test_moose.length != 15) 
+        return onErr(res, 'moose should at least be 15 rows')
+
+    // check that moose lines are 26 chars long
+    if (!(test_moose.reduce((curr, line) => {
+        return line.length == 26 && curr
+    }, true))) {
+        return onErr(res, 'moose should have rows of 26 characters')
     }
 
     moosedb.save(moose, (err, newmoose) => {
