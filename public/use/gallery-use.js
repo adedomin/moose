@@ -97,6 +97,7 @@ module.exports = function(state, emitter) {
         // no more meese to show
         if (state.gallery.length < 9 || state.gallery.length % 9 != 0) 
             return
+        state.timeoutScroll = true
         getGalleryPage(
             state.query.age,
             state.query.name,
@@ -112,7 +113,7 @@ module.exports = function(state, emitter) {
                     )
                 )
             })
-            setTimeout(() => emitter.emit('gallery-end-timeout'), 500)
+            setTimeout(() => emitter.emit('gallery-end-timeout'), 300)
             emitter.emit('render')
         })
 
