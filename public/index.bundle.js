@@ -5117,6 +5117,8 @@ app.use((state, emitter) => {
     })
 
     emitter.on('moose-edit', (editmoose) => {
+        state.moose.name = editmoose || ''
+        state.title.msg = `editing ${editmoose}...`
         http({
             uri: `moose/${editmoose}`,
             method: 'get',
@@ -5127,10 +5129,9 @@ app.use((state, emitter) => {
             catch (e) {
                 body = null
             }
-            if (err || !body || !body.image) return
+            if (err || !body || !body.image) 
+                return emitter.emit('render')
             state.painter.painting = mooseToGridPainter(body.image)
-            state.moose.name = body.name || ''
-            state.title.msg = `editing ${state.moose.name}...`
             emitter.emit('render')
         })
     })
