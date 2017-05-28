@@ -294,22 +294,24 @@ app.use((state, emitter) => {
     if (getParameterByName('q'))
         state.query.name = getParameterByName('q')
     emitter.emit('gallery-get')
+
+    emitter.on('DOMContentLoaded', () => {
+        window.addEventListener('scroll', () => {
+            if (state.timeoutScroll || window.location.hash != '#gallery') 
+                return
+            var scrollPos = (
+                (document.documentElement.scrollTop 
+                    + document.body.scrollTop) 
+                / (document.documentElement.scrollHeight 
+                    - document.documentElement.clientHeight) 
+                * 100)
+            if (scrollPos > 90)
+                emitter.emit('gallery-bottom')
+        })
+    })
 })
 
 app.route('/gallery', (state, emit) => {
-
-    window.addEventListener('scroll', () => {
-        if (state.timeoutScroll) return
-        var scrollPos = (
-            (document.documentElement.scrollTop 
-                + document.body.scrollTop) 
-            / (document.documentElement.scrollHeight 
-                - document.documentElement.clientHeight) 
-            * 100)
-        if (scrollPos > 90)
-            emit('gallery-bottom')
-    })
-
     return html`
         <div>
         <div class="nav">
