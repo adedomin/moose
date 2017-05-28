@@ -5009,8 +5009,8 @@ function generateGalleryMoose(name, image) {
     var painter = new GridPaint({
         width: 26, 
         height: 15, 
-        cellWidth: 16,
-        cellHeight: 24,
+        cellWidth: 12,
+        cellHeight: 18,
         palette: [
             'transparent', 'white', 'black', 
             'navy', 'green', 'red', 'brown',
@@ -5338,14 +5338,12 @@ module.exports = function(state, emit) {
                     ${state.gallery.map(moose => {
                         return html`
                             <div class="column">
-                                <div class="box">
-                                  <div class="moose-wrap">
-                                    ${moose.dom}
-                                    <br>
+                                <div class="box has-text-centered">
                                     <a href="#?edit=${moose.name}">
-                                      ${moose.name}
+                                        ${moose.dom}
+                                        <br>
+                                        ${moose.name}
                                     </a>
-                                  </div>
                                 </div>
                             </div>
                         `
