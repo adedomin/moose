@@ -4921,6 +4921,8 @@ function generateGalleryMoose(name, image) {
     painter.name = name
     painter.painting = mooseToGridPainter(image)
     painter.draw()
+    painter.drawing = false
+    painter.dom.id = `m-${name}`
 
     return painter
 }
@@ -4959,6 +4961,10 @@ app.use((state, emitter) => {
             }
 
             if (!(body instanceof Array)) return
+            state.gallery.forEach(moose => {
+                var el = document.getElementById(`m-${moose.name}`)
+                el.parentNode.removeChild(el)
+            })
             state.gallery = []
             body.forEach(moose => {
                 state.gallery.push(
