@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var http = require('xhr'),
+var getGalleryPage = require('../lib/api.js').getGalleryPage,
     GridPaint = require('gridpaint'),
     mooseToGrid = require('../lib/moose-grid.js').mooseToGrid
 
@@ -64,19 +64,12 @@ module.exports = function(state, emitter) {
     })
 
     emitter.on('gallery-get', () => {
-        http({
-            uri: `gallery/${state.query.age}?q=${state.query.name}`,
-            method: 'get',
-        }, (err, res, body) => {
+        getGalleryPage(
+            state.query.age,
+            state.query.name,
+            0,
+        (err, body) => {
             if (err) return
-            
-            try {
-                body = JSON.parse(body)
-            }
-            catch (e) {
-                return
-            }
-
             if (!(body instanceof Array)) return
             state.gallery.forEach(moose => {
                 var el = document.getElementById(`m-${moose.name}`)
@@ -104,20 +97,12 @@ module.exports = function(state, emitter) {
         // no more meese to show
         if (state.gallery.length < 9 || state.gallery.length % 9 != 0) 
             return
-        var pagenum = Math.ceil(state.gallery.length / 9)
-        state.timeoutScroll = true
-        http({
-            uri: `gallery/${state.query.age}?q=${state.query.name}&p=${pagenum}`,
-            method: 'get',
-        }, (err, res, body) => {
+        getGalleryPage(
+            state.query.age,
+            state.query.name,
+            Math.ceil(state.gallery.length / 9),
+        (err, body) => {
             if (err) return
-            try {
-                body = JSON.parse(body)
-            }
-            catch (e) {
-                return
-            }
-
             if (!(body instanceof Array)) return
             if (body == []) return
             body.forEach(moose => {

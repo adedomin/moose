@@ -4887,7 +4887,59 @@ app.route('/gallery', gallery)
 
 document.body.appendChild(app.start())
 
-},{"../node_modules/bulma/css/bulma.css":6,"./moose-style.css":53,"./use/gallery-use.js":54,"./use/root-use.js":55,"./view/gallery.js":56,"./view/root.js":57,"choo":8}],52:[function(require,module,exports){
+},{"../node_modules/bulma/css/bulma.css":6,"./moose-style.css":54,"./use/gallery-use.js":55,"./use/root-use.js":56,"./view/gallery.js":57,"./view/root.js":58,"choo":8}],52:[function(require,module,exports){
+/*
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+var http = require('xhr')
+
+function request(req, cb) {
+    http(req, (err, res, body) => {
+        try {
+            body = JSON.parse(body)
+        }
+        catch (e) {
+            return cb(e, null)
+        }
+        cb(err, body)
+    })
+}
+
+module.exports = request
+module.exports.saveMoose = function(moose, cb) {
+    request({
+        uri: 'new',
+        method: 'put',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(moose),
+    }, cb)
+}
+module.exports.getMoose = function(moose, cb) {
+    request({ uri: `moose/${moose}` }, cb)
+}
+module.exports.getGalleryPage = function(age, query, page, cb) {
+    request({
+        uri: `gallery/${age}?q=${query}&p=${page}`,
+    }, cb)
+}
+
+},{"xhr":48}],53:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -4929,9 +4981,9 @@ module.exports.gridToMoose = function(painting) {
     }).join('\n')
 }
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 var css = "body {\n  background-color: #eee;\n}\n.moose-wrap {\n  margin-left: auto;\n  margin-right: auto;\n  min-width: 430px;\n  text-align: center;\n  width: 70%;\n  max-width: 760px;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
-},{"browserify-css":4}],54:[function(require,module,exports){
+},{"browserify-css":4}],55:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -4949,7 +5001,7 @@ var css = "body {\n  background-color: #eee;\n}\n.moose-wrap {\n  margin-left: a
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var http = require('xhr'),
+var getGalleryPage = require('../lib/api.js').getGalleryPage,
     GridPaint = require('gridpaint'),
     mooseToGrid = require('../lib/moose-grid.js').mooseToGrid
 
@@ -4998,19 +5050,12 @@ module.exports = function(state, emitter) {
     })
 
     emitter.on('gallery-get', () => {
-        http({
-            uri: `gallery/${state.query.age}?q=${state.query.name}`,
-            method: 'get',
-        }, (err, res, body) => {
+        getGalleryPage(
+            state.query.age,
+            state.query.name,
+            0,
+        (err, body) => {
             if (err) return
-            
-            try {
-                body = JSON.parse(body)
-            }
-            catch (e) {
-                return
-            }
-
             if (!(body instanceof Array)) return
             state.gallery.forEach(moose => {
                 var el = document.getElementById(`m-${moose.name}`)
@@ -5038,20 +5083,12 @@ module.exports = function(state, emitter) {
         // no more meese to show
         if (state.gallery.length < 9 || state.gallery.length % 9 != 0) 
             return
-        var pagenum = Math.ceil(state.gallery.length / 9)
-        state.timeoutScroll = true
-        http({
-            uri: `gallery/${state.query.age}?q=${state.query.name}&p=${pagenum}`,
-            method: 'get',
-        }, (err, res, body) => {
+        getGalleryPage(
+            state.query.age,
+            state.query.name,
+            Math.ceil(state.gallery.length / 9),
+        (err, body) => {
             if (err) return
-            try {
-                body = JSON.parse(body)
-            }
-            catch (e) {
-                return
-            }
-
             if (!(body instanceof Array)) return
             if (body == []) return
             body.forEach(moose => {
@@ -5085,7 +5122,7 @@ module.exports = function(state, emitter) {
     })
 }
 
-},{"../lib/moose-grid.js":52,"gridpaint":16,"xhr":48}],55:[function(require,module,exports){
+},{"../lib/api.js":52,"../lib/moose-grid.js":53,"gridpaint":16}],56:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5104,7 +5141,7 @@ module.exports = function(state, emitter) {
  */
 
 var GridPaint = require('gridpaint'),
-    http = require('xhr'),
+    api = require('../lib/api.js'),
     mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
     gridToMoose = require('../lib/moose-grid.js').gridToMoose
 
@@ -5180,28 +5217,15 @@ module.exports = function(state, emitter) {
 
     emitter.on('moose-save', () => {
         state.moose.image = gridToMoose(state.painter.painting)
-
-        http({
-            uri: 'new',
-            method: 'put',
-            body: JSON.stringify(state.moose),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }, (err, res, body) => {
-            try {
-                body = JSON.parse(body)
-            }
-            catch (e) {
-                body = { status: 'error', msg: e.toString() }
-            }
-
-            if (err || res.statusCode != 200 
-                || !body || body.status == 'error') {
-
-                if (!body) body = { msg: 'unknown error' }
-                if (typeof body.msg == 'object') body.msg = JSON.stringify(body.msg)
-                state.title.msg = `failed to save moose: ${body.msg}`
+        api.saveMoose(state.moose, (err, body) => {
+            if (err || !body || body.status == 'error') {
+                if (!body) body = { 
+                    msg: err.toString() || 'unknown error',
+                }
+                if (typeof body.msg == 'object') 
+                    body.msg = JSON.stringify(body.msg)
+                state.title.msg = 
+                    `failed to save moose: ${body.msg}`
                 state.title.status = 'danger'
             }
             else {
@@ -5216,19 +5240,11 @@ module.exports = function(state, emitter) {
     emitter.on('moose-edit', (editmoose) => {
         state.moose.name = editmoose || ''
         state.title.msg = `editing ${editmoose}...`
-        http({
-            uri: `moose/${editmoose}`,
-            method: 'get',
-        }, (err, res, body) => {
-            try {
-                body = JSON.parse(body)
+        api.getMoose(editmoose, (err, body) => {
+            if (!err && body && body.image) {
+                state.painter.painting = 
+                    mooseToGrid(body.image)
             }
-            catch (e) {
-                body = null
-            }
-            if (err || !body || !body.image) 
-                return emitter.emit('render')
-            state.painter.painting = mooseToGrid(body.image)
             emitter.emit('render')
         })
     })
@@ -5244,7 +5260,7 @@ module.exports = function(state, emitter) {
 
 }
 
-},{"../lib/moose-grid.js":52,"gridpaint":16,"xhr":48}],56:[function(require,module,exports){
+},{"../lib/api.js":52,"../lib/moose-grid.js":53,"gridpaint":16}],57:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5347,7 +5363,7 @@ module.exports = function(state, emit) {
     }
 }
 
-},{"choo/html":7}],57:[function(require,module,exports){
+},{"choo/html":7}],58:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *

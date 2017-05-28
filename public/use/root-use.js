@@ -16,7 +16,7 @@
  */
 
 var GridPaint = require('gridpaint'),
-    http = require('xhr'),
+    api = require('../lib/api.js'),
     mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
     gridToMoose = require('../lib/moose-grid.js').gridToMoose
 
@@ -92,28 +92,15 @@ module.exports = function(state, emitter) {
 
     emitter.on('moose-save', () => {
         state.moose.image = gridToMoose(state.painter.painting)
-
-        http({
-            uri: 'new',
-            method: 'put',
-            body: JSON.stringify(state.moose),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }, (err, res, body) => {
-            try {
-                body = JSON.parse(body)
-            }
-            catch (e) {
-                body = { status: 'error', msg: e.toString() }
-            }
-
-            if (err || res.statusCode != 200 
-                || !body || body.status == 'error') {
-
-                if (!body) body = { msg: 'unknown error' }
-                if (typeof body.msg == 'object') body.msg = JSON.stringify(body.msg)
-                state.title.msg = `failed to save moose: ${body.msg}`
+        api.saveMoose(state.moose, (err, body) => {
+            if (err || !body || body.status == 'error') {
+                if (!body) body = { 
+                    msg: err.toString() || 'unknown error',
+                }
+                if (typeof body.msg == 'object') 
+                    body.msg = JSON.stringify(body.msg)
+                state.title.msg = 
+                    `failed to save moose: ${body.msg}`
                 state.title.status = 'danger'
             }
             else {
@@ -128,19 +115,11 @@ module.exports = function(state, emitter) {
     emitter.on('moose-edit', (editmoose) => {
         state.moose.name = editmoose || ''
         state.title.msg = `editing ${editmoose}...`
-        http({
-            uri: `moose/${editmoose}`,
-            method: 'get',
-        }, (err, res, body) => {
-            try {
-                body = JSON.parse(body)
+        api.getMoose(editmoose, (err, body) => {
+            if (!err && body && body.image) {
+                state.painter.painting = 
+                    mooseToGrid(body.image)
             }
-            catch (e) {
-                body = null
-            }
-            if (err || !body || !body.image) 
-                return emitter.emit('render')
-            state.painter.painting = mooseToGrid(body.image)
             emitter.emit('render')
         })
     })
