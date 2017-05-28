@@ -42,9 +42,81 @@ function getParameterByName(name) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '))
 }
 
+function mooseToGridPainter(image) {
+    return image.split('\n').map(str => {
+        return str.split('').map(char => {
+            return colorToMooseString.indexOf(char)
+        })
+    })
+}
+
+function generateGalleryMoose(name, image) {
+    var painter = new GridPaint({
+        width: 26, 
+        height: 15, 
+        cellWidth: 16,
+        cellHeight: 24,
+        palette: [
+            'transparent', 'white', 'black', 
+            'navy', 'green', 'red', 'brown',
+            'purple', 'olive', 'yellow', 'lime', 
+            'teal', 'cyan', 'blue', 'fuchsia',
+            'grey', 'lightgrey',
+        ],
+    }) 
+
+    painter.name = name
+    painter.painting = mooseToGridPainter(image)
+    painter.draw()
+
+    return painter
+}
+
 app.use((state, emitter) => {
 
     state.gallery = []
+
+    state.query = {
+        name: '',
+        age: 'newest',
+    }
+
+    emitter.on('gallery-age', (value) => {
+        state.query.age = value
+        emitter.emit('gallery-get')
+    })
+
+    emitter.on('gallery-name', (value) => {
+        state.query.name = value
+        emitter.emit('gallery-get')
+    })
+
+    emitter.on('gallery-get', () => {
+        http({
+            uri: `gallery/${state.query.age}?q=${state.query.name}`,
+            method: 'get',
+        }, (err, res, body) => {
+            if (err) return
+            
+            try {
+                body = JSON.parse(body)
+            }
+            catch (e) {
+                return
+            }
+
+            if (!(body instanceof Array)) return
+            state.gallery = []
+            body.forEach(moose => {
+                state.gallery.push(
+                    generateGalleryMoose(
+                        moose.name, moose.image
+                    )
+                )
+            })
+            emitter.emit('render')
+        })
+    })
 
     state.title = {
         msg: 'Make a Moose today',
@@ -156,20 +228,101 @@ app.use((state, emitter) => {
                 body = null
             }
             if (err || !body || !body.image) return
-            state.painter.painting = body.image.split('\n').map(str => {
-                return str.split('').map(char => {
-                    return colorToMooseString.indexOf(char)
-                })
-            })
+            state.painter.painting = mooseToGridPainter(body.image)
             state.moose.name = body.name || ''
             state.title.msg = `editing ${state.moose.name}...`
             emitter.emit('render')
         })
     })
 
+    emitter.on('pushState', () => {
+        if (getParameterByName('edit')) 
+            emitter.emit('moose-edit', getParameterByName('edit'))
+    })
+
     state.painter.init()
+    emitter.emit('gallery-get')
     if (getParameterByName('edit')) 
         emitter.emit('moose-edit', getParameterByName('edit'))
+})
+
+app.route('/gallery', (state, emit) => {
+    return html`
+        <div>
+        <div class="nav">
+          <div class="nav-left">
+            <a class="nav-item is-tab" href="#">NeoMoose</a>
+            <a class=" nav-item is-active is-tab" href="#gallery">Gallery</a>
+          </div>
+        </div>
+
+        <div class="hero is-primary">
+           <div class="hero-body">
+               <div class="container">
+                   <h1 class="title">NeoMoose</h1>
+                   <h2 class="subtitle">Gallery Page</h2>
+               </div>
+           </div>
+        </div>
+
+        <div class="section">
+            <div class="container">
+                <div class="field has-addons">
+                    <p class="control">
+                        <span class="select">
+                        <select
+                            id="age-query"
+                            oninput=${queryAge} 
+                        >
+                            <option selected value="newest">
+                                newest
+                            </option>
+                            <option selected value="oldest">
+                                oldest
+                            </option>
+                        </select>
+                        </span>
+                    </p>
+                    <p class="control is-expanded">
+                        <input 
+                            type="text" 
+                            class="input is-expanded"
+                            value="${state.query.name}"
+                            oninput=${queryName}
+                        >
+                    </p>
+                </div>
+                <div class="columns is-multiline">
+                    ${state.gallery.map(moose => {
+                        return html`
+                            <div class="column">
+                                <div class="box">
+                                  <div class="moose-wrap">
+                                    ${moose.dom}
+                                    <br>
+                                    <a href="#?edit=${moose.name}">
+                                      ${moose.name}
+                                    </a>
+                                  </div>
+                                </div>
+                            </div>
+                        `
+                    })}
+                </div>
+            </div>
+        </div>
+        </div>
+    `
+
+    function queryAge(e) {
+        emit('gallery-age', 
+            e.target.options[e.target.selectedIndex].value
+        )
+    }
+
+    function queryName(e) {
+        emit('gallery-name', e.target.value) 
+    }
 })
 
 app.route('/', (state, emit) => {
