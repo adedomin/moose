@@ -5114,6 +5114,12 @@ app.route('/gallery', (state, emit) => {
           <div class="nav-left">
             <a class="nav-item is-tab" href="#">NeoMoose</a>
             <a class=" nav-item is-active is-tab" href="#gallery">Gallery</a>
+            <a data-no-routing 
+                class=" nav-item is-tab" 
+                href="/dump"
+            >
+                Database (JSON)
+            </a>
           </div>
         </div>
 
@@ -5192,6 +5198,12 @@ app.route('/', (state, emit) => {
           <div class="nav-left">
             <a class="nav-item is-active is-tab" href="#">NeoMoose</a>
             <a class=" nav-item is-tab" href="#gallery">Gallery</a>
+            <a data-no-routing 
+                class=" nav-item is-tab" 
+                href="/dump"
+            >
+                Database (JSON)
+            </a>
           </div>
         </div>
 
