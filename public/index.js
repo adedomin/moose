@@ -67,6 +67,8 @@ function generateGalleryMoose(name, image) {
 
     painter.name = name
     painter.painting = mooseToGridPainter(image)
+    painter.color = 0 // remove dumb errors from dom
+    painter.colour = 0
     painter.draw()
     painter.drawing = false
     painter.dom.id = `m-${name}`
@@ -122,6 +124,42 @@ app.use((state, emitter) => {
             })
             emitter.emit('render')
         })
+    })
+
+    state.timeoutScroll = false 
+
+    emitter.on('gallery-end-timeout', () => {
+        state.timeoutScroll = false
+    })
+
+    emitter.on('gallery-bottom', () => {
+        state.timeoutScroll = true
+        var pagenum = Math.ceil(state.gallery.length / 9)
+        http({
+            uri: `gallery/${state.query.age}?q=${state.query.name}&p=${pagenum}`,
+            method: 'get',
+        }, (err, res, body) => {
+            if (err) return
+            try {
+                body = JSON.parse(body)
+            }
+            catch (e) {
+                return
+            }
+
+            if (!(body instanceof Array)) return
+            if (body == []) return
+            body.forEach(moose => {
+                state.gallery.push(
+                    generateGalleryMoose(
+                        moose.name, moose.image
+                    )
+                )
+            })
+            setTimeout(() => emitter.emit('gallery-end-timeout'), 500)
+            emitter.emit('render')
+        })
+
     })
 
     state.title = {
@@ -255,6 +293,19 @@ app.use((state, emitter) => {
 })
 
 app.route('/gallery', (state, emit) => {
+
+    window.addEventListener('scroll', () => {
+        if (state.timeoutScroll) return
+        var scrollPos = (
+            (document.documentElement.scrollTop 
+                + document.body.scrollTop) 
+            / (document.documentElement.scrollHeight 
+                - document.documentElement.clientHeight) 
+            * 100)
+        if (scrollPos > 90)
+            emit('gallery-bottom')
+    })
+
     return html`
         <div>
         <div class="nav">
@@ -328,7 +379,6 @@ app.route('/gallery', (state, emit) => {
         </div>
         </div>
     `
-
     function queryAge(e) {
         emit('gallery-age', e.target.value)
     }
