@@ -15,21 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// css
-require('../node_modules/bulma/css/bulma.css')
-require('./moose-style.css')
+var colorToMooseString = [
+    't',
+    '0', '1', '2', '3', 
+    '4', '5', '6', '7',
+    '8', '9', 'a', 'b',
+    'c', 'd', 'e', 'f',
+]
 
-var choo = require('choo'),
-    root = require('./view/root.js'),
-    gallery = require('./view/gallery.js'),
-    rootState = require('./use/root-use.js'),
-    galleryState = require('./use/gallery-use.js'),
-    app = choo()
+module.exports.mooseToGrid = function mooseToGrid(image) {
+    return image.split('\n').map(str => {
+        return str.split('').map(char => {
+            return colorToMooseString.indexOf(char)
+        })
+    })
+}
 
-app.use(rootState)
-app.use(galleryState)
-
-app.route('/', root)
-app.route('/gallery', gallery)
-
-document.body.appendChild(app.start())
+module.exports.gridToMoose = function(painting) {
+    return painting.map(arr => {
+        return arr.map(char => {
+            return colorToMooseString[char]
+        }).join('')
+    }).join('\n')
+}

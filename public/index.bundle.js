@@ -4873,35 +4873,85 @@ require('../node_modules/bulma/css/bulma.css')
 require('./moose-style.css')
 
 var choo = require('choo'),
-    html = require('choo/html'),
-    http = require('xhr'),
-    GridPaint = require('gridpaint'),
-    colorToMooseString = [
-        't',
-        '0', '1', '2', '3', 
-        '4', '5', '6', '7',
-        '8', '9', 'a', 'b',
-        'c', 'd', 'e', 'f',
-    ],
+    root = require('./view/root.js'),
+    gallery = require('./view/gallery.js'),
+    rootState = require('./use/root-use.js'),
+    galleryState = require('./use/gallery-use.js'),
     app = choo()
 
-function getParameterByName(name) {
-    var url = window.location.href
-    name = name.replace(/[[]]/g, '\\$&')
-    var regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
-        results = regex.exec(url)
-    if (!results) return null
-    if (!results[2]) return ''
-    return decodeURIComponent(results[2].replace(/\+/g, ' '))
-}
+app.use(rootState)
+app.use(galleryState)
 
-function mooseToGridPainter(image) {
+app.route('/', root)
+app.route('/gallery', gallery)
+
+document.body.appendChild(app.start())
+
+},{"../node_modules/bulma/css/bulma.css":6,"./moose-style.css":53,"./use/gallery-use.js":54,"./use/root-use.js":55,"./view/gallery.js":56,"./view/root.js":57,"choo":8}],52:[function(require,module,exports){
+/*
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+var colorToMooseString = [
+    't',
+    '0', '1', '2', '3', 
+    '4', '5', '6', '7',
+    '8', '9', 'a', 'b',
+    'c', 'd', 'e', 'f',
+]
+
+module.exports.mooseToGrid = function mooseToGrid(image) {
     return image.split('\n').map(str => {
         return str.split('').map(char => {
             return colorToMooseString.indexOf(char)
         })
     })
 }
+
+module.exports.gridToMoose = function(painting) {
+    return painting.map(arr => {
+        return arr.map(char => {
+            return colorToMooseString[char]
+        }).join('')
+    }).join('\n')
+}
+
+},{}],53:[function(require,module,exports){
+var css = "body {\n  background-color: #eee;\n}\n.moose-wrap {\n  margin-left: auto;\n  margin-right: auto;\n  min-width: 430px;\n  text-align: center;\n  width: 70%;\n  max-width: 760px;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
+},{"browserify-css":4}],54:[function(require,module,exports){
+/*
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+var http = require('xhr'),
+    GridPaint = require('gridpaint'),
+    mooseToGrid = require('../lib/moose-grid.js').mooseToGrid
 
 function generateGalleryMoose(name, image) {
     var painter = new GridPaint({
@@ -4919,7 +4969,7 @@ function generateGalleryMoose(name, image) {
     }) 
 
     painter.name = name
-    painter.painting = mooseToGridPainter(image)
+    painter.painting = mooseToGrid(image)
     painter.color = 0 // remove dumb errors from dom
     painter.colour = 0
     painter.draw()
@@ -4929,8 +4979,7 @@ function generateGalleryMoose(name, image) {
     return painter
 }
 
-app.use((state, emitter) => {
-
+module.exports = function(state, emitter) {
     state.gallery = []
 
     state.query = {
@@ -5018,6 +5067,58 @@ app.use((state, emitter) => {
 
     })
 
+    emitter.emit('gallery-get')
+
+    emitter.on('DOMContentLoaded', () => {
+        window.addEventListener('scroll', () => {
+            if (state.timeoutScroll || window.location.hash != '#gallery') 
+                return
+            var scrollPos = (
+                (document.documentElement.scrollTop 
+                    + document.body.scrollTop) 
+                / (document.documentElement.scrollHeight 
+                    - document.documentElement.clientHeight) 
+                * 100)
+            if (scrollPos > 90)
+                emitter.emit('gallery-bottom')
+        })
+    })
+}
+
+},{"../lib/moose-grid.js":52,"gridpaint":16,"xhr":48}],55:[function(require,module,exports){
+/*
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+var GridPaint = require('gridpaint'),
+    http = require('xhr'),
+    mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
+    gridToMoose = require('../lib/moose-grid.js').gridToMoose
+
+function getParameterByName(name) {
+    var url = window.location.href
+    name = name.replace(/[[]]/g, '\\$&')
+    var regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
+        results = regex.exec(url)
+    if (!results) return null
+    if (!results[2]) return ''
+    return decodeURIComponent(results[2].replace(/\+/g, ' '))
+}
+
+module.exports = function(state, emitter) {
     state.title = {
         msg: 'Make a Moose today',
         status: 'primary',
@@ -5078,11 +5179,7 @@ app.use((state, emitter) => {
     })
 
     emitter.on('moose-save', () => {
-        state.moose.image = state.painter.painting.map(arr => {
-            return arr.map(char => {
-                return colorToMooseString[char]
-            }).join('')
-        }).join('\n')
+        state.moose.image = gridToMoose(state.painter.painting)
 
         http({
             uri: 'new',
@@ -5131,7 +5228,7 @@ app.use((state, emitter) => {
             }
             if (err || !body || !body.image) 
                 return emitter.emit('render')
-            state.painter.painting = mooseToGridPainter(body.image)
+            state.painter.painting = mooseToGrid(body.image)
             emitter.emit('render')
         })
     })
@@ -5144,29 +5241,30 @@ app.use((state, emitter) => {
     state.painter.init()
     if (getParameterByName('edit')) 
         emitter.emit('moose-edit', getParameterByName('edit'))
-    if (getParameterByName('q'))
-        state.query.name = getParameterByName('q')
-    emitter.emit('gallery-get')
 
-    emitter.on('DOMContentLoaded', () => {
-        window.addEventListener('scroll', () => {
-            console.log('wtf', window.location.hash)
-            if (state.timeoutScroll || window.location.hash != '#gallery') 
-                return
-            console.log('wtf', window.location.hash)
-            var scrollPos = (
-                (document.documentElement.scrollTop 
-                    + document.body.scrollTop) 
-                / (document.documentElement.scrollHeight 
-                    - document.documentElement.clientHeight) 
-                * 100)
-            if (scrollPos > 90)
-                emitter.emit('gallery-bottom')
-        })
-    })
-})
+}
 
-app.route('/gallery', (state, emit) => {
+},{"../lib/moose-grid.js":52,"gridpaint":16,"xhr":48}],56:[function(require,module,exports){
+/*
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+var html = require('choo/html')
+
+module.exports = function(state, emit) {
     return html`
         <div>
         <div class="nav">
@@ -5247,9 +5345,29 @@ app.route('/gallery', (state, emit) => {
     function queryName(e) {
         emit('gallery-name', e.target.value) 
     }
-})
+}
 
-app.route('/', (state, emit) => {
+},{"choo/html":7}],57:[function(require,module,exports){
+/*
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+var html = require('choo/html')
+
+module.exports = function(state, emit) {
     return html`
         <div>
         <div class="nav">
@@ -5369,10 +5487,6 @@ app.route('/', (state, emit) => {
     function toolSelect(e) {
         emit('tool-select', e.target.innerText)
     }
-})
+}
 
-document.body.appendChild(app.start())
-
-},{"../node_modules/bulma/css/bulma.css":6,"./moose-style.css":52,"choo":8,"choo/html":7,"gridpaint":16,"xhr":48}],52:[function(require,module,exports){
-var css = "body {\n  background-color: #eee;\n}\n.moose-wrap {\n  margin-left: auto;\n  margin-right: auto;\n  min-width: 430px;\n  text-align: center;\n  width: 70%;\n  max-width: 760px;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
-},{"browserify-css":4}]},{},[51]);
+},{"choo/html":7}]},{},[51]);
