@@ -247,9 +247,11 @@ app.use((state, emitter) => {
     })
 
     state.painter.init()
-    emitter.emit('gallery-get')
     if (getParameterByName('edit')) 
         emitter.emit('moose-edit', getParameterByName('edit'))
+    if (getParameterByName('q'))
+        state.query.name = getParameterByName('q')
+    emitter.emit('gallery-get')
 })
 
 app.route('/gallery', (state, emit) => {
