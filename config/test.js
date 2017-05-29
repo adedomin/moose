@@ -1,10 +1,16 @@
 var config = {}
 
-// where your moose are kept safe
-config.moose_db = './'
-// dump moose db every 2 hours if enables to same path as moose_db
-// as dump.json
-config.moose_dump = true
+config.moose = {
+    // where your moose are kept safe
+    db: './',
+    // dump moose db every 2 hours if enables to same path as moose_db
+    // as dump.json
+    dump: true,
+    // dump moose every x amount of ms
+    dumpEvery: 1000 * 60 * 60, // 1 hour
+    // max moose per minute, per ip
+    maxNew: 3, // 3 moose a minute per ip
+}
 
 config.web = {
     // only set true if you're behind
