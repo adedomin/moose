@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+var galleryPageSize = 12
+
 var getGalleryPage = require('../lib/api.js').getGalleryPage,
     GridPaint = require('gridpaint'),
     mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
@@ -93,13 +95,13 @@ module.exports = function(state, emitter) {
 
     emitter.on('gallery-bottom', () => {
         // no more meese to show
-        if (state.gallery.length < 9 || state.gallery.length % 9 != 0) 
+        if (state.gallery.length < galleryPageSize || state.gallery.length % galleryPageSize != 0) 
             return
         state.timeoutScroll = true
         getGalleryPage(
             state.query.age,
             state.query.name,
-            Math.ceil(state.gallery.length / 9),
+            Math.ceil(state.gallery.length / galleryPageSize),
         (err, body) => {
             if (err) return
             if (!(body instanceof Array)) return

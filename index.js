@@ -15,6 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// change this in ./public/use/gallery-use.js as well !!!
+var galleryPageSize = 12
+
 var MooseDB = require('./lib/db.js'),
     Web = require('./lib/web.js'),
     config = require(process.env.CONFIG_PATH),
@@ -113,7 +116,7 @@ web.on('get-gallery', (name, page, age, res) => {
         query = { name: { $regex: searchNameRegexp(name) } }
     moosedb.find(query)
         .sort({ created: age })
-        .skip(page * 9).limit(9)
+        .skip(page * galleryPageSize).limit(galleryPageSize)
     .exec((err, meese) => { 
         if (err || !meese) 
             return onErr(res, err || 'unknown gallery error')
