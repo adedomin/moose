@@ -17,9 +17,11 @@
 
 var getGalleryPage = require('../lib/api.js').getGalleryPage,
     GridPaint = require('gridpaint'),
-    mooseToGrid = require('../lib/moose-grid.js').mooseToGrid
+    mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
+    each = require('async.each')
 
-function generateGalleryMoose(name, image) {
+// generates data urls from moose
+function generateGalleryMoose(image, cb) {
     var painter = new GridPaint({
         width: 26, 
         height: 15, 
@@ -34,15 +36,12 @@ function generateGalleryMoose(name, image) {
         ],
     }) 
 
-    painter.name = name
     painter.painting = mooseToGrid(image)
     painter.color = 0 // remove dumb errors from dom
     painter.colour = 0
     painter.draw()
     painter.drawing = false
-    painter.dom.id = `m-${name}`
-
-    return painter
+    painter.dom.toBlob(cb, 'image/png')
 }
 
 module.exports = function(state, emitter) {
@@ -71,20 +70,18 @@ module.exports = function(state, emitter) {
         (err, body) => {
             if (err) return
             if (!(body instanceof Array)) return
-            state.gallery.forEach(moose => {
-                var el = document.getElementById(`m-${moose.name}`)
-                if (!el || !el.parentNode) return
-                el.parentNode.removeChild(el)
-            })
             state.gallery = []
-            body.forEach(moose => {
-                state.gallery.push(
-                    generateGalleryMoose(
-                        moose.name, moose.image
-                    )
-                )
+            each(body, (moose, cb) => {
+                generateGalleryMoose(moose.image, (blob) => {
+                    state.gallery.push({
+                        name: moose.name,
+                        image: blob,
+                    })               
+                    cb()
+                })
+            }, () => {
+                emitter.emit('render')
             })
-            emitter.emit('render')
         })
     })
 
@@ -107,15 +104,18 @@ module.exports = function(state, emitter) {
             if (err) return
             if (!(body instanceof Array)) return
             if (body == []) return
-            body.forEach(moose => {
-                state.gallery.push(
-                    generateGalleryMoose(
-                        moose.name, moose.image
-                    )
-                )
+            each(body, (moose, cb) => {
+                generateGalleryMoose(moose.image, (blob) => {
+                    state.gallery.push({
+                        name: moose.name,
+                        image: blob,
+                    })               
+                    cb()
+                })
+            }, () => {
+                emitter.emit('render')
+                setTimeout(() => emitter.emit('gallery-end-timeout'), 300)
             })
-            setTimeout(() => emitter.emit('gallery-end-timeout'), 300)
-            emitter.emit('render')
         })
 
     })

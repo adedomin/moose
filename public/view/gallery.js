@@ -73,10 +73,10 @@ module.exports = function(state, emit) {
                 <div class="columns is-multiline">
                     ${state.gallery.map(moose => {
                         return html`
-                            <div class="column">
+                            <div class="column is-3">
                                 <div class="box has-text-centered">
                                     <a href="#?edit=${moose.name}">
-                                        ${moose.dom}
+                                        <img src="${URL.createObjectURL(moose.image)}">
                                         <br>
                                         ${moose.name}
                                     </a>
