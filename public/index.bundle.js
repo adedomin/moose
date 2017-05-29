@@ -5059,6 +5059,7 @@ module.exports = function(state, emitter) {
             if (!(body instanceof Array)) return
             state.gallery.forEach(moose => {
                 var el = document.getElementById(`m-${moose.name}`)
+                if (!el || !el.parentNode) return
                 el.parentNode.removeChild(el)
             })
             state.gallery = []
