@@ -7,9 +7,14 @@ config.moose_db = './'
 config.moose_dump = true
 
 config.web = {
+    // only set true if you're behind
+    // nginx or other load balancer/revproxy
+    proxied: false,
+    // local port to listen on
     port: 7512,
     // keep this null to listen on all interfaces
     // change it to 127.0.0.1 to make it local only
+    // or literally any 127/8 address
     interface: null, 
 }
 
