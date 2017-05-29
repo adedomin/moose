@@ -53,7 +53,7 @@ function onOk(res, msg) {
 
 web.on('new-moose', (moose, res) => {
     if (moose._id) delete moose._id
-    if (moose.created) delete moose.created
+    if (!moose.created) moose.created = new Date()
 
     if (!moose || !moose.name || !moose.image) {
         return onErr(res, 
