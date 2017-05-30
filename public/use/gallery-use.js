@@ -27,8 +27,8 @@ function generateGalleryMoose(image, cb) {
     var painter = new GridPaint({
         width: 26, 
         height: 15, 
-        cellWidth: 12,
-        cellHeight: 18,
+        cellWidth: 16,
+        cellHeight: 24,
         palette: [
             'transparent', 'white', 'black', 
             'navy', 'green', 'red', 'brown',
