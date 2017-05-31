@@ -5495,6 +5495,21 @@ module.exports = function(state, emit) {
                 </div>
             </div>
         </div>
+
+        <div class="footer">
+          <div class="container">
+            <div class="content has-text-centered">
+              <p>
+                <strong>NeoMoose</strong> by <a href="https://dedominic.pw">Anthony DeDominic</a>.
+              </p>
+              <p>
+                <a class="icon" href="https://github.com/adedomin/neomoose">
+                    <img src="GitHub-Mark-120px-plus.png">
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
         </div>
     `
     function queryAge(e) {
