@@ -22,7 +22,10 @@ module.exports = function(state, emit) {
         <div>
         <div class="nav">
           <div class="nav-left">
-            <a class="nav-item is-tab" href="#">NeoMoose</a>
+            <a class="nav-item is-tab" href="#">
+                <img src="neomoose.png" alt="NeoMoose Logo">
+            </a>
+            <a class="nav-item is-tab" href="#">Create</a>
             <a class=" nav-item is-active is-tab" href="#gallery">Gallery</a>
             <a data-no-routing 
                 class=" nav-item is-tab" 
