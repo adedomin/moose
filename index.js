@@ -16,9 +16,10 @@
  */
 
 var MooseDB = require('./lib/db.js'),
-    Web = require('./lib/web.js')
+    Web = require('./lib/web.js'),
+    log = require('./lib/logger.js')
 
 var moosedb = MooseDB(),
     web = Web()
 
-require('./lib/db-web-interaction.js')(web, moosedb)
+require('./lib/db-web-interaction.js')(web, moosedb, log)

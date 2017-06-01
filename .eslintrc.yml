@@ -22,6 +22,10 @@ rules:
   semi:
     - warn
     - never
+  no-console: 
+    - error
+    - allow:
+      - error
   # use {}
   no-new-object:
     - warn

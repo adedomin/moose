@@ -1,5 +1,7 @@
 var config = {}
 
+config.logger = { level: 'debug' }
+
 config.moose = {
     // where your moose are kept safe
     db: './',
