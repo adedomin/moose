@@ -12,6 +12,7 @@ config.moose = {
     dumpEvery: 1000 * 60 * 60, // 1 hour
     // max moose per minute, per ip
     maxNew: 3, // 3 moose a minute per ip
+    maxPageReq: 50, // 50 gallery req every 30 sec
 }
 
 config.web = {
