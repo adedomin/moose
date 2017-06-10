@@ -5398,7 +5398,7 @@ module.exports = function(state, emitter) {
                 temp.forEach((arr, i) => {
                     temp[i] = arr.concat(Array.from({
                         length: sizeInfo.hd.width - arr.length,
-                    }).fill('transparent'))
+                    }, () => 0))
                 })
             }
             else {
