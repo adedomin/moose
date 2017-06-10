@@ -101,7 +101,32 @@ module.exports = function(state, emitter) {
                         state.painter.dom
                     )
             }
+            var temp = state.painter.painting
+            // resize image for new canvas
+            if (state.moose.hd) {
+                temp = temp.concat(Array.from({
+                    length: sizeInfo.hd.height - temp.length,
+                }).fill([]))
+                temp.forEach((arr, i) => {
+                    temp[i] = arr.concat(Array.from({
+                        length: sizeInfo.hd.width - arr.length,
+                    }).fill('transparent'))
+                })
+            }
+            else {
+                temp.splice(
+                    sizeInfo.normal.height,
+                    temp.length - sizeInfo.normal.height
+                )
+                temp.forEach(arr => {
+                    arr.splice(
+                        sizeInfo.normal.width,
+                        arr.length - sizeInfo.normal.width
+                    )
+                })
+            }
             newPainter()
+            state.painter.painting = temp
             state.painter.init()
         }
         else {

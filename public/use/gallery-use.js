@@ -26,12 +26,10 @@ var getGalleryPage = require('../lib/api.js').getGalleryPage,
 // generates data urls from moose
 function generateGalleryMoose(image, isHd, cb) {
     var painter = new GridPaint({
-        width: 
-            isHd ? 
+        width: isHd ? 
             sizeInfo.hd.width :
             sizeInfo.normal.width, 
-        height: 
-            isHd ?
+        height: isHd ?
             sizeInfo.hd.height :
             sizeInfo.normal.height,
         cellWidth: 16,
@@ -114,7 +112,7 @@ module.exports = function(state, emitter) {
             if (!(body instanceof Array)) return
             if (body == []) return
             each(body, (moose, cb) => {
-                generateGalleryMoose(moose.image, (blob) => {
+                generateGalleryMoose(moose.image, moose.hd, (blob) => {
                     state.gallery.push({
                         name: moose.name,
                         image: blob,

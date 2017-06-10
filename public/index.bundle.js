@@ -5166,12 +5166,10 @@ var getGalleryPage = require('../lib/api.js').getGalleryPage,
 // generates data urls from moose
 function generateGalleryMoose(image, isHd, cb) {
     var painter = new GridPaint({
-        width: 
-            isHd ? 
+        width: isHd ? 
             sizeInfo.hd.width :
             sizeInfo.normal.width, 
-        height: 
-            isHd ?
+        height: isHd ?
             sizeInfo.hd.height :
             sizeInfo.normal.height,
         cellWidth: 16,
@@ -5254,7 +5252,7 @@ module.exports = function(state, emitter) {
             if (!(body instanceof Array)) return
             if (body == []) return
             each(body, (moose, cb) => {
-                generateGalleryMoose(moose.image, (blob) => {
+                generateGalleryMoose(moose.image, moose.hd, (blob) => {
                     state.gallery.push({
                         name: moose.name,
                         image: blob,
@@ -5391,7 +5389,32 @@ module.exports = function(state, emitter) {
                         state.painter.dom
                     )
             }
+            var temp = state.painter.painting
+            // resize image for new canvas
+            if (state.moose.hd) {
+                temp = temp.concat(Array.from({
+                    length: sizeInfo.hd.height - temp.length,
+                }).fill([]))
+                temp.forEach((arr, i) => {
+                    temp[i] = arr.concat(Array.from({
+                        length: sizeInfo.hd.width - arr.length,
+                    }).fill('transparent'))
+                })
+            }
+            else {
+                temp.splice(
+                    sizeInfo.normal.height,
+                    temp.length - sizeInfo.normal.height
+                )
+                temp.forEach(arr => {
+                    arr.splice(
+                        sizeInfo.normal.width,
+                        arr.length - sizeInfo.normal.width
+                    )
+                })
+            }
             newPainter()
+            state.painter.painting = temp
             state.painter.init()
         }
         else {
