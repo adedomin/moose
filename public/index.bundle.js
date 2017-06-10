@@ -5365,8 +5365,8 @@ module.exports = function(state, emitter) {
         'grid',
         'undo', 
         'redo', 
+        'hd/sd',
         'clear',
-        'hd/sd-ify',
     ]
 
     emitter.on('color-select', (color) => {
@@ -5381,7 +5381,7 @@ module.exports = function(state, emitter) {
         else if (action == 'grid') {
             state.painter.grid = !state.painter.grid
         }
-        else if (action == 'hd/sd-ify') {
+        else if (action == 'hd/sd') {
             state.moose.hd = !state.moose.hd
             state.painter.destroy()
             if (state.painter.dom) {
@@ -5666,6 +5666,12 @@ module.exports = function(state, emit) {
                             var extra = ''
                             if (tool == state.painter.tool)
                                 extra += ' is-info'
+                            else if (tool == 'grid' && state.painter.grid)
+                                extra += ' is-success'
+                            else if (tool == 'hd/sd' && state.moose.hd)
+                                extra += ' is-success'
+                            else if (tool == 'clear')
+                                extra += ' is-danger'
                             return html`<button 
                                 onclick=${toolSelect}
                                 class="button ${extra}"

@@ -75,8 +75,8 @@ module.exports = function(state, emitter) {
         'grid',
         'undo', 
         'redo', 
+        'hd/sd',
         'clear',
-        'hd/sd-ify',
     ]
 
     emitter.on('color-select', (color) => {
@@ -91,7 +91,7 @@ module.exports = function(state, emitter) {
         else if (action == 'grid') {
             state.painter.grid = !state.painter.grid
         }
-        else if (action == 'hd/sd-ify') {
+        else if (action == 'hd/sd') {
             state.moose.hd = !state.moose.hd
             state.painter.destroy()
             if (state.painter.dom) {

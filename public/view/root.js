@@ -96,6 +96,12 @@ module.exports = function(state, emit) {
                             var extra = ''
                             if (tool == state.painter.tool)
                                 extra += ' is-info'
+                            else if (tool == 'grid' && state.painter.grid)
+                                extra += ' is-success'
+                            else if (tool == 'hd/sd' && state.moose.hd)
+                                extra += ' is-success'
+                            else if (tool == 'clear')
+                                extra += ' is-danger'
                             return html`<button 
                                 onclick=${toolSelect}
                                 class="button ${extra}"
