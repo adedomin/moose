@@ -5028,7 +5028,7 @@ app.route('/gallery', gallery)
 
 document.body.appendChild(app.start())
 
-},{"../node_modules/bulma/css/bulma.css":16,"./moose-style.css":64,"./use/gallery-use.js":65,"./use/root-use.js":66,"./view/gallery.js":67,"./view/root.js":68,"choo":18}],62:[function(require,module,exports){
+},{"../node_modules/bulma/css/bulma.css":16,"./moose-style.css":65,"./use/gallery-use.js":66,"./use/root-use.js":67,"./view/gallery.js":68,"./view/root.js":69,"choo":18}],62:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5123,8 +5123,21 @@ module.exports.gridToMoose = function(painting) {
 }
 
 },{}],64:[function(require,module,exports){
-var css = "body {\n  background-color: #eee;\n}\n.moose-wrap {\n  margin-left: auto;\n  margin-right: auto;\n  min-width: 430px;\n  text-align: center;\n  width: 70%;\n  max-width: 760px;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
-},{"browserify-css":14}],65:[function(require,module,exports){
+module.exports = {
+    normal: {
+        width: 26,
+        height: 15,
+    },
+    hd: {
+        width: 36,
+        height: 22,
+    },
+    isHd: true,
+}
+
+},{}],65:[function(require,module,exports){
+var css = "body {\n  background-color: #eee;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
+},{"browserify-css":14}],66:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5147,13 +5160,20 @@ var galleryPageSize = 12
 var getGalleryPage = require('../lib/api.js').getGalleryPage,
     GridPaint = require('gridpaint'),
     mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
-    each = require('async.each')
+    each = require('async.each'),
+    sizeInfo = require('../lib/moose-size.js')
 
 // generates data urls from moose
-function generateGalleryMoose(image, cb) {
+function generateGalleryMoose(image, isHd, cb) {
     var painter = new GridPaint({
-        width: 26, 
-        height: 15, 
+        width: 
+            isHd ? 
+            sizeInfo.hd.width :
+            sizeInfo.normal.width, 
+        height: 
+            isHd ?
+            sizeInfo.hd.height :
+            sizeInfo.normal.height,
         cellWidth: 16,
         cellHeight: 24,
         palette: [
@@ -5201,7 +5221,7 @@ module.exports = function(state, emitter) {
             if (!(body instanceof Array)) return
             state.gallery = []
             each(body, (moose, cb) => {
-                generateGalleryMoose(moose.image, (blob) => {
+                generateGalleryMoose(moose.image, moose.hd, (blob) => {
                     state.gallery.push({
                         name: moose.name,
                         image: blob,
@@ -5267,7 +5287,7 @@ module.exports = function(state, emitter) {
     })
 }
 
-},{"../lib/api.js":62,"../lib/moose-grid.js":63,"async.each":2,"gridpaint":26}],66:[function(require,module,exports){
+},{"../lib/api.js":62,"../lib/moose-grid.js":63,"../lib/moose-size.js":64,"async.each":2,"gridpaint":26}],67:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5288,7 +5308,8 @@ module.exports = function(state, emitter) {
 var GridPaint = require('gridpaint'),
     api = require('../lib/api.js'),
     mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
-    gridToMoose = require('../lib/moose-grid.js').gridToMoose
+    gridToMoose = require('../lib/moose-grid.js').gridToMoose,
+    sizeInfo = require('../lib/moose-size.js')
 
 function getParameterByName(name) {
     var url = window.location.href
@@ -5308,22 +5329,36 @@ module.exports = function(state, emitter) {
 
     state.moose = {
         name: '',
+        hd: false,
     }
 
-    state.painter = new GridPaint({
-        width: 26, 
-        height: 15, 
-        cellWidth: 16,
-        cellHeight: 24,
-        palette: [
-            'transparent', 'white', 'black', 
-            'navy', 'green', 'red', 'brown',
-            'purple', 'olive', 'yellow', 'lime', 
-            'teal', 'cyan', 'blue', 'fuchsia',
-            'grey', 'lightgrey',
-        ],
-    }) 
+    var newPainter = () => {
+        state.painter = new GridPaint({
+            width: 
+                state.moose.hd ? 
+                sizeInfo.hd.width :
+                sizeInfo.normal.width, 
+            height: 
+                state.moose.hd ?
+                sizeInfo.hd.height :
+                sizeInfo.normal.height,
+            cellWidth: 16,
+            cellHeight: 24,
+            palette: [
+                'transparent', 'white', 'black', 
+                'navy', 'green', 'red', 'brown',
+                'purple', 'olive', 'yellow', 'lime', 
+                'teal', 'cyan', 'blue', 'fuchsia',
+                'grey', 'lightgrey',
+            ],
+        }) 
+        state.painter.tool = 'pencil'
+        state.painter.color = 1
+        state.painter.colour = 'transparent'
+        state.painter.grid = true
+    }
 
+    newPainter()
     state.tools = [ 
         'pencil', 
         'bucket', 
@@ -5331,12 +5366,8 @@ module.exports = function(state, emitter) {
         'undo', 
         'redo', 
         'clear',
+        'hd/sd-ify',
     ]
-
-    state.painter.tool = 'pencil'
-    state.painter.color = 1
-    state.painter.colour = 'transparent'
-    state.painter.grid = true
 
     emitter.on('color-select', (color) => {
         state.painter.colour = state.painter.palette.indexOf(color)
@@ -5349,6 +5380,19 @@ module.exports = function(state, emitter) {
         }
         else if (action == 'grid') {
             state.painter.grid = !state.painter.grid
+        }
+        else if (action == 'hd/sd-ify') {
+            state.moose.hd = !state.moose.hd
+            state.painter.destroy()
+            if (state.painter.dom) {
+                state.painter.dom
+                    .parentNode
+                    .removeChild(
+                        state.painter.dom
+                    )
+            }
+            newPainter()
+            state.painter.init()
         }
         else {
             state.painter[action]()
@@ -5402,10 +5446,9 @@ module.exports = function(state, emitter) {
     state.painter.init()
     if (getParameterByName('edit')) 
         emitter.emit('moose-edit', getParameterByName('edit'))
-
 }
 
-},{"../lib/api.js":62,"../lib/moose-grid.js":63,"gridpaint":26}],67:[function(require,module,exports){
+},{"../lib/api.js":62,"../lib/moose-grid.js":63,"../lib/moose-size.js":64,"gridpaint":26}],68:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5524,7 +5567,7 @@ module.exports = function(state, emit) {
     }
 }
 
-},{"choo/html":17}],68:[function(require,module,exports){
+},{"choo/html":17}],69:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5575,7 +5618,8 @@ module.exports = function(state, emit) {
         <div class="section">
             <div class="container">
 
-                <div class="moose-wrap">
+                <div class="columns is-centered">
+                <div class="column has-text-centered is-half">
                     
                     ${state.painter.dom}
                     
@@ -5631,6 +5675,7 @@ module.exports = function(state, emit) {
                         })}
                     </div>
 
+                </div>
                 </div>
             </div>
         </div>

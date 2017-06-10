@@ -48,7 +48,8 @@ module.exports = function(state, emit) {
         <div class="section">
             <div class="container">
 
-                <div class="moose-wrap">
+                <div class="columns is-centered">
+                <div class="column has-text-centered is-half">
                     
                     ${state.painter.dom}
                     
@@ -104,6 +105,7 @@ module.exports = function(state, emit) {
                         })}
                     </div>
 
+                </div>
                 </div>
             </div>
         </div>

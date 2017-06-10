@@ -18,7 +18,8 @@
 var GridPaint = require('gridpaint'),
     api = require('../lib/api.js'),
     mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
-    gridToMoose = require('../lib/moose-grid.js').gridToMoose
+    gridToMoose = require('../lib/moose-grid.js').gridToMoose,
+    sizeInfo = require('../lib/moose-size.js')
 
 function getParameterByName(name) {
     var url = window.location.href
@@ -38,22 +39,36 @@ module.exports = function(state, emitter) {
 
     state.moose = {
         name: '',
+        hd: false,
     }
 
-    state.painter = new GridPaint({
-        width: 26, 
-        height: 15, 
-        cellWidth: 16,
-        cellHeight: 24,
-        palette: [
-            'transparent', 'white', 'black', 
-            'navy', 'green', 'red', 'brown',
-            'purple', 'olive', 'yellow', 'lime', 
-            'teal', 'cyan', 'blue', 'fuchsia',
-            'grey', 'lightgrey',
-        ],
-    }) 
+    var newPainter = () => {
+        state.painter = new GridPaint({
+            width: 
+                state.moose.hd ? 
+                sizeInfo.hd.width :
+                sizeInfo.normal.width, 
+            height: 
+                state.moose.hd ?
+                sizeInfo.hd.height :
+                sizeInfo.normal.height,
+            cellWidth: 16,
+            cellHeight: 24,
+            palette: [
+                'transparent', 'white', 'black', 
+                'navy', 'green', 'red', 'brown',
+                'purple', 'olive', 'yellow', 'lime', 
+                'teal', 'cyan', 'blue', 'fuchsia',
+                'grey', 'lightgrey',
+            ],
+        }) 
+        state.painter.tool = 'pencil'
+        state.painter.color = 1
+        state.painter.colour = 'transparent'
+        state.painter.grid = true
+    }
 
+    newPainter()
     state.tools = [ 
         'pencil', 
         'bucket', 
@@ -61,12 +76,8 @@ module.exports = function(state, emitter) {
         'undo', 
         'redo', 
         'clear',
+        'hd/sd-ify',
     ]
-
-    state.painter.tool = 'pencil'
-    state.painter.color = 1
-    state.painter.colour = 'transparent'
-    state.painter.grid = true
 
     emitter.on('color-select', (color) => {
         state.painter.colour = state.painter.palette.indexOf(color)
@@ -79,6 +90,19 @@ module.exports = function(state, emitter) {
         }
         else if (action == 'grid') {
             state.painter.grid = !state.painter.grid
+        }
+        else if (action == 'hd/sd-ify') {
+            state.moose.hd = !state.moose.hd
+            state.painter.destroy()
+            if (state.painter.dom) {
+                state.painter.dom
+                    .parentNode
+                    .removeChild(
+                        state.painter.dom
+                    )
+            }
+            newPainter()
+            state.painter.init()
         }
         else {
             state.painter[action]()
@@ -132,5 +156,4 @@ module.exports = function(state, emitter) {
     state.painter.init()
     if (getParameterByName('edit')) 
         emitter.emit('moose-edit', getParameterByName('edit'))
-
 }

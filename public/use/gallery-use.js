@@ -20,13 +20,20 @@ var galleryPageSize = 12
 var getGalleryPage = require('../lib/api.js').getGalleryPage,
     GridPaint = require('gridpaint'),
     mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
-    each = require('async.each')
+    each = require('async.each'),
+    sizeInfo = require('../lib/moose-size.js')
 
 // generates data urls from moose
-function generateGalleryMoose(image, cb) {
+function generateGalleryMoose(image, isHd, cb) {
     var painter = new GridPaint({
-        width: 26, 
-        height: 15, 
+        width: 
+            isHd ? 
+            sizeInfo.hd.width :
+            sizeInfo.normal.width, 
+        height: 
+            isHd ?
+            sizeInfo.hd.height :
+            sizeInfo.normal.height,
         cellWidth: 16,
         cellHeight: 24,
         palette: [
@@ -74,7 +81,7 @@ module.exports = function(state, emitter) {
             if (!(body instanceof Array)) return
             state.gallery = []
             each(body, (moose, cb) => {
-                generateGalleryMoose(moose.image, (blob) => {
+                generateGalleryMoose(moose.image, moose.hd, (blob) => {
                     state.gallery.push({
                         name: moose.name,
                         image: blob,
