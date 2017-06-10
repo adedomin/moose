@@ -5356,6 +5356,17 @@ module.exports = function(state, emitter) {
         state.painter.grid = true
     }
 
+    var destoryPainter = () => {
+        state.painter.destroy()
+        if (state.painter.dom) {
+            state.painter.dom
+                .parentNode
+                .removeChild(
+                    state.painter.dom
+                )
+        }
+    }
+
     newPainter()
     state.tools = [ 
         'pencil', 
@@ -5381,14 +5392,7 @@ module.exports = function(state, emitter) {
         }
         else if (action == 'hd/sd') {
             state.moose.hd = !state.moose.hd
-            state.painter.destroy()
-            if (state.painter.dom) {
-                state.painter.dom
-                    .parentNode
-                    .removeChild(
-                        state.painter.dom
-                    )
-            }
+            destoryPainter()
             var temp = state.painter.painting
             // resize image for new canvas
             if (state.moose.hd) {
@@ -5454,6 +5458,16 @@ module.exports = function(state, emitter) {
         state.title.msg = `editing ${editmoose}...`
         api.getMoose(editmoose, (err, body) => {
             if (!err && body && body.image) {
+                // not all moose have the hd field
+                // this will convert undefined/null
+                // to false
+                body.hd = !!body.hd
+                if (state.moose.hd != body.hd) {
+                    state.moose.hd = body.hd
+                    destoryPainter()
+                    newPainter()
+                    state.painter.init()
+                }
                 state.painter.painting = 
                     mooseToGrid(body.image)
             }
