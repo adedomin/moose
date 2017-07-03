@@ -15,18 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var colorToMooseString = [
-    't',
-    '0', '1', '2', '3', 
-    '4', '5', '6', '7',
-    '8', '9', 'a', 'b',
-    'c', 'd', 'e', 'f',
-]
+var colors = require('./color-palette')
 
 module.exports.mooseToGrid = function mooseToGrid(image) {
     return image.split('\n').map(str => {
         return str.split('').map(char => {
-            return colorToMooseString.indexOf(char)
+            return colors.colorToMooseString.indexOf(char)
         })
     })
 }
@@ -34,7 +28,7 @@ module.exports.mooseToGrid = function mooseToGrid(image) {
 module.exports.gridToMoose = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            return colorToMooseString[char]
+            return colors.colorToMooseString[char]
         }).join('')
     }).join('\n')
 }

@@ -15,7 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var html = require('choo/html')
+var html = require('choo/html'),
+    colors = require('../lib/color-palette')
 
 module.exports = function(state, emit) {
     return html`
@@ -76,20 +77,27 @@ module.exports = function(state, emit) {
                     </div>
 
                     <div class="is-center has-shadow block moose-palette">
-                        ${state.painter.palette.map(color => {
+                        ${colors.canvasPalette[state.painter.shade].map((color, ind) => {
                             var extra = '', style = `background-color: ${color}`
                             if (color == 'transparent') {
                                 extra += 'moose-palette-color-transparent'
                                 style = 'background: transparent url(\'transparent.png\') repeat'
                             }
-                            if (color == state.painter.palette[state.painter.colour])
+                            if (ind + (17*state.painter.shade) == state.painter.colour-1)
                                 extra += ' moose-palette-color-selected'
                             return html`<button 
-                                onclick=${colorSelect}
+                                onclick=${colorSelect.bind(null, ind)}
                                 class="moose-palette-color ${extra}"
                                 style="${style}">
                             </button>`
                         })}
+                        <br>
+                        <br>
+                        <input style="width: 87%;"
+                            type="range" min="0" max="6" 
+                            value="${state.painter.shade}"
+                            oninput=${shaderSelect}
+                        >
                         <br>
                         <br>
                         ${state.tools.map(tool => {
@@ -141,8 +149,12 @@ module.exports = function(state, emit) {
         emit('moose-save')
     }
 
-    function colorSelect(e) {
-        emit('color-select', e.target.style['background-color'])
+    function shaderSelect(e) {
+        emit('shader-select', e.target.value)
+    }
+
+    function colorSelect(color) {
+        emit('color-select', color + (state.painter.shade * 17) + 1)
     }
 
     function toolSelect(e) {

@@ -5028,7 +5028,7 @@ app.route('/gallery', gallery)
 
 document.body.appendChild(app.start())
 
-},{"../node_modules/bulma/css/bulma.css":16,"./moose-style.css":65,"./use/gallery-use.js":66,"./use/root-use.js":67,"./view/gallery.js":68,"./view/root.js":69,"choo":18}],62:[function(require,module,exports){
+},{"../node_modules/bulma/css/bulma.css":16,"./moose-style.css":66,"./use/gallery-use.js":67,"./use/root-use.js":68,"./view/gallery.js":69,"./view/root.js":70,"choo":18}],62:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5098,18 +5098,198 @@ module.exports.getGalleryPage = function(age, query, page, cb) {
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var colorToMooseString = [
-    't',
-    '0', '1', '2', '3', 
-    '4', '5', '6', '7',
-    '8', '9', 'a', 'b',
-    'c', 'd', 'e', 'f',
-]
+var palettes = {
+    // legacy palette
+    colorToMooseString: [
+        't',
+        '0', '1', '2', '3', 
+        '4', '5', '6', '7',
+        '8', '9', 'a', 'b',
+        'c', 'd', 'e', 'f',
+    ],
+    // for new shading feature
+    shadeIntensities: [
+        0, 1, 2, 3, 4, 5, 6,
+    ],
+    canvasPalette: [
+        // 25%
+        [
+            'transparent',
+            'white',
+            '#7d7d7d',
+            '#8c8cff',
+            '#88eb88',
+            '#ff8c8c',
+            '#ff8c8c',
+            '#ff8cff',
+            '#ffff8c',
+            '#ffff8c',
+            '#baffba',
+            '#8cffff',
+            '#8cffff',
+            '#bfbfff',
+            '#ff8cff',
+            '#b8b8b8',
+            '#e6e6e6',
+
+        ],
+        // 50%
+        [
+            'transparent',
+            'white',
+            '#525252',
+            '#5b5bd4',
+            '#5bc25b',
+            '#ff5e5e',
+            '#d45b5b',
+            '#d45bd4',
+            '#d4d45b',
+            '#ffff5e',
+            '#8cff8c',
+            '#5bd4d4',
+            '#5effff',
+            '#7a7aff',
+            '#ff5eff',
+            '#ababab',
+            '#d9d9d9',
+        ],
+        // 75%
+        [
+            'transparent',
+            'white',
+            '#292929',
+            '#2e2eab',
+            '#2f992f',
+            '#ff3030',
+            '#ab2e2e',
+            '#ab2eab',
+            '#abab2e',
+            '#ffff30',
+            '#5eff5e',
+            '#2eabab',
+            '#30ffff',
+            '#3030ff',
+            '#ff30ff',
+            '#8f8f8f',
+            '#cccccc',
+        ],
+        // legacy colors - 100%
+        [ 
+            'transparent',
+            'white',
+            'black',
+            'navy',
+            'green',
+            'red',
+            'brown',
+            'purple',
+            'olive',
+            'yellow',
+            'lime', 
+            'teal',
+            'cyan',
+            'blue',
+            'fuchsia',
+            'grey',
+            'lightgrey',
+        ],
+        // 125%
+        [
+            'transparent',
+            'white',
+            '#000000',
+            '#00006e',
+            '#005200',
+            '#cf0000',
+            '#520000',
+            '#4d004d',
+            '#525200',
+            '#cfcf00',
+            '#00cf00',
+            '#006e6e',
+            '#00cfcf',
+            '#0000b3',
+            '#cf00cf',
+            '#6e6e6e',
+            '#ababab',
+        ],
+        // 150%
+        [
+            'transparent',
+            'white',
+            '#000000',
+            '#00005c',
+            '#004000',
+            '#a10000',
+            '#400000',
+            '#3b003b',
+            '#404000',
+            '#a1a100',
+            '#00a100',
+            '#005c5c',
+            '#00a1a1',
+            '#00008a',
+            '#a100a1',
+            '#5c5c5c',
+            '#9c9c9c',
+        ],
+        // 175%
+        [
+            'transparent',
+            'white',
+            '#000000',
+            '#00004d',
+            '#002e00',
+            '#6e0000',
+            '#200000',
+            '#2b002b',
+            '#2e2e00',
+            '#737300',
+            '#007300',
+            '#002e2e',
+            '#007373',
+            '#00005c',
+            '#730073',
+            '#3b3b3b',
+            '#6e6e6e',
+        ],
+    ],
+    // for gridpaint, concat of above
+    fullPallete: [],
+}
+
+palettes.fullPallete = palettes
+    .canvasPalette
+    .reduce((full, part) => {
+        return full.concat(part)
+    }, ['transparent'])
+
+module.exports = palettes
+
+},{}],64:[function(require,module,exports){
+/*
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+var colors = require('./color-palette')
 
 module.exports.mooseToGrid = function mooseToGrid(image) {
     return image.split('\n').map(str => {
         return str.split('').map(char => {
-            return colorToMooseString.indexOf(char)
+            return colors.colorToMooseString.indexOf(char)
         })
     })
 }
@@ -5117,12 +5297,12 @@ module.exports.mooseToGrid = function mooseToGrid(image) {
 module.exports.gridToMoose = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            return colorToMooseString[char]
+            return colors.colorToMooseString[char]
         }).join('')
     }).join('\n')
 }
 
-},{}],64:[function(require,module,exports){
+},{"./color-palette":63}],65:[function(require,module,exports){
 module.exports = {
     normal: {
         width: 26,
@@ -5135,9 +5315,9 @@ module.exports = {
     isHd: true,
 }
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 var css = "body {\n  background-color: #eee;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
-},{"browserify-css":14}],66:[function(require,module,exports){
+},{"browserify-css":14}],67:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5285,7 +5465,7 @@ module.exports = function(state, emitter) {
     })
 }
 
-},{"../lib/api.js":62,"../lib/moose-grid.js":63,"../lib/moose-size.js":64,"async.each":2,"gridpaint":26}],67:[function(require,module,exports){
+},{"../lib/api.js":62,"../lib/moose-grid.js":64,"../lib/moose-size.js":65,"async.each":2,"gridpaint":26}],68:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5305,9 +5485,10 @@ module.exports = function(state, emitter) {
 
 var GridPaint = require('gridpaint'),
     api = require('../lib/api.js'),
-    mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
-    gridToMoose = require('../lib/moose-grid.js').gridToMoose,
-    sizeInfo = require('../lib/moose-size.js')
+    mooseToGrid = require('../lib/moose-grid').mooseToGrid,
+    gridToMoose = require('../lib/moose-grid').gridToMoose,
+    sizeInfo = require('../lib/moose-size'),
+    colors = require('../lib/color-palette')
 
 function getParameterByName(name) {
     var url = window.location.href
@@ -5342,18 +5523,13 @@ module.exports = function(state, emitter) {
                 sizeInfo.normal.height,
             cellWidth: 16,
             cellHeight: 24,
-            palette: [
-                'transparent', 'white', 'black', 
-                'navy', 'green', 'red', 'brown',
-                'purple', 'olive', 'yellow', 'lime', 
-                'teal', 'cyan', 'blue', 'fuchsia',
-                'grey', 'lightgrey',
-            ],
+            palette: colors.fullPallete,
         }) 
         state.painter.tool = 'pencil'
         state.painter.color = 1
         state.painter.colour = 'transparent'
         state.painter.grid = true
+        state.painter.shade = 3
     }
 
     var destoryPainter = () => {
@@ -5378,8 +5554,14 @@ module.exports = function(state, emitter) {
         'clear',
     ]
 
+    emitter.on('shader-select', (shade) => {
+        state.painter.shade = shade
+        emitter.emit('render')
+    })
+
     emitter.on('color-select', (color) => {
-        state.painter.colour = state.painter.palette.indexOf(color)
+        state.painter.colour = color
+        console.log(color, state.painter.palette[color])
         emitter.emit('render')
     })
 
@@ -5485,7 +5667,7 @@ module.exports = function(state, emitter) {
         emitter.emit('moose-edit', getParameterByName('edit'))
 }
 
-},{"../lib/api.js":62,"../lib/moose-grid.js":63,"../lib/moose-size.js":64,"gridpaint":26}],68:[function(require,module,exports){
+},{"../lib/api.js":62,"../lib/color-palette":63,"../lib/moose-grid":64,"../lib/moose-size":65,"gridpaint":26}],69:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5604,7 +5786,7 @@ module.exports = function(state, emit) {
     }
 }
 
-},{"choo/html":17}],69:[function(require,module,exports){
+},{"choo/html":17}],70:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5622,7 +5804,8 @@ module.exports = function(state, emit) {
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var html = require('choo/html')
+var html = require('choo/html'),
+    colors = require('../lib/color-palette')
 
 module.exports = function(state, emit) {
     return html`
@@ -5683,20 +5866,27 @@ module.exports = function(state, emit) {
                     </div>
 
                     <div class="is-center has-shadow block moose-palette">
-                        ${state.painter.palette.map(color => {
+                        ${colors.canvasPalette[state.painter.shade].map((color, ind) => {
                             var extra = '', style = `background-color: ${color}`
                             if (color == 'transparent') {
                                 extra += 'moose-palette-color-transparent'
                                 style = 'background: transparent url(\'transparent.png\') repeat'
                             }
-                            if (color == state.painter.palette[state.painter.colour])
+                            if (ind + (17*state.painter.shade) == state.painter.colour-1)
                                 extra += ' moose-palette-color-selected'
                             return html`<button 
-                                onclick=${colorSelect}
+                                onclick=${colorSelect.bind(null, ind)}
                                 class="moose-palette-color ${extra}"
                                 style="${style}">
                             </button>`
                         })}
+                        <br>
+                        <br>
+                        <input style="width: 87%;"
+                            type="range" min="0" max="6" 
+                            value="${state.painter.shade}"
+                            oninput=${shaderSelect}
+                        >
                         <br>
                         <br>
                         ${state.tools.map(tool => {
@@ -5748,8 +5938,12 @@ module.exports = function(state, emit) {
         emit('moose-save')
     }
 
-    function colorSelect(e) {
-        emit('color-select', e.target.style['background-color'])
+    function shaderSelect(e) {
+        emit('shader-select', e.target.value)
+    }
+
+    function colorSelect(color) {
+        emit('color-select', color + (state.painter.shade * 17) + 1)
     }
 
     function toolSelect(e) {
@@ -5757,4 +5951,4 @@ module.exports = function(state, emit) {
     }
 }
 
-},{"choo/html":17}]},{},[61]);
+},{"../lib/color-palette":63,"choo/html":17}]},{},[61]);

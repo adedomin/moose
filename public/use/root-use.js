@@ -17,9 +17,10 @@
 
 var GridPaint = require('gridpaint'),
     api = require('../lib/api.js'),
-    mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
-    gridToMoose = require('../lib/moose-grid.js').gridToMoose,
-    sizeInfo = require('../lib/moose-size.js')
+    mooseToGrid = require('../lib/moose-grid').mooseToGrid,
+    gridToMoose = require('../lib/moose-grid').gridToMoose,
+    sizeInfo = require('../lib/moose-size'),
+    colors = require('../lib/color-palette')
 
 function getParameterByName(name) {
     var url = window.location.href
@@ -54,18 +55,13 @@ module.exports = function(state, emitter) {
                 sizeInfo.normal.height,
             cellWidth: 16,
             cellHeight: 24,
-            palette: [
-                'transparent', 'white', 'black', 
-                'navy', 'green', 'red', 'brown',
-                'purple', 'olive', 'yellow', 'lime', 
-                'teal', 'cyan', 'blue', 'fuchsia',
-                'grey', 'lightgrey',
-            ],
+            palette: colors.fullPallete,
         }) 
         state.painter.tool = 'pencil'
         state.painter.color = 1
         state.painter.colour = 'transparent'
         state.painter.grid = true
+        state.painter.shade = 3
     }
 
     var destoryPainter = () => {
@@ -90,8 +86,14 @@ module.exports = function(state, emitter) {
         'clear',
     ]
 
+    emitter.on('shader-select', (shade) => {
+        state.painter.shade = shade
+        emitter.emit('render')
+    })
+
     emitter.on('color-select', (color) => {
-        state.painter.colour = state.painter.palette.indexOf(color)
+        state.painter.colour = color
+        console.log(color, state.painter.palette[color])
         emitter.emit('render')
     })
 
