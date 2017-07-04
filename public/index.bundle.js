@@ -5081,7 +5081,7 @@ module.exports.getGalleryPage = function(age, query, page, cb) {
 
 },{"xhr":58}],63:[function(require,module,exports){
 /*
- * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -5099,6 +5099,9 @@ module.exports.getGalleryPage = function(age, query, page, cb) {
 
 var palettes = {
     // legacy palette
+    legacyColorToMoose: [
+        't', '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+    ],
     colorToMooseString: [
         't',
         '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
@@ -5252,7 +5255,7 @@ var palettes = {
             '#2e2e00',
             '#737300',
             '#007300',
-            '#002e2e',
+            '#004d4d',
             '#007373',
             '#00007a',
             '#730073',
@@ -5274,7 +5277,7 @@ module.exports = palettes
 
 },{}],64:[function(require,module,exports){
 /*
- * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -5309,7 +5312,7 @@ module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
 
     return image.split('\n').map((str,ind) => {
         return str.split('').map((char,ind2) => {
-            return (char != 't')?(parseInt(char)+(16*parseInt(shadeLayer[ind][ind2]))+1):'t'
+            return (char != 't')?colors.legacyColorToMoose.indexOf(char)+(16*parseInt(shadeLayer[ind][ind2])):'t'
         })
     })
 }
@@ -5317,7 +5320,7 @@ module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
 module.exports.gridToMoose = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            return colors.colorToMooseString[char]
+            return (char != 't')?colors.colorToMooseString[char]:'t'
         }).join('')
     }).join('\n')
 }
@@ -5325,7 +5328,7 @@ module.exports.gridToMoose = function(painting) {
 module.exports.gridToShade = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            return colors.colorToShadeString[char]
+            return (char != 't')?colors.colorToShadeString[char]:'t'
         }).join('')
     }).join('\n')
 }
@@ -5348,7 +5351,7 @@ module.exports = {
 var css = "body {\n  background-color: #eee;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":14}],67:[function(require,module,exports){
 /*
- * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -5530,7 +5533,7 @@ module.exports = function(state, emitter) {
 
 },{"../lib/api.js":62,"../lib/color-palette":63,"../lib/moose-grid.js":64,"../lib/moose-size.js":65,"async.each":2,"gridpaint":26}],68:[function(require,module,exports){
 /*
- * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -5851,7 +5854,7 @@ module.exports = function(state, emit) {
 
 },{"choo/html":17}],70:[function(require,module,exports){
 /*
- * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
