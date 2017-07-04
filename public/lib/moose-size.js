@@ -8,4 +8,5 @@ module.exports = {
         height: 22,
     },
     isHd: true,
+    hasShade: true,
 }

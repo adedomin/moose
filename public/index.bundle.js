@@ -4655,7 +4655,6 @@ Trie.prototype.match = function (route) {
       try {
         params[trie.name] = decodeURIComponent(thisRoute)
       } catch (e) {
-        console.log('must throw')
         return search(index, undefined)
       }
       return search(index + 1, trie.nodes['$$'])
@@ -5102,10 +5101,23 @@ var palettes = {
     // legacy palette
     colorToMooseString: [
         't',
-        '0', '1', '2', '3', 
-        '4', '5', '6', '7',
-        '8', '9', 'a', 'b',
-        'c', 'd', 'e', 'f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+    ],
+    colorToShadeString: [
+        't',
+        '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
+        '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',
+        '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2',
+        '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3',
+        '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4',
+        '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5',
+        '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6',
     ],
     // for new shading feature
     shadeIntensities: [
@@ -5115,33 +5127,32 @@ var palettes = {
         // 25%
         [
             'transparent',
-            'white',
+            '#ffffff',
             '#7d7d7d',
             '#8c8cff',
             '#88eb88',
             '#ff8c8c',
-            '#ff8c8c',
-            '#ff8cff',
-            '#ffff8c',
+            '#ff9696',
+            '#e36be3',
+            '#e3e36b',
             '#ffff8c',
             '#baffba',
-            '#8cffff',
+            '#6be3e3',
             '#8cffff',
             '#bfbfff',
             '#ff8cff',
-            '#b8b8b8',
-            '#e6e6e6',
+            '#c7c7c7',
+            '#fafafa',
 
         ],
         // 50%
         [
-            'transparent',
-            'white',
+            '#ffffff',
             '#525252',
             '#5b5bd4',
             '#5bc25b',
             '#ff5e5e',
-            '#d45b5b',
+            '#db6767',
             '#d45bd4',
             '#d4d45b',
             '#ffff5e',
@@ -5151,17 +5162,16 @@ var palettes = {
             '#7a7aff',
             '#ff5eff',
             '#ababab',
-            '#d9d9d9',
+            '#ebebeb',
         ],
         // 75%
         [
-            'transparent',
-            'white',
+            '#ffffff',
             '#292929',
             '#2e2eab',
             '#2f992f',
             '#ff3030',
-            '#ab2e2e',
+            '#b03a3a',
             '#ab2eab',
             '#abab2e',
             '#ffff30',
@@ -5171,11 +5181,10 @@ var palettes = {
             '#3030ff',
             '#ff30ff',
             '#8f8f8f',
-            '#cccccc',
+            '#dedede',
         ],
         // legacy colors - 100%
         [ 
-            'transparent',
             'white',
             'black',
             'navy',
@@ -5195,13 +5204,12 @@ var palettes = {
         ],
         // 125%
         [
-            'transparent',
-            'white',
+            '#f0f0f0',
             '#000000',
             '#00006e',
             '#005200',
             '#cf0000',
-            '#520000',
+            '#941c1c',
             '#4d004d',
             '#525200',
             '#cfcf00',
@@ -5211,17 +5219,16 @@ var palettes = {
             '#0000b3',
             '#cf00cf',
             '#6e6e6e',
-            '#ababab',
+            '#c2c2c2',
         ],
         // 150%
         [
-            'transparent',
-            'white',
+            '#e0e0e0',
             '#000000',
             '#00005c',
             '#004000',
             '#a10000',
-            '#400000',
+            '#660000',
             '#3b003b',
             '#404000',
             '#a1a100',
@@ -5231,27 +5238,26 @@ var palettes = {
             '#00008a',
             '#a100a1',
             '#5c5c5c',
-            '#9c9c9c',
+            '#b3b3b3',
         ],
         // 175%
         [
-            'transparent',
-            'white',
+            '#cfcfcf',
             '#000000',
             '#00004d',
             '#002e00',
             '#6e0000',
-            '#200000',
+            '#380000',
             '#2b002b',
             '#2e2e00',
             '#737300',
             '#007300',
             '#002e2e',
             '#007373',
-            '#00005c',
+            '#00007a',
             '#730073',
             '#3b3b3b',
-            '#6e6e6e',
+            '#a3a3a3',
         ],
     ],
     // for gridpaint, concat of above
@@ -5262,7 +5268,7 @@ palettes.fullPallete = palettes
     .canvasPalette
     .reduce((full, part) => {
         return full.concat(part)
-    }, ['transparent'])
+    })
 
 module.exports = palettes
 
@@ -5289,7 +5295,21 @@ var colors = require('./color-palette')
 module.exports.mooseToGrid = function mooseToGrid(image) {
     return image.split('\n').map(str => {
         return str.split('').map(char => {
-            return colors.colorToMooseString.indexOf(char)
+            return (char != 't')?colors.colorToMooseString.indexOf(char)+48:'t'
+        })
+    })
+}
+
+module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
+    var shadeLayer = shader.split('\n').map(str =>{
+        return str.split('').map(char=>{
+            return char
+        })
+    })
+
+    return image.split('\n').map((str,ind) => {
+        return str.split('').map((char,ind2) => {
+            return (char != 't')?(parseInt(char)+(16*parseInt(shadeLayer[ind][ind2]))+1):'t'
         })
     })
 }
@@ -5298,6 +5318,14 @@ module.exports.gridToMoose = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
             return colors.colorToMooseString[char]
+        }).join('')
+    }).join('\n')
+}
+
+module.exports.gridToShade = function(painting) {
+    return painting.map(arr => {
+        return arr.map(char => {
+            return colors.colorToShadeString[char]
         }).join('')
     }).join('\n')
 }
@@ -5313,6 +5341,7 @@ module.exports = {
         height: 22,
     },
     isHd: true,
+    hasShade: true,
 }
 
 },{}],66:[function(require,module,exports){
@@ -5340,8 +5369,10 @@ var galleryPageSize = 12
 var getGalleryPage = require('../lib/api.js').getGalleryPage,
     GridPaint = require('gridpaint'),
     mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
+    mooseShadeToGrid = require('../lib/moose-grid.js').mooseShadeToGrid,
     each = require('async.each'),
-    sizeInfo = require('../lib/moose-size.js')
+    sizeInfo = require('../lib/moose-size.js'),
+    colors = require('../lib/color-palette')
 
 // generates data urls from moose
 function generateGalleryMoose(image, isHd, cb) {
@@ -5354,16 +5385,31 @@ function generateGalleryMoose(image, isHd, cb) {
             sizeInfo.normal.height,
         cellWidth: 16,
         cellHeight: 24,
-        palette: [
-            'transparent', 'white', 'black', 
-            'navy', 'green', 'red', 'brown',
-            'purple', 'olive', 'yellow', 'lime', 
-            'teal', 'cyan', 'blue', 'fuchsia',
-            'grey', 'lightgrey',
-        ],
-    }) 
+        palette: colors.fullPallete,
+    })
 
     painter.painting = mooseToGrid(image)
+    painter.color = 0 // remove dumb errors from dom
+    painter.colour = 0
+    painter.draw()
+    painter.drawing = false
+    painter.dom.toBlob(cb, 'image/png')
+}
+
+function generateGalleryShadedMoose(image, shade, isHd, cb) {
+    var painter = new GridPaint({
+        width: isHd ? 
+            sizeInfo.hd.width :
+            sizeInfo.normal.width, 
+        height: isHd ?
+            sizeInfo.hd.height :
+            sizeInfo.normal.height,
+        cellWidth: 16,
+        cellHeight: 24,
+        palette: colors.fullPallete,
+    })
+
+    painter.painting = mooseShadeToGrid(image,shade)
     painter.color = 0 // remove dumb errors from dom
     painter.colour = 0
     painter.draw()
@@ -5394,22 +5440,31 @@ module.exports = function(state, emitter) {
             state.query.age,
             state.query.name,
             0,
-        (err, body) => {
-            if (err) return
-            if (!(body instanceof Array)) return
-            state.gallery = []
-            each(body, (moose, cb) => {
-                generateGalleryMoose(moose.image, moose.hd, (blob) => {
-                    state.gallery.push({
-                        name: moose.name,
-                        image: blob,
-                    })               
-                    cb()
+            (err, body) => {
+                if (err) return
+                if (!(body instanceof Array)) return
+                state.gallery = []
+                each(body, (moose, cb) => {
+                    if (moose.shaded)
+                        generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
+                            state.gallery.push({
+                                name: moose.name,
+                                image: blob,
+                            })               
+                            cb()
+                        })
+                    else
+                        generateGalleryMoose(moose.image, moose.hd, (blob) => {
+                            state.gallery.push({
+                                name: moose.name,
+                                image: blob,
+                            })               
+                            cb()
+                        })
+                }, () => {
+                    emitter.emit('render')
                 })
-            }, () => {
-                emitter.emit('render')
             })
-        })
     })
 
     state.timeoutScroll = false 
@@ -5427,24 +5482,32 @@ module.exports = function(state, emitter) {
             state.query.age,
             state.query.name,
             Math.ceil(state.gallery.length / galleryPageSize),
-        (err, body) => {
-            if (err) return
-            if (!(body instanceof Array)) return
-            if (body == []) return
-            each(body, (moose, cb) => {
-                generateGalleryMoose(moose.image, moose.hd, (blob) => {
-                    state.gallery.push({
-                        name: moose.name,
-                        image: blob,
-                    })               
-                    cb()
+            (err, body) => {
+                if (err) return
+                if (!(body instanceof Array)) return
+                if (body == []) return
+                each(body, (moose, cb) => {
+                    if (moose.shaded)
+                        generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
+                            state.gallery.push({
+                                name: moose.name,
+                                image: blob,
+                            })               
+                            cb()
+                        })
+                    else
+                        generateGalleryMoose(moose.image, moose.hd, (blob) => {
+                            state.gallery.push({
+                                name: moose.name,
+                                image: blob,
+                            })               
+                            cb()
+                        })
+                }, () => {
+                    emitter.emit('render')
+                    setTimeout(() => emitter.emit('gallery-end-timeout'), 300)
                 })
-            }, () => {
-                emitter.emit('render')
-                setTimeout(() => emitter.emit('gallery-end-timeout'), 300)
             })
-        })
-
     })
 
     emitter.emit('gallery-get')
@@ -5465,7 +5528,7 @@ module.exports = function(state, emitter) {
     })
 }
 
-},{"../lib/api.js":62,"../lib/moose-grid.js":64,"../lib/moose-size.js":65,"async.each":2,"gridpaint":26}],68:[function(require,module,exports){
+},{"../lib/api.js":62,"../lib/color-palette":63,"../lib/moose-grid.js":64,"../lib/moose-size.js":65,"async.each":2,"gridpaint":26}],68:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5486,7 +5549,9 @@ module.exports = function(state, emitter) {
 var GridPaint = require('gridpaint'),
     api = require('../lib/api.js'),
     mooseToGrid = require('../lib/moose-grid').mooseToGrid,
+    mooseShadeToGrid = require('../lib/moose-grid').mooseShadeToGrid,
     gridToMoose = require('../lib/moose-grid').gridToMoose,
+    gridToShade = require('../lib/moose-grid').gridToShade,
     sizeInfo = require('../lib/moose-size'),
     colors = require('../lib/color-palette')
 
@@ -5509,18 +5574,19 @@ module.exports = function(state, emitter) {
     state.moose = {
         name: '',
         hd: false,
+        shaded: true,
     }
 
     var newPainter = () => {
         state.painter = new GridPaint({
             width: 
-                state.moose.hd ? 
-                sizeInfo.hd.width :
-                sizeInfo.normal.width, 
+                state.moose.hd ?
+                    sizeInfo.hd.width :
+                    sizeInfo.normal.width, 
             height: 
                 state.moose.hd ?
-                sizeInfo.hd.height :
-                sizeInfo.normal.height,
+                    sizeInfo.hd.height :
+                    sizeInfo.normal.height,
             cellWidth: 16,
             cellHeight: 24,
             palette: colors.fullPallete,
@@ -5529,7 +5595,6 @@ module.exports = function(state, emitter) {
         state.painter.color = 1
         state.painter.colour = 'transparent'
         state.painter.grid = true
-        state.painter.shade = 3
     }
 
     var destoryPainter = () => {
@@ -5554,14 +5619,9 @@ module.exports = function(state, emitter) {
         'clear',
     ]
 
-    emitter.on('shader-select', (shade) => {
-        state.painter.shade = shade
-        emitter.emit('render')
-    })
-
     emitter.on('color-select', (color) => {
         state.painter.colour = color
-        console.log(color, state.painter.palette[color])
+        console.log(color, colors.fullPallete[color])
         emitter.emit('render')
     })
 
@@ -5614,6 +5674,7 @@ module.exports = function(state, emitter) {
     })
 
     emitter.on('moose-save', () => {
+        state.moose.shade = gridToShade(state.painter.painting)
         state.moose.image = gridToMoose(state.painter.painting)
         api.saveMoose(state.moose, (err, body) => {
             if (err || !body || body.status == 'error') {
@@ -5650,8 +5711,10 @@ module.exports = function(state, emitter) {
                     newPainter()
                     state.painter.init()
                 }
-                state.painter.painting = 
-                    mooseToGrid(body.image)
+                if (body.shaded)
+                    state.painter.painting = mooseShadeToGrid(body.image,body.shade)
+                else
+                    state.painter.painting = mooseToGrid(body.image)
             }
             emitter.emit('render')
         })
@@ -5866,27 +5929,23 @@ module.exports = function(state, emit) {
                     </div>
 
                     <div class="is-center has-shadow block moose-palette">
-                        ${colors.canvasPalette[state.painter.shade].map((color, ind) => {
-                            var extra = '', style = `background-color: ${color}`
-                            if (color == 'transparent') {
-                                extra += 'moose-palette-color-transparent'
-                                style = 'background: transparent url(\'transparent.png\') repeat'
-                            }
-                            if (ind + (17*state.painter.shade) == state.painter.colour-1)
+                        ${colors.canvasPalette.map((shade,ind) => {
+                            return shade.map((color,ind2)=>{
+                              var extra = '', style = `background-color: ${color}`
+                              if (color == 'transparent') {
+                                  extra += 'moose-palette-color-transparent'
+                                  style = 'background: transparent url(\'transparent.png\') repeat; display: block;'
+                              }
+                              if (color == colors.fullPallete[state.painter.colour])
                                 extra += ' moose-palette-color-selected'
-                            return html`<button 
-                                onclick=${colorSelect.bind(null, ind)}
-                                class="moose-palette-color ${extra}"
-                                style="${style}">
-                            </button>`
-                        })}
-                        <br>
-                        <br>
-                        <input style="width: 87%;"
-                            type="range" min="0" max="6" 
-                            value="${state.painter.shade}"
-                            oninput=${shaderSelect}
-                        >
+                              return html`<button 
+                                  onclick=${colorSelect.bind(null, (ind==0)?ind2:(ind*16)+ind2+1)}
+                                  class="moose-palette-color ${extra}"
+                                  style="${style}">
+                              </button>`
+                            })
+                        })
+                        }
                         <br>
                         <br>
                         ${state.tools.map(tool => {
@@ -5938,12 +5997,8 @@ module.exports = function(state, emit) {
         emit('moose-save')
     }
 
-    function shaderSelect(e) {
-        emit('shader-select', e.target.value)
-    }
-
     function colorSelect(color) {
-        emit('color-select', color + (state.painter.shade * 17) + 1)
+        emit('color-select', color)
     }
 
     function toolSelect(e) {

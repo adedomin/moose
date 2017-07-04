@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -77,27 +77,23 @@ module.exports = function(state, emit) {
                     </div>
 
                     <div class="is-center has-shadow block moose-palette">
-                        ${colors.canvasPalette[state.painter.shade].map((color, ind) => {
-                            var extra = '', style = `background-color: ${color}`
-                            if (color == 'transparent') {
-                                extra += 'moose-palette-color-transparent'
-                                style = 'background: transparent url(\'transparent.png\') repeat'
-                            }
-                            if (ind + (17*state.painter.shade) == state.painter.colour-1)
+                        ${colors.canvasPalette.map((shade,ind) => {
+                            return shade.map((color,ind2)=>{
+                              var extra = '', style = `background-color: ${color}`
+                              if (color == 'transparent') {
+                                  extra += 'moose-palette-color-transparent'
+                                  style = 'background: transparent url(\'transparent.png\') repeat; display: block;'
+                              }
+                              if (color == colors.fullPallete[state.painter.colour])
                                 extra += ' moose-palette-color-selected'
-                            return html`<button 
-                                onclick=${colorSelect.bind(null, ind)}
-                                class="moose-palette-color ${extra}"
-                                style="${style}">
-                            </button>`
-                        })}
-                        <br>
-                        <br>
-                        <input style="width: 87%;"
-                            type="range" min="0" max="6" 
-                            value="${state.painter.shade}"
-                            oninput=${shaderSelect}
-                        >
+                              return html`<button 
+                                  onclick=${colorSelect.bind(null, (ind==0)?ind2:(ind*16)+ind2+1)}
+                                  class="moose-palette-color ${extra}"
+                                  style="${style}">
+                              </button>`
+                            })
+                        })
+                        }
                         <br>
                         <br>
                         ${state.tools.map(tool => {
@@ -149,12 +145,8 @@ module.exports = function(state, emit) {
         emit('moose-save')
     }
 
-    function shaderSelect(e) {
-        emit('shader-select', e.target.value)
-    }
-
     function colorSelect(color) {
-        emit('color-select', color + (state.painter.shade * 17) + 1)
+        emit('color-select', color)
     }
 
     function toolSelect(e) {

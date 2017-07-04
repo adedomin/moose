@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,21 @@ var colors = require('./color-palette')
 module.exports.mooseToGrid = function mooseToGrid(image) {
     return image.split('\n').map(str => {
         return str.split('').map(char => {
-            return colors.colorToMooseString.indexOf(char)
+            return (char != 't')?colors.colorToMooseString.indexOf(char)+48:'t'
+        })
+    })
+}
+
+module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
+    var shadeLayer = shader.split('\n').map(str =>{
+        return str.split('').map(char=>{
+            return char
+        })
+    })
+
+    return image.split('\n').map((str,ind) => {
+        return str.split('').map((char,ind2) => {
+            return (char != 't')?(parseInt(char)+(16*parseInt(shadeLayer[ind][ind2]))+1):'t'
         })
     })
 }
@@ -29,6 +43,14 @@ module.exports.gridToMoose = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
             return colors.colorToMooseString[char]
+        }).join('')
+    }).join('\n')
+}
+
+module.exports.gridToShade = function(painting) {
+    return painting.map(arr => {
+        return arr.map(char => {
+            return colors.colorToShadeString[char]
         }).join('')
     }).join('\n')
 }

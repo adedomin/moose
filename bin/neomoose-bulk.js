@@ -20,12 +20,12 @@ var path = require('path'),
     fs = require('fs'),
     meese = null,
     argv = require('yargs')
-    .usage('usage: $0 [-d db dir] moose.json')
-    .describe('d', 'path to create a moosedb')
-    .alias('d', 'db')
-    .help('h')
-    .alias('h', 'help')
-    .argv
+        .usage('usage: $0 [-d db dir] moose.json')
+        .describe('d', 'path to create a moosedb')
+        .alias('d', 'db')
+        .help('h')
+        .alias('h', 'help')
+        .argv
 
 if (argv._[0]) {
     meese = require(argv._[0])
