@@ -34,7 +34,7 @@ module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
 
     return image.split('\n').map((str,ind) => {
         return str.split('').map((char,ind2) => {
-            return (char != 't')?(parseInt(char)+(16*parseInt(shadeLayer[ind][ind2]))+1):'t'
+            return (char != 't')?colors.legacyColorToMoose.indexOf(char)+(16*parseInt(shadeLayer[ind][ind2])):'t'
         })
     })
 }
