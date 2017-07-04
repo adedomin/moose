@@ -5320,7 +5320,7 @@ module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
 module.exports.gridToMoose = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            return colors.colorToMooseString[char]
+            return (char != 't')?colors.colorToMooseString[char]:'t'
         }).join('')
     }).join('\n')
 }
@@ -5328,7 +5328,7 @@ module.exports.gridToMoose = function(painting) {
 module.exports.gridToShade = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            return colors.colorToShadeString[char]
+            return (char != 't')?colors.colorToShadeString[char]:'t'
         }).join('')
     }).join('\n')
 }
