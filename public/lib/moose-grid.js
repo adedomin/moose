@@ -34,7 +34,7 @@ module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
 
     return image.split('\n').map((str,ind) => {
         return str.split('').map((char,ind2) => {
-            return (char != 't')?(parseInt(char)+(16*parseInt(shadeLayer[ind][ind2]))+1):'t'
+            return (char != 't')?colors.legacyColorToMoose.indexOf(char)+(16*parseInt(shadeLayer[ind][ind2])):'t'
         })
     })
 }
@@ -42,7 +42,7 @@ module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
 module.exports.gridToMoose = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            return colors.colorToMooseString[char]
+            return (char != 't')?colors.colorToMooseString[char]:'t'
         }).join('')
     }).join('\n')
 }
@@ -50,7 +50,7 @@ module.exports.gridToMoose = function(painting) {
 module.exports.gridToShade = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            return colors.colorToShadeString[char]
+            return (char != 't')?colors.colorToShadeString[char]:'t'
         }).join('')
     }).join('\n')
 }
