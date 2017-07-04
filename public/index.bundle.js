@@ -4655,6 +4655,7 @@ Trie.prototype.match = function (route) {
       try {
         params[trie.name] = decodeURIComponent(thisRoute)
       } catch (e) {
+        console.log('must throw')
         return search(index, undefined)
       }
       return search(index + 1, trie.nodes['$$'])
@@ -5348,7 +5349,7 @@ module.exports = {
 }
 
 },{}],66:[function(require,module,exports){
-var css = "body {\n  background-color: #eee;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = "body {\n  background-color: #eee;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n@media only screen and (max-width: 1350px) {\n  .moose-palette-color {\n    width: 29px;\n    height: 29px;\n    margin-right: 5px;\n    border-style: none;\n    border-radius: 5px;\n  }\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":14}],67:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
@@ -5515,6 +5516,7 @@ module.exports = function(state, emitter) {
 
     emitter.emit('gallery-get')
 
+    var lastScrollPos = 999
     emitter.on('DOMContentLoaded', () => {
         window.addEventListener('scroll', () => {
             if (state.timeoutScroll || window.location.hash != '#gallery') 
@@ -5525,8 +5527,9 @@ module.exports = function(state, emitter) {
                 / (document.documentElement.scrollHeight 
                     - document.documentElement.clientHeight) 
                 * 100)
-            if (scrollPos > 90)
+            if (scrollPos > 87 && scrollPos - lastScrollPos > 0)
                 emitter.emit('gallery-bottom')
+            lastScrollPos = scrollPos
         })
     })
 }

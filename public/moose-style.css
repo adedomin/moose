@@ -20,6 +20,16 @@ body {
     border-radius: 5px;
 }
 
+@media only screen and (max-width: 1350px) {
+    .moose-palette-color {
+        width: 29px;
+        height: 29px;
+        margin-right: 5px;
+        border-style: none;
+        border-radius: 5px;
+    }
+}
+
 .moose-palette-color-selected {
     border-width: 3px;
     border-color: black;

@@ -163,6 +163,7 @@ module.exports = function(state, emitter) {
 
     emitter.emit('gallery-get')
 
+    var lastScrollPos = 999
     emitter.on('DOMContentLoaded', () => {
         window.addEventListener('scroll', () => {
             if (state.timeoutScroll || window.location.hash != '#gallery') 
@@ -173,8 +174,9 @@ module.exports = function(state, emitter) {
                 / (document.documentElement.scrollHeight 
                     - document.documentElement.clientHeight) 
                 * 100)
-            if (scrollPos > 90)
+            if (scrollPos > 87 && scrollPos - lastScrollPos > 0)
                 emitter.emit('gallery-bottom')
+            lastScrollPos = scrollPos
         })
     })
 }
