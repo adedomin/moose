@@ -19,15 +19,15 @@
 var path = require('path'),
     fs = require('fs'),
     argv = require('yargs')
-    .usage('usage: $0 [init] [-c config_path]')
-    .command('init [-c path]', 'create default configuration in home folder or optional path')
-    .example('$0 init', 'write default config to home folder as .neomoose.js or as $XDG_CONFIG_HOME/neomoose.js')
-    .example('$0 -c config.js & disown', 'start server, run in background')
-    .describe('c', 'config path')
-    .alias('c', 'config')
-    .help('h')
-    .alias('h', 'help')
-    .argv
+        .usage('usage: $0 [init] [-c config_path]')
+        .command('init [-c path]', 'create default configuration in home folder or optional path')
+        .example('$0 init', 'write default config to home folder as .neomoose.js or as $XDG_CONFIG_HOME/neomoose.js')
+        .example('$0 -c config.js & disown', 'start server, run in background')
+        .describe('c', 'config path')
+        .alias('c', 'config')
+        .help('h')
+        .alias('h', 'help')
+        .argv
 
 if (argv.c) {
     process.env.CONFIG_PATH = path.resolve(argv.c)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,8 +20,10 @@ var galleryPageSize = 12
 var getGalleryPage = require('../lib/api.js').getGalleryPage,
     GridPaint = require('gridpaint'),
     mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
+    mooseShadeToGrid = require('../lib/moose-grid.js').mooseShadeToGrid,
     each = require('async.each'),
-    sizeInfo = require('../lib/moose-size.js')
+    sizeInfo = require('../lib/moose-size.js'),
+    colors = require('../lib/color-palette')
 
 // generates data urls from moose
 function generateGalleryMoose(image, isHd, cb) {
@@ -34,16 +36,31 @@ function generateGalleryMoose(image, isHd, cb) {
             sizeInfo.normal.height,
         cellWidth: 16,
         cellHeight: 24,
-        palette: [
-            'transparent', 'white', 'black', 
-            'navy', 'green', 'red', 'brown',
-            'purple', 'olive', 'yellow', 'lime', 
-            'teal', 'cyan', 'blue', 'fuchsia',
-            'grey', 'lightgrey',
-        ],
-    }) 
+        palette: colors.fullPallete,
+    })
 
     painter.painting = mooseToGrid(image)
+    painter.color = 0 // remove dumb errors from dom
+    painter.colour = 0
+    painter.draw()
+    painter.drawing = false
+    painter.dom.toBlob(cb, 'image/png')
+}
+
+function generateGalleryShadedMoose(image, shade, isHd, cb) {
+    var painter = new GridPaint({
+        width: isHd ? 
+            sizeInfo.hd.width :
+            sizeInfo.normal.width, 
+        height: isHd ?
+            sizeInfo.hd.height :
+            sizeInfo.normal.height,
+        cellWidth: 16,
+        cellHeight: 24,
+        palette: colors.fullPallete,
+    })
+
+    painter.painting = mooseShadeToGrid(image,shade)
     painter.color = 0 // remove dumb errors from dom
     painter.colour = 0
     painter.draw()
@@ -74,22 +91,31 @@ module.exports = function(state, emitter) {
             state.query.age,
             state.query.name,
             0,
-        (err, body) => {
-            if (err) return
-            if (!(body instanceof Array)) return
-            state.gallery = []
-            each(body, (moose, cb) => {
-                generateGalleryMoose(moose.image, moose.hd, (blob) => {
-                    state.gallery.push({
-                        name: moose.name,
-                        image: blob,
-                    })               
-                    cb()
+            (err, body) => {
+                if (err) return
+                if (!(body instanceof Array)) return
+                state.gallery = []
+                each(body, (moose, cb) => {
+                    if (moose.shaded)
+                        generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
+                            state.gallery.push({
+                                name: moose.name,
+                                image: blob,
+                            })               
+                            cb()
+                        })
+                    else
+                        generateGalleryMoose(moose.image, moose.hd, (blob) => {
+                            state.gallery.push({
+                                name: moose.name,
+                                image: blob,
+                            })               
+                            cb()
+                        })
+                }, () => {
+                    emitter.emit('render')
                 })
-            }, () => {
-                emitter.emit('render')
             })
-        })
     })
 
     state.timeoutScroll = false 
@@ -107,24 +133,32 @@ module.exports = function(state, emitter) {
             state.query.age,
             state.query.name,
             Math.ceil(state.gallery.length / galleryPageSize),
-        (err, body) => {
-            if (err) return
-            if (!(body instanceof Array)) return
-            if (body == []) return
-            each(body, (moose, cb) => {
-                generateGalleryMoose(moose.image, moose.hd, (blob) => {
-                    state.gallery.push({
-                        name: moose.name,
-                        image: blob,
-                    })               
-                    cb()
+            (err, body) => {
+                if (err) return
+                if (!(body instanceof Array)) return
+                if (body == []) return
+                each(body, (moose, cb) => {
+                    if (moose.shaded)
+                        generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
+                            state.gallery.push({
+                                name: moose.name,
+                                image: blob,
+                            })               
+                            cb()
+                        })
+                    else
+                        generateGalleryMoose(moose.image, moose.hd, (blob) => {
+                            state.gallery.push({
+                                name: moose.name,
+                                image: blob,
+                            })               
+                            cb()
+                        })
+                }, () => {
+                    emitter.emit('render')
+                    setTimeout(() => emitter.emit('gallery-end-timeout'), 300)
                 })
-            }, () => {
-                emitter.emit('render')
-                setTimeout(() => emitter.emit('gallery-end-timeout'), 300)
             })
-        })
-
     })
 
     emitter.emit('gallery-get')

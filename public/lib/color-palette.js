@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,23 @@ var palettes = {
     // legacy palette
     colorToMooseString: [
         't',
-        '0', '1', '2', '3', 
-        '4', '5', '6', '7',
-        '8', '9', 'a', 'b',
-        'c', 'd', 'e', 'f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+        '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
+    ],
+    colorToShadeString: [
+        't',
+        '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
+        '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',
+        '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2',
+        '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3',
+        '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4',
+        '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5',
+        '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6',
     ],
     // for new shading feature
     shadeIntensities: [
@@ -32,33 +45,32 @@ var palettes = {
         // 25%
         [
             'transparent',
-            'white',
+            '#ffffff',
             '#7d7d7d',
             '#8c8cff',
             '#88eb88',
             '#ff8c8c',
-            '#ff8c8c',
-            '#ff8cff',
-            '#ffff8c',
+            '#ff9696',
+            '#e36be3',
+            '#e3e36b',
             '#ffff8c',
             '#baffba',
-            '#8cffff',
+            '#6be3e3',
             '#8cffff',
             '#bfbfff',
             '#ff8cff',
-            '#b8b8b8',
-            '#e6e6e6',
+            '#c7c7c7',
+            '#fafafa',
 
         ],
         // 50%
         [
-            'transparent',
-            'white',
+            '#ffffff',
             '#525252',
             '#5b5bd4',
             '#5bc25b',
             '#ff5e5e',
-            '#d45b5b',
+            '#db6767',
             '#d45bd4',
             '#d4d45b',
             '#ffff5e',
@@ -68,17 +80,16 @@ var palettes = {
             '#7a7aff',
             '#ff5eff',
             '#ababab',
-            '#d9d9d9',
+            '#ebebeb',
         ],
         // 75%
         [
-            'transparent',
-            'white',
+            '#ffffff',
             '#292929',
             '#2e2eab',
             '#2f992f',
             '#ff3030',
-            '#ab2e2e',
+            '#b03a3a',
             '#ab2eab',
             '#abab2e',
             '#ffff30',
@@ -88,11 +99,10 @@ var palettes = {
             '#3030ff',
             '#ff30ff',
             '#8f8f8f',
-            '#cccccc',
+            '#dedede',
         ],
         // legacy colors - 100%
         [ 
-            'transparent',
             'white',
             'black',
             'navy',
@@ -112,13 +122,12 @@ var palettes = {
         ],
         // 125%
         [
-            'transparent',
-            'white',
+            '#f0f0f0',
             '#000000',
             '#00006e',
             '#005200',
             '#cf0000',
-            '#520000',
+            '#941c1c',
             '#4d004d',
             '#525200',
             '#cfcf00',
@@ -128,17 +137,16 @@ var palettes = {
             '#0000b3',
             '#cf00cf',
             '#6e6e6e',
-            '#ababab',
+            '#c2c2c2',
         ],
         // 150%
         [
-            'transparent',
-            'white',
+            '#e0e0e0',
             '#000000',
             '#00005c',
             '#004000',
             '#a10000',
-            '#400000',
+            '#660000',
             '#3b003b',
             '#404000',
             '#a1a100',
@@ -148,27 +156,26 @@ var palettes = {
             '#00008a',
             '#a100a1',
             '#5c5c5c',
-            '#9c9c9c',
+            '#b3b3b3',
         ],
         // 175%
         [
-            'transparent',
-            'white',
+            '#cfcfcf',
             '#000000',
             '#00004d',
             '#002e00',
             '#6e0000',
-            '#200000',
+            '#380000',
             '#2b002b',
             '#2e2e00',
             '#737300',
             '#007300',
             '#002e2e',
             '#007373',
-            '#00005c',
+            '#00007a',
             '#730073',
             '#3b3b3b',
-            '#6e6e6e',
+            '#a3a3a3',
         ],
     ],
     // for gridpaint, concat of above
@@ -179,6 +186,6 @@ palettes.fullPallete = palettes
     .canvasPalette
     .reduce((full, part) => {
         return full.concat(part)
-    }, ['transparent'])
+    })
 
 module.exports = palettes

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
+ * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,9 @@
 var GridPaint = require('gridpaint'),
     api = require('../lib/api.js'),
     mooseToGrid = require('../lib/moose-grid').mooseToGrid,
+    mooseShadeToGrid = require('../lib/moose-grid').mooseShadeToGrid,
     gridToMoose = require('../lib/moose-grid').gridToMoose,
+    gridToShade = require('../lib/moose-grid').gridToShade,
     sizeInfo = require('../lib/moose-size'),
     colors = require('../lib/color-palette')
 
@@ -41,18 +43,19 @@ module.exports = function(state, emitter) {
     state.moose = {
         name: '',
         hd: false,
+        shaded: true,
     }
 
     var newPainter = () => {
         state.painter = new GridPaint({
             width: 
-                state.moose.hd ? 
-                sizeInfo.hd.width :
-                sizeInfo.normal.width, 
+                state.moose.hd ?
+                    sizeInfo.hd.width :
+                    sizeInfo.normal.width, 
             height: 
                 state.moose.hd ?
-                sizeInfo.hd.height :
-                sizeInfo.normal.height,
+                    sizeInfo.hd.height :
+                    sizeInfo.normal.height,
             cellWidth: 16,
             cellHeight: 24,
             palette: colors.fullPallete,
@@ -61,7 +64,6 @@ module.exports = function(state, emitter) {
         state.painter.color = 1
         state.painter.colour = 'transparent'
         state.painter.grid = true
-        state.painter.shade = 3
     }
 
     var destoryPainter = () => {
@@ -86,14 +88,9 @@ module.exports = function(state, emitter) {
         'clear',
     ]
 
-    emitter.on('shader-select', (shade) => {
-        state.painter.shade = shade
-        emitter.emit('render')
-    })
-
     emitter.on('color-select', (color) => {
         state.painter.colour = color
-        console.log(color, state.painter.palette[color])
+        console.log(color, colors.fullPallete[color])
         emitter.emit('render')
     })
 
@@ -146,6 +143,7 @@ module.exports = function(state, emitter) {
     })
 
     emitter.on('moose-save', () => {
+        state.moose.shade = gridToShade(state.painter.painting)
         state.moose.image = gridToMoose(state.painter.painting)
         api.saveMoose(state.moose, (err, body) => {
             if (err || !body || body.status == 'error') {
@@ -182,8 +180,10 @@ module.exports = function(state, emitter) {
                     newPainter()
                     state.painter.init()
                 }
-                state.painter.painting = 
-                    mooseToGrid(body.image)
+                if (body.shaded)
+                    state.painter.painting = mooseShadeToGrid(body.image,body.shade)
+                else
+                    state.painter.painting = mooseToGrid(body.image)
             }
             emitter.emit('render')
         })

@@ -19,15 +19,15 @@
 var path = require('path'),
     fs = require('fs'),
     argv = require('yargs')
-    .usage('usage: $0 [-d db dir] [-a all moose] moose-name')
-    .describe('d', 'path where moose.db resides')
-    .alias('d', 'db')
-    .boolean('a')
-    .describe('a', 'all moose')
-    .alias('a', 'all')
-    .help('h')
-    .alias('h', 'help')
-    .argv
+        .usage('usage: $0 [-d db dir] [-a all moose] moose-name')
+        .describe('d', 'path where moose.db resides')
+        .alias('d', 'db')
+        .boolean('a')
+        .describe('a', 'all moose')
+        .alias('a', 'all')
+        .help('h')
+        .alias('h', 'help')
+        .argv
 
 if (!fs.statSync(path.join(argv.d || process.cwd(), 'moose.db'))) {
     console.error('please provide the directory which contains a moose.db using the -d flag')
