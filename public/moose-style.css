@@ -20,7 +20,7 @@ body {
     border-radius: 5px;
 }
 
-@media only screen and (max-width: 1350px) {
+@media only screen and (max-width: 1383px) {
     .moose-palette-color {
         width: 29px;
         height: 29px;
