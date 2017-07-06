@@ -64,6 +64,7 @@ module.exports = function(state, emit) {
                                 class="input is-expanded"
                                 value="${state.moose.name}"
                                 oninput=${mooseName}
+                                onkeydown=${mooseSaveEnter}
                             >
                         </p>
                         <p class="control">
@@ -79,18 +80,18 @@ module.exports = function(state, emit) {
                     <div class="is-center has-shadow block moose-palette">
                         ${colors.canvasPalette.map((shade,ind) => {
                             return shade.map((color,ind2)=>{
-                              var extra = '', style = `background-color: ${color}`
-                              if (color == 'transparent') {
-                                  extra += 'moose-palette-color-transparent'
-                                  style = 'background: transparent url(\'transparent.png\') repeat; display: block;'
-                              }
-                              if (color == colors.fullPallete[state.painter.colour])
-                                extra += ' moose-palette-color-selected'
-                              return html`<button 
-                                  onclick=${colorSelect.bind(null, (ind==0)?ind2:(ind*16)+ind2+1)}
-                                  class="moose-palette-color ${extra}"
-                                  style="${style}">
-                              </button>`
+                                var extra = '', style = `background-color: ${color}`
+                                if (color == 'transparent') {
+                                    extra += 'moose-palette-color-transparent'
+                                    style = 'background: transparent url(\'transparent.png\') repeat; display: block;'
+                                }
+                                if (color == colors.fullPallete[state.painter.colour])
+                                    extra += ' moose-palette-color-selected'
+                                return html`<button 
+                                    onclick=${colorSelect.bind(null, (ind==0)?ind2:(ind*16)+ind2+1)}
+                                    class="moose-palette-color ${extra}"
+                                    style="${style}">
+                                </button>`
                             })
                         })
                         }
@@ -139,6 +140,11 @@ module.exports = function(state, emit) {
 
     function mooseName(e) {
         emit('moose-name-change', e.target.value)
+    }
+
+    function mooseSaveEnter(e) {
+        if (e.keyCode == 13)
+            emit('moose-save')
     }
 
     function mooseSave() {
