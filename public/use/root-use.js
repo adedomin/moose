@@ -84,7 +84,8 @@ module.exports = function(state, emitter) {
         'grid',
         'undo', 
         'redo', 
-        'hd/sd',
+        'hd',
+        'shaded',
         'clear',
     ]
 
@@ -94,16 +95,29 @@ module.exports = function(state, emitter) {
     })
 
     emitter.on('tool-select', (action) => {
+        var temp
         if (action == 'pencil' || action == 'bucket') {
             state.painter.tool = action
         }
         else if (action == 'grid') {
             state.painter.grid = !state.painter.grid
         }
-        else if (action == 'hd/sd') {
+        else if (action == 'shaded') {
+            state.moose.shaded = !state.moose.shaded
+            if (!state.moose.shaded) {
+                temp = state.painter.painting
+                state.painter.painting = temp.map(arr => {
+                    return arr.map(color => {
+                        return (color % 17) + (3 * 17)
+                    })
+                })
+                state.painter.colour = (state.painter.colour % 17) + (3 * 17)
+            }
+        }
+        else if (action == 'hd') {
             state.moose.hd = !state.moose.hd
             destoryPainter()
-            var temp = state.painter.painting
+            temp = state.painter.painting
             // resize image for new canvas
             if (state.moose.hd) {
                 temp = temp.concat(Array.from({
@@ -142,7 +156,8 @@ module.exports = function(state, emitter) {
     })
 
     emitter.on('moose-save', () => {
-        state.moose.shade = gridToShade(state.painter.painting)
+        if (state.moose.shaded) 
+            state.moose.shade = gridToShade(state.painter.painting)
         state.moose.image = gridToMoose(state.painter.painting)
         api.saveMoose(state.moose, (err, body) => {
             if (err || !body || body.status == 'error') {

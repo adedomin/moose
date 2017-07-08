@@ -94,6 +94,7 @@ module.exports = function(state, emit) {
                         })}
                         <br>
                         ${colors.canvasPalette.map((row, ind) => {
+                            if (!state.moose.shaded) return
                             var ind2 = state.painter.colour % 17
                             var color = row[state.painter.colour % 17]
                             var extra = '', style = `background-color: ${color}`
@@ -117,7 +118,9 @@ module.exports = function(state, emit) {
                                 extra += ' is-info'
                             else if (tool == 'grid' && state.painter.grid)
                                 extra += ' is-success'
-                            else if (tool == 'hd/sd' && state.moose.hd)
+                            else if (tool == 'hd' && state.moose.hd)
+                                extra += ' is-success'
+                            else if (tool == 'shaded' && state.moose.shaded)
                                 extra += ' is-success'
                             else if (tool == 'clear')
                                 extra += ' is-danger'
