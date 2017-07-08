@@ -5151,6 +5151,7 @@ var palettes = {
         ],
         // 50%
         [
+            'transparent',
             '#ffffff',
             '#525252',
             '#5b5bd4',
@@ -5170,6 +5171,7 @@ var palettes = {
         ],
         // 75%
         [
+            'transparent',
             '#ffffff',
             '#292929',
             '#2e2eab',
@@ -5189,6 +5191,7 @@ var palettes = {
         ],
         // legacy colors - 100%
         [ 
+            'transparent',
             'white',
             'black',
             'navy',
@@ -5208,6 +5211,7 @@ var palettes = {
         ],
         // 125%
         [
+            'transparent',
             '#f0f0f0',
             '#000000',
             '#00006e',
@@ -5227,6 +5231,7 @@ var palettes = {
         ],
         // 150%
         [
+            'transparent',
             '#e0e0e0',
             '#000000',
             '#00005c',
@@ -5246,6 +5251,7 @@ var palettes = {
         ],
         // 175%
         [
+            'transparent',
             '#cfcfcf',
             '#000000',
             '#00004d',
@@ -5349,7 +5355,7 @@ module.exports = {
 }
 
 },{}],66:[function(require,module,exports){
-var css = "body {\n  background-color: #eee;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n@media only screen and (max-width: 1383px) {\n  .moose-palette-color {\n    width: 29px;\n    height: 29px;\n    margin-right: 5px;\n    border-style: none;\n    border-radius: 5px;\n  }\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = "body {\n  background-color: #eee;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":14}],67:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
@@ -5936,23 +5942,37 @@ module.exports = function(state, emit) {
                     </div>
 
                     <div class="is-center has-shadow block moose-palette">
-                        ${colors.canvasPalette.map((shade,ind) => {
-                            return shade.map((color,ind2)=>{
-                                var extra = '', style = `background-color: ${color}`
-                                if (color == 'transparent') {
-                                    extra += 'moose-palette-color-transparent'
-                                    style = 'background: transparent url(\'transparent.png\') repeat; display: block;'
-                                }
-                                if (color == colors.fullPallete[state.painter.colour])
-                                    extra += ' moose-palette-color-selected'
-                                return html`<button 
-                                    onclick=${colorSelect.bind(null, (ind==0)?ind2:(ind*16)+ind2+1)}
-                                    class="moose-palette-color ${extra}"
-                                    style="${style}">
-                                </button>`
-                            })
-                        })
-                        }
+                        ${colors.canvasPalette[3].map((color, ind) => {
+                            var extra = '', style = `background-color: ${color}`
+                            if (color == 'transparent') {
+                                extra += 'moose-palette-color-transparent'
+                                style = 'background: transparent url(\'transparent.png\') repeat;'
+                            }
+                            if (ind == state.painter.colour % 17)
+                                extra += ' moose-palette-color-selected'
+                            return html`<button 
+                                onclick=${colorSelect.bind(null, ind+(17*3))}
+                                class="moose-palette-color ${extra}"
+                                style="${style}">
+                            </button>`
+                        })}
+                        <br>
+                        ${colors.canvasPalette.map((row, ind) => {
+                            var ind2 = state.painter.colour % 17
+                            var color = row[state.painter.colour % 17]
+                            var extra = '', style = `background-color: ${color}`
+                            if (color == 'transparent') {
+                                extra += 'moose-palette-color-transparent'
+                                style = 'background: transparent url(\'transparent.png\') repeat;'
+                            }
+                            if (color == colors.fullPallete[state.painter.colour])
+                                extra += ' moose-palette-color-selected'
+                            return html`<button 
+                                onclick=${colorSelect.bind(null, ind2+(17*ind))}
+                                class="moose-palette-color ${extra}"
+                                style="${style}">
+                            </button>`
+                        })}
                         <br>
                         <br>
                         ${state.tools.map(tool => {

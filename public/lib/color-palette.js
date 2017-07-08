@@ -68,6 +68,7 @@ var palettes = {
         ],
         // 50%
         [
+            'transparent',
             '#ffffff',
             '#525252',
             '#5b5bd4',
@@ -87,6 +88,7 @@ var palettes = {
         ],
         // 75%
         [
+            'transparent',
             '#ffffff',
             '#292929',
             '#2e2eab',
@@ -106,6 +108,7 @@ var palettes = {
         ],
         // legacy colors - 100%
         [ 
+            'transparent',
             'white',
             'black',
             'navy',
@@ -125,6 +128,7 @@ var palettes = {
         ],
         // 125%
         [
+            'transparent',
             '#f0f0f0',
             '#000000',
             '#00006e',
@@ -144,6 +148,7 @@ var palettes = {
         ],
         // 150%
         [
+            'transparent',
             '#e0e0e0',
             '#000000',
             '#00005c',
@@ -163,6 +168,7 @@ var palettes = {
         ],
         // 175%
         [
+            'transparent',
             '#cfcfcf',
             '#000000',
             '#00004d',
