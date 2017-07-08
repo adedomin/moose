@@ -194,10 +194,14 @@ module.exports = function(state, emitter) {
                     newPainter()
                     state.painter.init()
                 }
-                if (body.shaded)
+
+                state.moose.shaded = body.shaded
+                if (body.shaded) {
                     state.painter.painting = mooseShadeToGrid(body.image,body.shade)
-                else
+                }
+                else {
                     state.painter.painting = mooseToGrid(body.image)
+                }
             }
             emitter.emit('render')
         })
