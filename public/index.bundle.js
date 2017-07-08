@@ -4655,7 +4655,6 @@ Trie.prototype.match = function (route) {
       try {
         params[trie.name] = decodeURIComponent(thisRoute)
       } catch (e) {
-        console.log('must throw')
         return search(index, undefined)
       }
       return search(index + 1, trie.nodes['$$'])
@@ -5604,8 +5603,8 @@ module.exports = function(state, emitter) {
             palette: colors.fullPallete,
         }) 
         state.painter.tool = 'pencil'
-        state.painter.color = 1
-        state.painter.colour = 'transparent'
+        state.painter.color = 0
+        state.painter.colour = 0
         state.painter.grid = true
     }
 
@@ -5633,7 +5632,6 @@ module.exports = function(state, emitter) {
 
     emitter.on('color-select', (color) => {
         state.painter.colour = color
-        console.log(color, colors.fullPallete[color])
         emitter.emit('render')
     })
 

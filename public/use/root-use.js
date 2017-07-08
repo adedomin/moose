@@ -61,8 +61,8 @@ module.exports = function(state, emitter) {
             palette: colors.fullPallete,
         }) 
         state.painter.tool = 'pencil'
-        state.painter.color = 1
-        state.painter.colour = 'transparent'
+        state.painter.color = 0
+        state.painter.colour = 0
         state.painter.grid = true
     }
 
@@ -90,7 +90,6 @@ module.exports = function(state, emitter) {
 
     emitter.on('color-select', (color) => {
         state.painter.colour = color
-        console.log(color, colors.fullPallete[color])
         emitter.emit('render')
     })
 
