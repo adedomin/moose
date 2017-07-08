@@ -20,7 +20,7 @@ var colors = require('./color-palette')
 module.exports.mooseToGrid = function mooseToGrid(image) {
     return image.split('\n').map(str => {
         return str.split('').map(char => {
-            return (char != 't')?colors.colorToMooseString.indexOf(char)+48:'t'
+            return colors.colorToMooseString.indexOf(char)+51
         })
     })
 }
@@ -28,13 +28,13 @@ module.exports.mooseToGrid = function mooseToGrid(image) {
 module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
     var shadeLayer = shader.split('\n').map(str =>{
         return str.split('').map(char=>{
-            return char
+            return +char
         })
     })
 
     return image.split('\n').map((str,ind) => {
         return str.split('').map((char,ind2) => {
-            return (char != 't')?colors.legacyColorToMoose.indexOf(char)+(16*parseInt(shadeLayer[ind][ind2])):'t'
+            return colors.legacyColorToMoose.indexOf(char)+(17*shadeLayer[ind][ind2])
         })
     })
 }
