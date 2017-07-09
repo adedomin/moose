@@ -37,6 +37,7 @@ config.irc = {
     nickserv_pass: '',
     channels: ['#prussian'],
     send_delay: 350,
+    moose_delay: 5000,
     moose_url: 'https://moose.ghetty.space',
 }
 
