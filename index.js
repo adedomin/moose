@@ -23,3 +23,4 @@ var moosedb = MooseDB(),
     web = Web()
 
 require('./lib/db-web-interaction.js')(web, moosedb, log)
+// require('./lib/irc.js')(moosedb, log)

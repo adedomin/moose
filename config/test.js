@@ -27,4 +27,15 @@ config.web = {
     interface: null, 
 }
 
+// set diabled to true to disable the irc client
+config.irc = {
+    disabled: false,
+    server: 'irc.rizon.net',
+    port: 6697,
+    nick: 'neomoose',
+    tls: true,
+    nickserv_pass: '',
+    channels: ['#prussian'],
+}
+
 module.exports = config

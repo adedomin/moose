@@ -5354,7 +5354,7 @@ module.exports = {
 }
 
 },{}],66:[function(require,module,exports){
-var css = "body {\n  background-color: #eee;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = "html {\n  background-color: #f5f5f5;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":14}],67:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
