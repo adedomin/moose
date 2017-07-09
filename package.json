@@ -36,6 +36,7 @@
     "irc-framework": "^2.8.1",
     "level": "1.7.0",
     "linvodb3": "3.25.0",
+    "relative-date": "^1.1.3",
     "winston": "2.3.1",
     "yargs": "8.0.1"
   },

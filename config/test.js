@@ -32,7 +32,7 @@ config.irc = {
     disabled: false,
     server: 'irc.rizon.net',
     port: 6697,
-    nick: 'neomoose',
+    nick: 'neomoose_',
     tls: true,
     nickserv_pass: '',
     channels: ['#prussian'],
