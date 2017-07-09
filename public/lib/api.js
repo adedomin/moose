@@ -41,10 +41,10 @@ module.exports.saveMoose = function(moose, cb) {
     }, cb)
 }
 module.exports.getMoose = function(moose, cb) {
-    request({ uri: `moose/${moose}` }, cb)
+    request({ uri: `moose/${encodeURIComponent(moose)}` }, cb)
 }
 module.exports.getGalleryPage = function(age, query, page, cb) {
     request({
-        uri: `gallery/${age}?q=${query}&p=${page}`,
+        uri: `gallery/${age}?q=${encodeURIComponent(query)}&p=${page}`,
     }, cb)
 }

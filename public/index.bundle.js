@@ -5071,11 +5071,11 @@ module.exports.saveMoose = function(moose, cb) {
     }, cb)
 }
 module.exports.getMoose = function(moose, cb) {
-    request({ uri: `moose/${moose}` }, cb)
+    request({ uri: `moose/${encodeURIComponent(moose)}` }, cb)
 }
 module.exports.getGalleryPage = function(age, query, page, cb) {
     request({
-        uri: `gallery/${age}?q=${query}&p=${page}`,
+        uri: `gallery/${age}?q=${encodeURIComponent(query)}&p=${page}`,
     }, cb)
 }
 
@@ -5569,7 +5569,7 @@ var GridPaint = require('gridpaint'),
 function getParameterByName(name) {
     var url = window.location.href
     name = name.replace(/[[]]/g, '\\$&')
-    var regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
+    var regex = new RegExp(`[?&]${name}(=([^&]*)|&|$)`),
         results = regex.exec(url)
     if (!results) return null
     if (!results[2]) return ''
