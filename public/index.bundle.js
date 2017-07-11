@@ -5310,7 +5310,7 @@ module.exports.mooseToGrid = function mooseToGrid(image) {
 module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
     var shadeLayer = shader.split('\n').map(str =>{
         return str.split('').map(char=>{
-            return +char
+            return +char || 0
         })
     })
 
