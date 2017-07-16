@@ -57,27 +57,50 @@ module.exports = function(state, emit) {
                     <br>
                     <br>
 
-                    <div class="field has-addons ">
-                        <p class="control is-expanded">
-                            <input 
-                                type="text" 
-                                class="input is-expanded"
-                                value="${state.moose.name}"
-                                oninput=${mooseName}
-                                onkeydown=${mooseSaveEnter}
-                            >
-                        </p>
-                        <p class="control">
-                            <button 
-                                onclick=${mooseSave} 
-                                class="button is-primary"
-                            >
-                                Save
-                            </button>
-                        </p>
-                    </div>
-
                     <div class="is-center has-shadow block moose-palette">
+
+                        <div class="field has-addons">
+                            <p class="control is-expanded">
+                                <input 
+                                    type="text" 
+                                    class="input is-expanded"
+                                    value="${state.moose.name}"
+                                    oninput=${mooseName}
+                                    onkeydown=${mooseSaveEnter}
+                                >
+                            </p>
+                            <p class="control">
+                                <button 
+                                    onclick=${mooseSave} 
+                                    class="button is-primary"
+                                >
+                                    Save
+                                </button>
+                            </p>
+                        </div>
+
+                        <div class="field has-addons has-addons-centered">
+                            ${state.tools.map(tool => {
+                                var extra = ''
+                                if (tool == state.painter.tool)
+                                    extra += ' is-info'
+                                else if (tool == 'grid' && state.painter.grid)
+                                    extra += ' is-success'
+                                else if (tool == 'hd' && state.moose.hd)
+                                    extra += ' is-success'
+                                else if (tool == 'shaded' && state.moose.shaded)
+                                    extra += ' is-success'
+                                else if (tool == 'clear')
+                                    extra += ' is-danger'
+                                return html`<p class="control"><button 
+                                    onclick=${toolSelect}
+                                    class="button ${extra}"
+                                >
+                                    ${tool}
+                                </button></p>`
+                            })}
+                        </div>
+
                         ${colors.canvasPalette[3].map((color, ind) => {
                             var extra = '', style = `background-color: ${color}`
                             if (color == 'transparent') {
@@ -108,27 +131,6 @@ module.exports = function(state, emit) {
                                 onclick=${colorSelect.bind(null, ind2+(17*ind))}
                                 class="moose-palette-color ${extra}"
                                 style="${style}">
-                            </button>`
-                        })}
-                        <br>
-                        <br>
-                        ${state.tools.map(tool => {
-                            var extra = ''
-                            if (tool == state.painter.tool)
-                                extra += ' is-info'
-                            else if (tool == 'grid' && state.painter.grid)
-                                extra += ' is-success'
-                            else if (tool == 'hd' && state.moose.hd)
-                                extra += ' is-success'
-                            else if (tool == 'shaded' && state.moose.shaded)
-                                extra += ' is-success'
-                            else if (tool == 'clear')
-                                extra += ' is-danger'
-                            return html`<button 
-                                onclick=${toolSelect}
-                                class="button ${extra}"
-                            >
-                                ${tool}
                             </button>`
                         })}
                     </div>
