@@ -66,6 +66,7 @@ module.exports = function(state, emit) {
                                     class="input is-expanded"
                                     value="${state.moose.name}"
                                     oninput=${mooseName}
+                                    placeholder="Moose Name"
                                     onkeydown=${mooseSaveEnter}
                                 >
                             </p>
