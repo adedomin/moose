@@ -15,12 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var MooseDB = require('./lib/db.js'),
-    Web = require('./lib/web.js'),
-    log = require('./lib/logger.js')
+var log = require('./lib/logger.js')
 
-var moosedb = MooseDB(),
-    web = Web()
+var  moosedb = require('./lib/moose-storage.js')(log)
 
-require('./lib/db-web-interaction.js')(web, moosedb, log)
+require('./lib/web.js')(moosedb, log)
 require('./lib/irc.js')(moosedb, log)
