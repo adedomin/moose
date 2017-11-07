@@ -215,4 +215,33 @@ module.exports = function(state, emitter) {
     state.painter.init()
     if (getParameterByName('edit')) 
         emitter.emit('moose-edit', getParameterByName('edit'))
+
+    emitter.on('DOMContentLoaded', () => {
+        // TODO: remove me
+        // hack to disable canvas drawing while out of canvas
+        var canvasWrap = document.getElementById('mousewrap'),
+            mousePos = { x: 0, y:0 }
+        document.addEventListener('mousemove', e => {
+            mousePos.x = e.clientX || e.pageX
+            mousePos.y = e.clientY || e.pageY
+            var canvasRect = canvasWrap.getBoundingClientRect() 
+            if (mousePos.x > canvasRect.left && 
+                mousePos.x < canvasRect.right &&
+                mousePos.y > canvasRect.top && 
+                mousePos.y < canvasRect.bottom
+            ) {
+                if (state.painter.drawing) return
+                state.painter.drawing = true
+                state.painter.draw()
+            }
+            else {
+                state.painter.drawing = false
+            }
+        })
+    })
+
+    emitter.on('*', () => {
+        if (state.painter.drawing) return
+        state.painter.draw()
+    })
 }

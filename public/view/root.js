@@ -50,9 +50,11 @@ module.exports = function(state, emit) {
             <div class="container">
 
                 <div class="columns is-centered">
-                <div class="column has-text-centered is-half">
+                <div class="column has-text-centered is-half-desktop">
                     
-                    ${state.painter.dom}
+                    <div id="mousewrap">
+                      ${state.painter.dom}
+                    </div>
                     
                     <br>
                     <br>
