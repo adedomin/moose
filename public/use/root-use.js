@@ -207,6 +207,10 @@ module.exports = function(state, emitter) {
         })
     })
 
+    emitter.on('canvas-wrap-exists', () => {
+        state.canvasWrap = document.getElementById('mousewrap')
+    })
+
     emitter.on('pushState', () => {
         if (getParameterByName('edit')) 
             emitter.emit('moose-edit', getParameterByName('edit'))
@@ -219,16 +223,13 @@ module.exports = function(state, emitter) {
     emitter.on('DOMContentLoaded', () => {
         // TODO: remove me
         // hack to disable canvas drawing while out of canvas
-        var canvasWrap = document.getElementById('mousewrap'),
-            mousePos = { x: 0, y:0 }
+        state.canvasWrap = document.getElementById('mousewrap')
         document.addEventListener('mousemove', e => {
-            mousePos.x = e.clientX || e.pageX
-            mousePos.y = e.clientY || e.pageY
-            var canvasRect = canvasWrap.getBoundingClientRect() 
-            if (mousePos.x > canvasRect.left && 
-                mousePos.x < canvasRect.right &&
-                mousePos.y > canvasRect.top && 
-                mousePos.y < canvasRect.bottom
+            var canvasRect = state.canvasWrap.getBoundingClientRect() 
+            if (e.clientX > canvasRect.left && 
+                e.clientX < canvasRect.right &&
+                e.clientY > canvasRect.top && 
+                e.clientY < canvasRect.bottom
             ) {
                 if (state.painter.drawing) return
                 state.painter.drawing = true
