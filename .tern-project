@@ -1,0 +1,9 @@
+{
+  "libs": [
+    "browser",
+    "ecmascript"
+  ],
+  "plugins": {
+    "node": {}
+  }
+}

@@ -4,6 +4,7 @@ config.logger = { level: 'debug' }
 
 config.moose = {
     // where your moose are kept safe
+    // and where channel invites are persisted.
     db: './',
     // dump moose db every 2 hours if enables to same path as moose_db
     // as dump.json
