@@ -38,8 +38,21 @@ config.irc = {
     tls: true,
     nickserv_pass: '',
     channels: ['#prussian'],
+    // delay per moose
     send_delay: 350, // be very careful adjusting this
-    moose_delay: 5000,
+    // time between moose to send
+    moose_delay: 10 * 1000,
+    spam_timers: {
+        // timeout for .help, .source and .bots command
+        help_spam: 10 * 1000,
+        // timeout for the --help command
+        moose_help_spam: 10 * 1000,
+        // timeout for searching for moose
+        moose_search_spam: 10 * 1000,
+        // timeout for sending a "please wait message" when
+        // a moose is being drawn somewhere
+        moose_please_wait_spam: 10 * 1000,
+    },
     moose_url: 'https://moose.ghetty.space',
 }
 
