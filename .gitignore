@@ -39,3 +39,4 @@ jspm_packages
 # ignore moose.db
 *.db
 dump.json
+invites.json
