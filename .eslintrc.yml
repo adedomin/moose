@@ -2,8 +2,14 @@ env:
   browser: true
   es6: true
   node: true
+parserOptions:
+  ecmaVersion: 2017
 extends: 'eslint:recommended'
 rules:
+  # 'use strict';
+  strict:
+    - error
+    - global
   # preference, some like 2
   indent:
     - warn
@@ -12,18 +18,20 @@ rules:
     - warn
     - unix
   # double quotes?
-  # what are we, a json document?
+  # what are we, ecma3?
   quotes:
     - warn
     - single
-  # ASI called, 
-  # they said semicolons are only 
-  # useful for minification
+  # ASI exists, but it does weird things
+  # to work, most ASI hazards are obvious:
+  #   such as: IIFE, "tagged" template ones.
+  # but ECMA and TC39 are going to be making grammar
+  # decisions that may add more in the future.
   semi:
-    - warn
-    - never
-  no-console: 
     - error
+    - always
+  no-console:
+    - warn
     - allow:
       - error
   # use {}
@@ -71,6 +79,9 @@ rules:
   # console.log(...someArr)
   prefer-spread:
     - error
+  # let { foo, bar } = obj;
+  prefer-destructuring:
+    - warn
   # they are already kind of weird
   # please don't nest them
   no-nested-ternary:

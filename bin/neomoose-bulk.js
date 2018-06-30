@@ -15,34 +15,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
 var path = require('path'),
     fs = require('fs'),
     meese = null,
-    argv = require('yargs')
+    { argv } = require('yargs')
         .usage('usage: $0 [-d db dir] moose.json')
         .describe('d', 'path to create a moosedb')
         .alias('d', 'db')
         .help('h')
-        .alias('h', 'help')
-        .argv
+        .alias('h', 'help');
 
 if (argv._[0]) {
-    meese = require(argv._[0])
+    meese = require(argv._[0]);
 }
 else {
-    meese = JSON.parse(fs.readFileSync('/dev/stdin').toString())
+    meese = JSON.parse(fs.readFileSync('/dev/stdin').toString());
 }
 
 var moosedb = require(
     path.join(__dirname, '../lib/db.js')
-)(argv.d || process.cwd())
+)(argv.d || process.cwd());
 
 if (meese instanceof Array) {
     meese.forEach((moose) => {
-        moosedb.insert(moose)
-    })
+        moosedb.insert(moose);
+    });
 }
 else {
-    moosedb.insert(meese)
+    moosedb.insert(meese);
 }

@@ -14,10 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
-var log = require('./lib/logger.js')
+var log = require('./lib/logger.js');
 
-var  moosedb = require('./lib/moose-storage.js')(log)
+var  moosedb = require('./lib/moose-storage.js')(log);
 
-require('./lib/web.js')(moosedb, log)
-require('./lib/irc.js')(moosedb, log)
+require('./lib/web.js')(moosedb, log);
+require('./lib/irc.js')(moosedb, log);

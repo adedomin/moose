@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
 var path = require('path'),
     fs = require('fs'),
-    argv = require('yargs')
+    { argv } = require('yargs')
         .usage('usage: $0 [init] [-c config_path]')
         .command('init [-c path]', 'create default configuration in home folder or optional path')
         .example('$0 init', 'write default config to home folder as .neomoose.js or as $XDG_CONFIG_HOME/neomoose.js')
@@ -26,23 +27,22 @@ var path = require('path'),
         .describe('c', 'config path')
         .alias('c', 'config')
         .help('h')
-        .alias('h', 'help')
-        .argv
+        .alias('h', 'help');
 
 if (argv.c) {
-    process.env.CONFIG_PATH = path.resolve(argv.c)
+    process.env.CONFIG_PATH = path.resolve(argv.c);
 } 
 else if (process.env.XDG_CONFIG_HOME) {
     process.env.CONFIG_PATH = path.join(
         process.env.XDG_CONFIG_HOME,
         'neomoose.js'
-    )
+    );
 }
 else {
     process.env.CONFIG_PATH = path.join(
         process.env.HOME,
         '.neomoose.js'
-    )
+    );
 }
 
 if (argv._[0] == 'init') {
@@ -50,12 +50,12 @@ if (argv._[0] == 'init') {
         path.join(__dirname, '../config/test.js')
     ).pipe(fs.createWriteStream(
         process.env.CONFIG_PATH
-    ))
-
+    ));
+    // eslint-disable-next-line
     console.log(`Configuration was written to ${process.env.CONFIG_PATH}
-Please make sure to change the defaults.`)
+Please make sure to change the defaults.`);
 
-    return
+    return;
 }
 
-require(path.join(__dirname, '../index.js'))
+require(path.join(__dirname, '../index.js'));
