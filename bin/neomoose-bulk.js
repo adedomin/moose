@@ -27,22 +27,42 @@ var path = require('path'),
         .help('h')
         .alias('h', 'help');
 
-if (argv._[0]) {
-    meese = require(argv._[0]);
-}
-else {
-    meese = JSON.parse(fs.readFileSync('/dev/stdin').toString());
-}
+meese = JSON.parse(fs.readFileSync(argv._[0] || '/dev/stdin').toString());
 
-var moosedb = require(
+let exit_code = 0;
+const { MooseDB, rowToMoose } = require(
     path.join(__dirname, '../lib/db.js')
-)(argv.d || process.cwd());
+);
+let moosedb = new MooseDB(
+    path.join(argv.d || process.cwd(), 'moose.db')
+);
 
-if (meese instanceof Array) {
-    meese.forEach((moose) => {
-        moosedb.insert(moose);
-    });
-}
-else {
-    moosedb.insert(meese);
-}
+moosedb.open(err => {
+    if (err) throw err;
+    if (meese instanceof Array) {
+        meese = meese.map(rowToMoose);
+        moosedb.bulkSaveMoose(meese, (err, failed) => {
+            if (err) {
+                console.error(err.toString());
+                exit_code = 1;
+            }
+            if (failed.length > 0) {
+                failed.forEach(moose => {
+                    console.error(`Insert failed: ${moose.name} - ${moose.err.toString()}`);
+                });
+                exit_code = 1;
+            }
+            process.exit(exit_code);
+        });
+    }
+    else {
+        meese = rowToMoose(meese);
+        moosedb.saveMoose(meese, (err => {
+            if (err) {
+                console.error(`Error: failed to save moose: ${err.toString()}`);
+                exit_code = 1;
+            }
+            process.exit(exit_code);
+        }));
+    }
+});
