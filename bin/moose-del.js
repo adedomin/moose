@@ -36,12 +36,17 @@ if (!argv._[0]) {
     process.exit(1);
 }
 
-require(path.join(__dirname, '../lib/db.js'))(argv.d || process.cwd())
-    .findOne({ name: argv._[0]}, (err, moose) => {
-        if (err || !moose) {
-            return console.error('no such moose');
-        }
+const { MooseDB } = require(
+    path.join(__dirname, '../lib/db.js')
+);
+let moosedb = new MooseDB(
+    path.join(argv.d || process.cwd(), 'moose.db')
+);
 
-        moose.remove();
+moosedb.open(err => {
+    if (err) throw err;
+    moosedb.deleteMoose(argv._[0], err => {
+        if (err) throw err;
+        console.log(`Deleted Moose: ${argv._[0]}`);
     });
-
+});

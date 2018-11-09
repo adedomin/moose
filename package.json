@@ -1,20 +1,19 @@
 {
-  "name": "neomoose",
+  "name": "moose",
   "version": "1.1.1-a",
   "description": "next gen moose technology including infinite scroll gallary, range searchable titles, author notices, etc.",
   "main": "index.js",
   "scripts": {
-    "bundle": "./node_modules/.bin/browserify -g [ browserify-css --autoInject=true ] public/index.js -o public/index.bundle.js"
+    "bundle": "npx browserify -g [ browserify-css --autoInject=true ] public/index.js -o public/index.bundle.js"
   },
   "bin": {
-    "neomoose": "bin/neomoose.js",
-    "neomoose-bulk": "bin/neomoose-bulk.js",
-    "neomoose-get": "bin/neomoose-get.js",
-    "neomoose-del": "bin/neomoose-del.js"
+    "moose": "bin/moose.js",
+    "moose-bulk": "bin/moose-bulk.js",
+    "moose-del": "bin/moose-del.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adedomin/neomoose.git"
+    "url": "git+https://github.com/adedomin/moose.git"
   },
   "keywords": [
     "moose",
@@ -24,9 +23,9 @@
   "author": "Anthony DeDominic <anthony@dedominic.pw>",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/adedomin/neomoose/issues"
+    "url": "https://github.com/adedomin/moose/issues"
   },
-  "homepage": "https://github.com/adedomin/neomoose#readme",
+  "homepage": "https://github.com/adedomin/moose#readme",
   "dependencies": {
     "body-parser": "1.17.2",
     "deep-diff": "0.3.4",

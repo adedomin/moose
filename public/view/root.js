@@ -24,7 +24,7 @@ module.exports = function(state, emit) {
         <div class="nav">
           <div class="nav-left">
             <a class="nav-item is-tab" href="#">
-                <img src="neomoose.png" alt="NeoMoose Logo">
+                <img src="moose.png" alt="Moose Logo">
             </a>
             <a class="nav-item is-active is-tab" href="#">Create</a>
             <a class=" nav-item is-tab" href="#gallery">Gallery</a>
@@ -40,7 +40,7 @@ module.exports = function(state, emit) {
         <div class="hero is-${state.title.status}">
             <div class="hero-body">
                 <div class="container">
-                    <h1 class="title">NeoMoose</h1>
+                    <h1 class="title">Moose</h1>
                     <h2 class="subtitle">${state.title.msg}</h2>
                 </div>
             </div>
@@ -147,10 +147,10 @@ module.exports = function(state, emit) {
           <div class="container">
             <div class="content has-text-centered">
               <p>
-                <strong>NeoMoose</strong> by <a href="https://dedominic.pw">Anthony DeDominic</a>.
+                <strong>Moose</strong> by <a href="https://dedominic.pw">Anthony DeDominic</a>.
               </p>
               <p>
-                <a class="icon" href="https://github.com/adedomin/neomoose">
+                <a class="icon" href="https://github.com/adedomin/moose">
                     <img src="GitHub-Mark-120px-plus.png">
                 </a>
               </p>

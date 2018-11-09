@@ -1,6 +1,7 @@
-var config = {}
+'use strict';
+let config = {};
 
-config.logger = { level: 'debug' }
+config.logger = { level: 'debug' };
 
 config.moose = {
     // where your moose are kept safe
@@ -15,7 +16,7 @@ config.moose = {
     maxNew: 3, // 3 moose a minute per ip
     maxPageReq: 50, // 50 gallery req every 30 sec before throttling
     maxGetReq: 10, // max number of moose gets before throttling
-}
+};
 
 config.web = {
     // only set true if you're behind
@@ -26,15 +27,15 @@ config.web = {
     // keep this null to listen on all interfaces
     // change it to 127.0.0.1 to make it local only
     // or literally any 127/8 address
-    interface: null, 
-}
+    interface: null,
+};
 
 // set diabled to true to disable the irc client
 config.irc = {
     disabled: false,
     server: 'irc.rizon.net',
     port: 6697,
-    nick: 'neomoose_',
+    nick: 'moose_',
     tls: true,
     nickserv_pass: '',
     channels: ['#prussian'],
@@ -52,6 +53,6 @@ config.irc = {
     // a moose is being drawn somewhere
     moose_please_wait_spam: 10 * 1000,
     moose_url: 'https://moose.ghetty.space',
-}
+};
 
-module.exports = config
+module.exports = config;
