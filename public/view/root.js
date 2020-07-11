@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
 var html = require('choo/html'),
-    colors = require('../lib/color-palette')
+    colors = require('../lib/color-palette');
 
 module.exports = function(state, emit) {
     return html`
@@ -84,58 +85,58 @@ module.exports = function(state, emit) {
 
                         <div class="field has-addons has-addons-centered">
                             ${state.tools.map(tool => {
-                                var extra = ''
-                                if (tool == state.painter.tool)
-                                    extra += ' is-info'
-                                else if (tool == 'grid' && state.painter.grid)
-                                    extra += ' is-success'
-                                else if (tool == 'hd' && state.moose.hd)
-                                    extra += ' is-success'
-                                else if (tool == 'shaded' && state.moose.shaded)
-                                    extra += ' is-success'
-                                else if (tool == 'clear')
-                                    extra += ' is-danger'
-                                return html`<p class="control"><button 
+        var extra = '';
+        if (tool == state.painter.tool)
+            extra += ' is-info';
+        else if (tool == 'grid' && state.painter.grid)
+            extra += ' is-success';
+        else if (tool == 'hd' && state.moose.hd)
+            extra += ' is-success';
+        else if (tool == 'shaded' && state.moose.shaded)
+            extra += ' is-success';
+        else if (tool == 'clear')
+            extra += ' is-danger';
+        return html`<p class="control"><button 
                                     onclick=${toolSelect}
                                     class="button ${extra}"
                                 >
                                     ${tool}
-                                </button></p>`
-                            })}
+                                </button></p>`;
+    })}
                         </div>
 
                         ${colors.canvasPalette[3].map((color, ind) => {
-                            var extra = '', style = `background-color: ${color}`
-                            if (color == 'transparent') {
-                                extra += 'moose-palette-color-transparent'
-                                style = 'background: transparent url(\'transparent.png\') repeat;'
-                            }
-                            if (ind == state.painter.colour % 17)
-                                extra += ' moose-palette-color-selected'
-                            return html`<button 
+        var extra = '', style = `background-color: ${color}`;
+        if (color == 'transparent') {
+            extra += 'moose-palette-color-transparent';
+            style = 'background: transparent url(\'transparent.png\') repeat;';
+        }
+        if (ind == state.painter.colour % 17)
+            extra += ' moose-palette-color-selected';
+        return html`<button 
                                 onclick=${colorSelect.bind(null, ind+(17*3))}
                                 class="moose-palette-color ${extra}"
                                 style="${style}">
-                            </button>`
-                        })}
+                            </button>`;
+    })}
                         <br>
                         ${colors.canvasPalette.map((row, ind) => {
-                            if (!state.moose.shaded) return
-                            var ind2 = state.painter.colour % 17
-                            var color = row[state.painter.colour % 17]
-                            var extra = '', style = `background-color: ${color}`
-                            if (color == 'transparent') {
-                                extra += 'moose-palette-color-transparent'
-                                style = 'background: transparent url(\'transparent.png\') repeat;'
-                            }
-                            if (color == colors.fullPallete[state.painter.colour])
-                                extra += ' moose-palette-color-selected'
-                            return html`<button 
+        if (!state.moose.shaded) return;
+        var ind2 = state.painter.colour % 17;
+        var color = row[state.painter.colour % 17];
+        var extra = '', style = `background-color: ${color}`;
+        if (color == 'transparent') {
+            extra += 'moose-palette-color-transparent';
+            style = 'background: transparent url(\'transparent.png\') repeat;';
+        }
+        if (color == colors.fullPallete[state.painter.colour])
+            extra += ' moose-palette-color-selected';
+        return html`<button 
                                 onclick=${colorSelect.bind(null, ind2+(17*ind))}
                                 class="moose-palette-color ${extra}"
                                 style="${style}">
-                            </button>`
-                        })}
+                            </button>`;
+    })}
                     </div>
 
                 </div>
@@ -158,26 +159,26 @@ module.exports = function(state, emit) {
           </div>
         </div>
         </div>
-    `
+    `;
 
     function mooseName(e) {
-        emit('moose-name-change', e.target.value)
+        emit('moose-name-change', e.target.value);
     }
 
     function mooseSaveEnter(e) {
         if (e.keyCode == 13)
-            emit('moose-save')
+            emit('moose-save');
     }
 
     function mooseSave() {
-        emit('moose-save')
+        emit('moose-save');
     }
 
     function colorSelect(color) {
-        emit('color-select', color)
+        emit('color-select', color);
     }
 
     function toolSelect(e) {
-        emit('tool-select', e.target.innerText)
+        emit('tool-select', e.target.innerText);
     }
-}
+};

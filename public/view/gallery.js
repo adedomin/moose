@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
-var html = require('choo/html')
+var html = require('choo/html');
 
 module.exports = function(state, emit) {
     return html`
@@ -49,6 +50,12 @@ module.exports = function(state, emit) {
             <div class="container">
                 <div class="field has-addons">
                     <p class="control">
+                        <button value="prev"
+                            onclick=${queryPrevious}
+                            class="button"
+                        >
+                            ${'<<'}
+                        </button>
                         <button value="oldest" 
                                 onclick=${queryAge} 
                                 class="button ${state.query.age == 'oldest' ? 'is-info' : ''}"
@@ -71,11 +78,17 @@ module.exports = function(state, emit) {
                         >
                             newest
                         </button>
+                        <button value="next"
+                            onclick=${queryNext}
+                            class="button"
+                        >
+                            ${'>>'}
+                        </button>
                     </p>
                 </div>
                 <div class="columns is-multiline">
                     ${state.gallery.map(moose => {
-                        return html`
+        return html`
                             <div class="column is-3">
                                 <div class="box has-text-centered">
                                     <a href="#?edit=${moose.name}">
@@ -85,8 +98,8 @@ module.exports = function(state, emit) {
                                     </a>
                                 </div>
                             </div>
-                        `
-                    })}
+                        `;
+    })}
                 </div>
             </div>
         </div>
@@ -106,12 +119,21 @@ module.exports = function(state, emit) {
           </div>
         </div>
         </div>
-    `
+    `;
+
+    function queryPrevious() {
+        emit('gallery-prev');
+    }
+
     function queryAge(e) {
-        emit('gallery-age', e.target.value)
+        emit('gallery-age', e.target.value);
     }
 
     function queryName(e) {
-        emit('gallery-name', e.target.value) 
+        emit('gallery-name', e.target.value); 
     }
-}
+
+    function queryNext() {
+        emit('gallery-next');
+    }
+};

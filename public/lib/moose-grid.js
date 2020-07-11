@@ -14,45 +14,46 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
-var colors = require('./color-palette')
+var colors = require('./color-palette');
 
 module.exports.mooseToGrid = function mooseToGrid(image) {
     return image.split('\n').map(str => {
         return str.split('').map(char => {
-            return colors.colorToMooseString.indexOf(char)+51
-        })
-    })
-}
+            return colors.colorToMooseString.indexOf(char)+51;
+        });
+    });
+};
 
 module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
     var shadeLayer = shader.split('\n').map(str =>{
         return str.split('').map(char=>{
-            return +char || 0
-        })
-    })
+            return +char || 0;
+        });
+    });
 
     return image.split('\n').map((str,ind) => {
         return str.split('').map((char,ind2) => {
-            return colors.legacyColorToMoose.indexOf(char)+(17*shadeLayer[ind][ind2])
-        })
-    })
-}
+            return colors.legacyColorToMoose.indexOf(char)+(17*shadeLayer[ind][ind2]);
+        });
+    });
+};
 
 module.exports.gridToMoose = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            if (isNaN(char)) char = 0
-            return colors.colorToMooseString[char]
-        }).join('')
-    }).join('\n')
-}
+            if (isNaN(char)) char = 0;
+            return colors.colorToMooseString[char];
+        }).join('');
+    }).join('\n');
+};
 
 module.exports.gridToShade = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            if (isNaN(char)) char = 0
-            return colors.colorToShadeString[char]
-        }).join('')
-    }).join('\n')
-}
+            if (isNaN(char)) char = 0;
+            return colors.colorToShadeString[char];
+        }).join('');
+    }).join('\n');
+};

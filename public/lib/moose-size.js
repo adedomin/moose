@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
     normal: {
         width: 26,
@@ -9,4 +11,4 @@ module.exports = {
     },
     isHd: true,
     hasShade: true,
-}
+};

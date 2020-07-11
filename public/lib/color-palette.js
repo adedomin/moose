@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
 var palettes = {
     // legacy palette
@@ -187,12 +188,12 @@ var palettes = {
     ],
     // for gridpaint, concat of above
     fullPallete: [],
-}
+};
 
 palettes.fullPallete = palettes
     .canvasPalette
     .reduce((full, part) => {
-        return full.concat(part)
-    })
+        return full.concat(part);
+    });
 
-module.exports = palettes
+module.exports = palettes;

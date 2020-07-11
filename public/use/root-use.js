@@ -14,37 +14,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
 var GridPaint = require('gridpaint'),
     api = require('../lib/api.js'),
-    mooseToGrid = require('../lib/moose-grid').mooseToGrid,
-    mooseShadeToGrid = require('../lib/moose-grid').mooseShadeToGrid,
-    gridToMoose = require('../lib/moose-grid').gridToMoose,
-    gridToShade = require('../lib/moose-grid').gridToShade,
+    {mooseToGrid} = require('../lib/moose-grid'),
+    {mooseShadeToGrid} = require('../lib/moose-grid'),
+    {gridToMoose} = require('../lib/moose-grid'),
+    {gridToShade} = require('../lib/moose-grid'),
     sizeInfo = require('../lib/moose-size'),
-    colors = require('../lib/color-palette')
+    colors = require('../lib/color-palette');
 
 function getParameterByName(name) {
-    var url = window.location.href
-    name = name.replace(/[[]]/g, '\\$&')
+    var url = window.location.href;
+    name = name.replace(/[[]]/g, '\\$&');
     var regex = new RegExp(`[?&]${name}(=([^&]*)|&|$)`),
-        results = regex.exec(url)
-    if (!results) return null
-    if (!results[2]) return ''
-    return decodeURIComponent(results[2].replace(/\+/g, ' '))
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
 module.exports = function(state, emitter) {
     state.title = {
         msg: 'Make a Moose today',
         status: 'primary',
-    }
+    };
 
     state.moose = {
         name: '',
         hd: false,
         shaded: true,
-    }
+    };
 
     var newPainter = () => {
         state.painter = new GridPaint({
@@ -59,25 +60,25 @@ module.exports = function(state, emitter) {
             cellWidth: 16,
             cellHeight: 24,
             palette: colors.fullPallete,
-        }) 
-        state.painter.tool = 'pencil'
-        state.painter.color = 0
-        state.painter.colour = 0
-        state.painter.grid = true
-    }
+        }); 
+        state.painter.tool = 'pencil';
+        state.painter.color = 0;
+        state.painter.colour = 0;
+        state.painter.grid = true;
+    };
 
     var destoryPainter = () => {
-        state.painter.destroy()
+        state.painter.destroy();
         if (state.painter.dom) {
             state.painter.dom
                 .parentNode
                 .removeChild(
                     state.painter.dom
-                )
+                );
         }
-    }
+    };
 
-    newPainter()
+    newPainter();
     state.tools = [ 
         'pencil', 
         'bucket', 
@@ -87,162 +88,163 @@ module.exports = function(state, emitter) {
         'hd',
         'shaded',
         'clear',
-    ]
+    ];
 
     emitter.on('color-select', (color) => {
-        state.painter.colour = color
-        emitter.emit('render')
-    })
+        state.painter.colour = color;
+        emitter.emit('render');
+    });
 
     emitter.on('tool-select', (action) => {
-        var temp
+        var temp;
         if (action == 'pencil' || action == 'bucket') {
-            state.painter.tool = action
+            state.painter.tool = action;
         }
         else if (action == 'grid') {
-            state.painter.grid = !state.painter.grid
+            state.painter.grid = !state.painter.grid;
         }
         else if (action == 'shaded') {
-            state.moose.shaded = !state.moose.shaded
+            state.moose.shaded = !state.moose.shaded;
             if (!state.moose.shaded) {
-                temp = state.painter.painting
+                temp = state.painter.painting;
                 state.painter.painting = temp.map(arr => {
                     return arr.map(color => {
-                        return (color % 17) + (3 * 17)
-                    })
-                })
-                state.painter.colour = (state.painter.colour % 17) + (3 * 17)
+                        return (color % 17) + (3 * 17);
+                    });
+                });
+                state.painter.colour = (state.painter.colour % 17) + (3 * 17);
             }
         }
         else if (action == 'hd') {
-            state.moose.hd = !state.moose.hd
-            destoryPainter()
-            temp = state.painter.painting
+            state.moose.hd = !state.moose.hd;
+            destoryPainter();
+            temp = state.painter.painting;
             // resize image for new canvas
             if (state.moose.hd) {
                 temp = temp.concat(Array.from({
                     length: sizeInfo.hd.height - temp.length,
-                }).fill([]))
+                }).fill([]));
                 temp.forEach((arr, i) => {
                     temp[i] = arr.concat(Array.from({
                         length: sizeInfo.hd.width - arr.length,
-                    }, () => 0))
-                })
+                    }, () => 0));
+                });
             }
             else {
                 temp.splice(
                     sizeInfo.normal.height,
                     temp.length - sizeInfo.normal.height
-                )
+                );
                 temp.forEach(arr => {
                     arr.splice(
                         sizeInfo.normal.width,
                         arr.length - sizeInfo.normal.width
-                    )
-                })
+                    );
+                });
             }
-            newPainter()
-            state.painter.painting = temp
-            state.painter.init()
+            newPainter();
+            state.painter.painting = temp;
+            state.painter.init();
         }
         else {
-            state.painter[action]()
+            state.painter[action]();
         }
-        emitter.emit('render')
-    })
+        emitter.emit('render');
+    });
 
     emitter.on('moose-name-change', (name) => {
-        state.moose.name = name
-    })
+        state.moose.name = name;
+    });
 
     emitter.on('moose-save', () => {
         if (state.moose.shaded) 
-            state.moose.shade = gridToShade(state.painter.painting)
-        state.moose.image = gridToMoose(state.painter.painting)
+            state.moose.shade = gridToShade(state.painter.painting);
+        state.moose.image = gridToMoose(state.painter.painting);
         api.saveMoose(state.moose, (err, body) => {
             if (err || !body || body.status == 'error') {
                 if (!body) body = { 
                     msg: err.toString() || 'unknown error',
-                }
+                };
                 if (typeof body.msg == 'object') 
-                    body.msg = JSON.stringify(body.msg)
+                    body.msg = JSON.stringify(body.msg);
                 state.title.msg = 
-                    `failed to save moose: ${body.msg}`
-                state.title.status = 'danger'
+                    `failed to save moose: ${body.msg}`;
+                state.title.status = 'danger';
             }
             else {
-                state.title.msg = body.msg
-                state.title.status = 'success'
+                state.title.msg = body.msg;
+                state.title.status = 'success';
             }
              
-            emitter.emit('render')
-        })
-    })
+            emitter.emit('render');
+        });
+    });
 
     emitter.on('moose-edit', (editmoose) => {
-        state.moose.name = editmoose || ''
-        state.title.msg = `editing ${editmoose}...`
+        state.moose.name = editmoose || '';
+        state.title.msg = `editing ${editmoose}...`;
         api.getMoose(editmoose, (err, body) => {
             if (!err && body && body.image) {
                 // not all moose have the hd field
                 // this will convert undefined/null
                 // to false
-                body.hd = !!body.hd
+                body.hd = !!body.hd;
                 if (state.moose.hd != body.hd) {
-                    state.moose.hd = body.hd
-                    destoryPainter()
-                    newPainter()
-                    state.painter.init()
+                    state.moose.hd = body.hd;
+                    destoryPainter();
+                    newPainter();
+                    state.painter.init();
                 }
 
-                state.moose.shaded = body.shaded
+                state.moose.shaded = body.shaded;
                 if (body.shaded) {
-                    state.painter.painting = mooseShadeToGrid(body.image,body.shade)
+                    state.painter.painting = mooseShadeToGrid(body.image,body.shade);
                 }
                 else {
-                    state.painter.painting = mooseToGrid(body.image)
+                    state.painter.painting = mooseToGrid(body.image);
                 }
             }
-            emitter.emit('render')
-        })
-    })
+            emitter.emit('render');
+        });
+    });
 
     emitter.on('canvas-wrap-exists', () => {
-        state.canvasWrap = document.getElementById('mousewrap')
-    })
+        state.canvasWrap = document.getElementById('mousewrap');
+    });
 
     emitter.on('pushState', () => {
         if (getParameterByName('edit')) 
-            emitter.emit('moose-edit', getParameterByName('edit'))
-    })
+            emitter.emit('moose-edit', getParameterByName('edit'));
+    });
 
-    state.painter.init()
+    state.painter.init();
     if (getParameterByName('edit')) 
-        emitter.emit('moose-edit', getParameterByName('edit'))
+        emitter.emit('moose-edit', getParameterByName('edit'));
 
     emitter.on('DOMContentLoaded', () => {
         // TODO: remove me
         // hack to disable canvas drawing while out of canvas
-        state.canvasWrap = document.getElementById('mousewrap')
+        state.canvasWrap = document.getElementById('mousewrap');
         document.addEventListener('mousemove', e => {
-            var canvasRect = state.canvasWrap.getBoundingClientRect() 
+            if (state.canvasWrap === null) return;
+            var canvasRect = state.canvasWrap.getBoundingClientRect(); 
             if (e.clientX > canvasRect.left && 
                 e.clientX < canvasRect.right &&
                 e.clientY > canvasRect.top && 
                 e.clientY < canvasRect.bottom
             ) {
-                if (state.painter.drawing) return
-                state.painter.drawing = true
-                state.painter.draw()
+                if (state.painter.drawing) return;
+                state.painter.drawing = true;
+                state.painter.draw();
             }
             else {
-                state.painter.drawing = false
+                state.painter.drawing = false;
             }
-        })
-    })
+        });
+    });
 
     emitter.on('*', () => {
-        if (state.painter.drawing) return
-        state.painter.draw()
-    })
-}
+        if (state.painter.drawing) return;
+        state.painter.draw();
+    });
+};

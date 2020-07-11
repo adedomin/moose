@@ -14,16 +14,46 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
-var galleryPageSize = 12
+var galleryPageSize = 12;
 
-var getGalleryPage = require('../lib/api.js').getGalleryPage,
+var {getGalleryPage} = require('../lib/api.js'),
     GridPaint = require('gridpaint'),
-    mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
-    mooseShadeToGrid = require('../lib/moose-grid.js').mooseShadeToGrid,
+    {mooseToGrid} = require('../lib/moose-grid.js'),
+    {mooseShadeToGrid} = require('../lib/moose-grid.js'),
     each = require('async.each'),
     sizeInfo = require('../lib/moose-size.js'),
-    colors = require('../lib/color-palette')
+    colors = require('../lib/color-palette');
+
+function getGalleryPageCallback(state, emitter, err, body) {
+    if (err) return;
+    if (!(body instanceof Array)) return;
+    if (body == []) return;
+
+    state.gallery = [];
+
+    each(body, (moose, cb) => {
+        if (moose.shaded)
+            generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
+                state.gallery.push({
+                    name: moose.name,
+                    image: blob,
+                });               
+                cb();
+            });
+        else
+            generateGalleryMoose(moose.image, moose.hd, (blob) => {
+                state.gallery.push({
+                    name: moose.name,
+                    image: blob,
+                });               
+                cb();
+            });
+    }, () => {
+        emitter.emit('render');
+    });
+}
 
 // generates data urls from moose
 function generateGalleryMoose(image, isHd, cb) {
@@ -37,14 +67,14 @@ function generateGalleryMoose(image, isHd, cb) {
         cellWidth: 16,
         cellHeight: 24,
         palette: colors.fullPallete,
-    })
+    });
 
-    painter.painting = mooseToGrid(image)
-    painter.color = 0 // remove dumb errors from dom
-    painter.colour = 0
-    painter.draw()
-    painter.drawing = false
-    painter.dom.toBlob(cb, 'image/png')
+    painter.painting = mooseToGrid(image);
+    painter.color = 0; // remove dumb errors from dom
+    painter.colour = 0;
+    painter.draw();
+    painter.drawing = false;
+    painter.dom.toBlob(cb, 'image/png');
 }
 
 function generateGalleryShadedMoose(image, shade, isHd, cb) {
@@ -58,125 +88,80 @@ function generateGalleryShadedMoose(image, shade, isHd, cb) {
         cellWidth: 16,
         cellHeight: 24,
         palette: colors.fullPallete,
-    })
+    });
 
-    painter.painting = mooseShadeToGrid(image,shade)
-    painter.color = 0 // remove dumb errors from dom
-    painter.colour = 0
-    painter.draw()
-    painter.drawing = false
-    painter.dom.toBlob(cb, 'image/png')
+    painter.painting = mooseShadeToGrid(image,shade);
+    painter.color = 0; // remove dumb errors from dom
+    painter.colour = 0;
+    painter.draw();
+    painter.drawing = false;
+    painter.dom.toBlob(cb, 'image/png');
 }
 
 module.exports = function(state, emitter) {
-    state.gallery = []
+    const getGallCb = getGalleryPageCallback.bind(
+        this,
+        state,
+        emitter
+    );
+
+    state.gallery = [];
+
+    state.galleryPage = 0;
 
     state.query = {
         name: '',
         age: 'newest',
-    }
+    };
 
     emitter.on('gallery-age', (value) => {
-        state.query.age = value
-        emitter.emit('gallery-get')
-    })
+        state.query.age = value;
+        emitter.emit('gallery-get');
+    });
 
     emitter.on('gallery-name', (value) => {
-        state.query.name = value
-        emitter.emit('gallery-get')
-    })
+        state.query.name = value;
+        emitter.emit('gallery-get');
+    });
 
     emitter.on('gallery-get', () => {
+        state.galleryPage = 0;
+
         getGalleryPage(
             state.query.age,
             state.query.name,
             0,
-            (err, body) => {
-                if (err) return
-                if (!(body instanceof Array)) return
-                state.gallery = []
-                each(body, (moose, cb) => {
-                    if (moose.shaded)
-                        generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
-                            state.gallery.push({
-                                name: moose.name,
-                                image: blob,
-                            })               
-                            cb()
-                        })
-                    else
-                        generateGalleryMoose(moose.image, moose.hd, (blob) => {
-                            state.gallery.push({
-                                name: moose.name,
-                                image: blob,
-                            })               
-                            cb()
-                        })
-                }, () => {
-                    emitter.emit('render')
-                })
-            })
-    })
+            getGallCb,
+        );
+    });
 
-    state.timeoutScroll = false 
+    emitter.on('gallery-prev', () => {
+        if (state.galleryPage < 1) return;
+        state.galleryPage -= 1;
 
-    emitter.on('gallery-end-timeout', () => {
-        state.timeoutScroll = false
-    })
-
-    emitter.on('gallery-bottom', () => {
-        // no more meese to show
-        if (state.gallery.length < galleryPageSize || state.gallery.length % galleryPageSize != 0) 
-            return
-        state.timeoutScroll = true
         getGalleryPage(
             state.query.age,
             state.query.name,
-            Math.ceil(state.gallery.length / galleryPageSize),
-            (err, body) => {
-                if (err) return
-                if (!(body instanceof Array)) return
-                if (body == []) return
-                each(body, (moose, cb) => {
-                    if (moose.shaded)
-                        generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
-                            state.gallery.push({
-                                name: moose.name,
-                                image: blob,
-                            })               
-                            cb()
-                        })
-                    else
-                        generateGalleryMoose(moose.image, moose.hd, (blob) => {
-                            state.gallery.push({
-                                name: moose.name,
-                                image: blob,
-                            })               
-                            cb()
-                        })
-                }, () => {
-                    emitter.emit('render')
-                    setTimeout(() => emitter.emit('gallery-end-timeout'), 300)
-                })
-            })
-    })
+            state.galleryPage,
+            getGallCb,
+        );
+    });
 
-    emitter.emit('gallery-get')
+    emitter.on('gallery-next', () => {
+        state.galleryPage += 1;
+        // no more meese to show
+        if (state.gallery.length < galleryPageSize) {
+            state.galleryPage -= 1;
+            return;
+        }
 
-    var lastScrollPos = 999
-    emitter.on('DOMContentLoaded', () => {
-        window.addEventListener('scroll', () => {
-            if (state.timeoutScroll || window.location.hash != '#gallery') 
-                return
-            var scrollPos = (
-                (document.documentElement.scrollTop 
-                    + document.body.scrollTop) 
-                / (document.documentElement.scrollHeight 
-                    - document.documentElement.clientHeight) 
-                * 100)
-            if (scrollPos > 87 && scrollPos - lastScrollPos > 0)
-                emitter.emit('gallery-bottom')
-            lastScrollPos = scrollPos
-        })
-    })
-}
+        getGalleryPage(
+            state.query.age,
+            state.query.name,
+            state.galleryPage,
+            getGallCb,
+        );
+    });
+
+    emitter.emit('gallery-get');
+};

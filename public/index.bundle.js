@@ -5046,25 +5046,26 @@ function extend(target) {
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
 // css
-require('../node_modules/bulma/css/bulma.css')
-require('./moose-style.css')
+require('../node_modules/bulma/css/bulma.css');
+require('./moose-style.css');
 
 var choo = require('choo'),
     root = require('./view/root.js'),
     gallery = require('./view/gallery.js'),
     rootState = require('./use/root-use.js'),
     galleryState = require('./use/gallery-use.js'),
-    app = choo()
+    app = choo();
 
-app.use(rootState)
-app.use(galleryState)
+app.use(rootState);
+app.use(galleryState);
 
-app.route('/', root)
-app.route('/gallery', gallery)
+app.route('/', root);
+app.route('/gallery', gallery);
 
-document.body.appendChild(app.start())
+document.body.appendChild(app.start());
 
 },{"../node_modules/bulma/css/bulma.css":19,"./moose-style.css":67,"./use/gallery-use.js":68,"./use/root-use.js":69,"./view/gallery.js":70,"./view/root.js":71,"choo":21}],63:[function(require,module,exports){
 /*
@@ -5083,22 +5084,23 @@ document.body.appendChild(app.start())
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
-var http = require('xhr')
+var http = require('xhr');
 
 function request(req, cb) {
     http(req, (err, res, body) => {
         try {
-            body = JSON.parse(body)
+            body = JSON.parse(body);
         }
         catch (e) {
-            return cb(e, null)
+            return cb(e, null);
         }
-        cb(err, body)
-    })
+        cb(err, body);
+    });
 }
 
-module.exports = request
+module.exports = request;
 module.exports.saveMoose = function(moose, cb) {
     request({
         uri: 'new',
@@ -5107,16 +5109,16 @@ module.exports.saveMoose = function(moose, cb) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(moose),
-    }, cb)
-}
+    }, cb);
+};
 module.exports.getMoose = function(moose, cb) {
-    request({ uri: `moose/${encodeURIComponent(moose)}` }, cb)
-}
+    request({ uri: `moose/${encodeURIComponent(moose)}` }, cb);
+};
 module.exports.getGalleryPage = function(age, query, page, cb) {
     request({
         uri: `gallery/${age}?q=${encodeURIComponent(query)}&p=${page}`,
-    }, cb)
-}
+    }, cb);
+};
 
 },{"xhr":59}],64:[function(require,module,exports){
 /*
@@ -5135,6 +5137,7 @@ module.exports.getGalleryPage = function(age, query, page, cb) {
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
 var palettes = {
     // legacy palette
@@ -5308,15 +5311,15 @@ var palettes = {
     ],
     // for gridpaint, concat of above
     fullPallete: [],
-}
+};
 
 palettes.fullPallete = palettes
     .canvasPalette
     .reduce((full, part) => {
-        return full.concat(part)
-    })
+        return full.concat(part);
+    });
 
-module.exports = palettes
+module.exports = palettes;
 
 },{}],65:[function(require,module,exports){
 /*
@@ -5335,50 +5338,53 @@ module.exports = palettes
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
-var colors = require('./color-palette')
+var colors = require('./color-palette');
 
 module.exports.mooseToGrid = function mooseToGrid(image) {
     return image.split('\n').map(str => {
         return str.split('').map(char => {
-            return colors.colorToMooseString.indexOf(char)+51
-        })
-    })
-}
+            return colors.colorToMooseString.indexOf(char)+51;
+        });
+    });
+};
 
 module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
     var shadeLayer = shader.split('\n').map(str =>{
         return str.split('').map(char=>{
-            return +char || 0
-        })
-    })
+            return +char || 0;
+        });
+    });
 
     return image.split('\n').map((str,ind) => {
         return str.split('').map((char,ind2) => {
-            return colors.legacyColorToMoose.indexOf(char)+(17*shadeLayer[ind][ind2])
-        })
-    })
-}
+            return colors.legacyColorToMoose.indexOf(char)+(17*shadeLayer[ind][ind2]);
+        });
+    });
+};
 
 module.exports.gridToMoose = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            if (isNaN(char)) char = 0
-            return colors.colorToMooseString[char]
-        }).join('')
-    }).join('\n')
-}
+            if (isNaN(char)) char = 0;
+            return colors.colorToMooseString[char];
+        }).join('');
+    }).join('\n');
+};
 
 module.exports.gridToShade = function(painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            if (isNaN(char)) char = 0
-            return colors.colorToShadeString[char]
-        }).join('')
-    }).join('\n')
-}
+            if (isNaN(char)) char = 0;
+            return colors.colorToShadeString[char];
+        }).join('');
+    }).join('\n');
+};
 
 },{"./color-palette":64}],66:[function(require,module,exports){
+'use strict';
+
 module.exports = {
     normal: {
         width: 26,
@@ -5390,7 +5396,7 @@ module.exports = {
     },
     isHd: true,
     hasShade: true,
-}
+};
 
 },{}],67:[function(require,module,exports){
 var css = "html {\n  background-color: #f5f5f5;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
@@ -5411,16 +5417,46 @@ var css = "html {\n  background-color: #f5f5f5;\n}\n.moose-button {\n  margin-to
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
-var galleryPageSize = 12
+var galleryPageSize = 12;
 
-var getGalleryPage = require('../lib/api.js').getGalleryPage,
+var {getGalleryPage} = require('../lib/api.js'),
     GridPaint = require('gridpaint'),
-    mooseToGrid = require('../lib/moose-grid.js').mooseToGrid,
-    mooseShadeToGrid = require('../lib/moose-grid.js').mooseShadeToGrid,
+    {mooseToGrid} = require('../lib/moose-grid.js'),
+    {mooseShadeToGrid} = require('../lib/moose-grid.js'),
     each = require('async.each'),
     sizeInfo = require('../lib/moose-size.js'),
-    colors = require('../lib/color-palette')
+    colors = require('../lib/color-palette');
+
+function getGalleryPageCallback(state, emitter, err, body) {
+    if (err) return;
+    if (!(body instanceof Array)) return;
+    if (body == []) return;
+
+    state.gallery = [];
+
+    each(body, (moose, cb) => {
+        if (moose.shaded)
+            generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
+                state.gallery.push({
+                    name: moose.name,
+                    image: blob,
+                });               
+                cb();
+            });
+        else
+            generateGalleryMoose(moose.image, moose.hd, (blob) => {
+                state.gallery.push({
+                    name: moose.name,
+                    image: blob,
+                });               
+                cb();
+            });
+    }, () => {
+        emitter.emit('render');
+    });
+}
 
 // generates data urls from moose
 function generateGalleryMoose(image, isHd, cb) {
@@ -5434,14 +5470,14 @@ function generateGalleryMoose(image, isHd, cb) {
         cellWidth: 16,
         cellHeight: 24,
         palette: colors.fullPallete,
-    })
+    });
 
-    painter.painting = mooseToGrid(image)
-    painter.color = 0 // remove dumb errors from dom
-    painter.colour = 0
-    painter.draw()
-    painter.drawing = false
-    painter.dom.toBlob(cb, 'image/png')
+    painter.painting = mooseToGrid(image);
+    painter.color = 0; // remove dumb errors from dom
+    painter.colour = 0;
+    painter.draw();
+    painter.drawing = false;
+    painter.dom.toBlob(cb, 'image/png');
 }
 
 function generateGalleryShadedMoose(image, shade, isHd, cb) {
@@ -5455,128 +5491,83 @@ function generateGalleryShadedMoose(image, shade, isHd, cb) {
         cellWidth: 16,
         cellHeight: 24,
         palette: colors.fullPallete,
-    })
+    });
 
-    painter.painting = mooseShadeToGrid(image,shade)
-    painter.color = 0 // remove dumb errors from dom
-    painter.colour = 0
-    painter.draw()
-    painter.drawing = false
-    painter.dom.toBlob(cb, 'image/png')
+    painter.painting = mooseShadeToGrid(image,shade);
+    painter.color = 0; // remove dumb errors from dom
+    painter.colour = 0;
+    painter.draw();
+    painter.drawing = false;
+    painter.dom.toBlob(cb, 'image/png');
 }
 
 module.exports = function(state, emitter) {
-    state.gallery = []
+    const getGallCb = getGalleryPageCallback.bind(
+        this,
+        state,
+        emitter
+    );
+
+    state.gallery = [];
+
+    state.galleryPage = 0;
 
     state.query = {
         name: '',
         age: 'newest',
-    }
+    };
 
     emitter.on('gallery-age', (value) => {
-        state.query.age = value
-        emitter.emit('gallery-get')
-    })
+        state.query.age = value;
+        emitter.emit('gallery-get');
+    });
 
     emitter.on('gallery-name', (value) => {
-        state.query.name = value
-        emitter.emit('gallery-get')
-    })
+        state.query.name = value;
+        emitter.emit('gallery-get');
+    });
 
     emitter.on('gallery-get', () => {
+        state.galleryPage = 0;
+
         getGalleryPage(
             state.query.age,
             state.query.name,
             0,
-            (err, body) => {
-                if (err) return
-                if (!(body instanceof Array)) return
-                state.gallery = []
-                each(body, (moose, cb) => {
-                    if (moose.shaded)
-                        generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
-                            state.gallery.push({
-                                name: moose.name,
-                                image: blob,
-                            })               
-                            cb()
-                        })
-                    else
-                        generateGalleryMoose(moose.image, moose.hd, (blob) => {
-                            state.gallery.push({
-                                name: moose.name,
-                                image: blob,
-                            })               
-                            cb()
-                        })
-                }, () => {
-                    emitter.emit('render')
-                })
-            })
-    })
+            getGallCb,
+        );
+    });
 
-    state.timeoutScroll = false 
+    emitter.on('gallery-prev', () => {
+        if (state.galleryPage < 1) return;
+        state.galleryPage -= 1;
 
-    emitter.on('gallery-end-timeout', () => {
-        state.timeoutScroll = false
-    })
-
-    emitter.on('gallery-bottom', () => {
-        // no more meese to show
-        if (state.gallery.length < galleryPageSize || state.gallery.length % galleryPageSize != 0) 
-            return
-        state.timeoutScroll = true
         getGalleryPage(
             state.query.age,
             state.query.name,
-            Math.ceil(state.gallery.length / galleryPageSize),
-            (err, body) => {
-                if (err) return
-                if (!(body instanceof Array)) return
-                if (body == []) return
-                each(body, (moose, cb) => {
-                    if (moose.shaded)
-                        generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
-                            state.gallery.push({
-                                name: moose.name,
-                                image: blob,
-                            })               
-                            cb()
-                        })
-                    else
-                        generateGalleryMoose(moose.image, moose.hd, (blob) => {
-                            state.gallery.push({
-                                name: moose.name,
-                                image: blob,
-                            })               
-                            cb()
-                        })
-                }, () => {
-                    emitter.emit('render')
-                    setTimeout(() => emitter.emit('gallery-end-timeout'), 300)
-                })
-            })
-    })
+            state.galleryPage,
+            getGallCb,
+        );
+    });
 
-    emitter.emit('gallery-get')
+    emitter.on('gallery-next', () => {
+        state.galleryPage += 1;
+        // no more meese to show
+        if (state.gallery.length < galleryPageSize) {
+            state.galleryPage -= 1;
+            return;
+        }
 
-    var lastScrollPos = 999
-    emitter.on('DOMContentLoaded', () => {
-        window.addEventListener('scroll', () => {
-            if (state.timeoutScroll || window.location.hash != '#gallery') 
-                return
-            var scrollPos = (
-                (document.documentElement.scrollTop 
-                    + document.body.scrollTop) 
-                / (document.documentElement.scrollHeight 
-                    - document.documentElement.clientHeight) 
-                * 100)
-            if (scrollPos > 87 && scrollPos - lastScrollPos > 0)
-                emitter.emit('gallery-bottom')
-            lastScrollPos = scrollPos
-        })
-    })
-}
+        getGalleryPage(
+            state.query.age,
+            state.query.name,
+            state.galleryPage,
+            getGallCb,
+        );
+    });
+
+    emitter.emit('gallery-get');
+};
 
 },{"../lib/api.js":63,"../lib/color-palette":64,"../lib/moose-grid.js":65,"../lib/moose-size.js":66,"async.each":5,"gridpaint":29}],69:[function(require,module,exports){
 /*
@@ -5595,37 +5586,38 @@ module.exports = function(state, emitter) {
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
 var GridPaint = require('gridpaint'),
     api = require('../lib/api.js'),
-    mooseToGrid = require('../lib/moose-grid').mooseToGrid,
-    mooseShadeToGrid = require('../lib/moose-grid').mooseShadeToGrid,
-    gridToMoose = require('../lib/moose-grid').gridToMoose,
-    gridToShade = require('../lib/moose-grid').gridToShade,
+    {mooseToGrid} = require('../lib/moose-grid'),
+    {mooseShadeToGrid} = require('../lib/moose-grid'),
+    {gridToMoose} = require('../lib/moose-grid'),
+    {gridToShade} = require('../lib/moose-grid'),
     sizeInfo = require('../lib/moose-size'),
-    colors = require('../lib/color-palette')
+    colors = require('../lib/color-palette');
 
 function getParameterByName(name) {
-    var url = window.location.href
-    name = name.replace(/[[]]/g, '\\$&')
+    var url = window.location.href;
+    name = name.replace(/[[]]/g, '\\$&');
     var regex = new RegExp(`[?&]${name}(=([^&]*)|&|$)`),
-        results = regex.exec(url)
-    if (!results) return null
-    if (!results[2]) return ''
-    return decodeURIComponent(results[2].replace(/\+/g, ' '))
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
 module.exports = function(state, emitter) {
     state.title = {
         msg: 'Make a Moose today',
         status: 'primary',
-    }
+    };
 
     state.moose = {
         name: '',
         hd: false,
         shaded: true,
-    }
+    };
 
     var newPainter = () => {
         state.painter = new GridPaint({
@@ -5640,25 +5632,25 @@ module.exports = function(state, emitter) {
             cellWidth: 16,
             cellHeight: 24,
             palette: colors.fullPallete,
-        }) 
-        state.painter.tool = 'pencil'
-        state.painter.color = 0
-        state.painter.colour = 0
-        state.painter.grid = true
-    }
+        }); 
+        state.painter.tool = 'pencil';
+        state.painter.color = 0;
+        state.painter.colour = 0;
+        state.painter.grid = true;
+    };
 
     var destoryPainter = () => {
-        state.painter.destroy()
+        state.painter.destroy();
         if (state.painter.dom) {
             state.painter.dom
                 .parentNode
                 .removeChild(
                     state.painter.dom
-                )
+                );
         }
-    }
+    };
 
-    newPainter()
+    newPainter();
     state.tools = [ 
         'pencil', 
         'bucket', 
@@ -5668,165 +5660,166 @@ module.exports = function(state, emitter) {
         'hd',
         'shaded',
         'clear',
-    ]
+    ];
 
     emitter.on('color-select', (color) => {
-        state.painter.colour = color
-        emitter.emit('render')
-    })
+        state.painter.colour = color;
+        emitter.emit('render');
+    });
 
     emitter.on('tool-select', (action) => {
-        var temp
+        var temp;
         if (action == 'pencil' || action == 'bucket') {
-            state.painter.tool = action
+            state.painter.tool = action;
         }
         else if (action == 'grid') {
-            state.painter.grid = !state.painter.grid
+            state.painter.grid = !state.painter.grid;
         }
         else if (action == 'shaded') {
-            state.moose.shaded = !state.moose.shaded
+            state.moose.shaded = !state.moose.shaded;
             if (!state.moose.shaded) {
-                temp = state.painter.painting
+                temp = state.painter.painting;
                 state.painter.painting = temp.map(arr => {
                     return arr.map(color => {
-                        return (color % 17) + (3 * 17)
-                    })
-                })
-                state.painter.colour = (state.painter.colour % 17) + (3 * 17)
+                        return (color % 17) + (3 * 17);
+                    });
+                });
+                state.painter.colour = (state.painter.colour % 17) + (3 * 17);
             }
         }
         else if (action == 'hd') {
-            state.moose.hd = !state.moose.hd
-            destoryPainter()
-            temp = state.painter.painting
+            state.moose.hd = !state.moose.hd;
+            destoryPainter();
+            temp = state.painter.painting;
             // resize image for new canvas
             if (state.moose.hd) {
                 temp = temp.concat(Array.from({
                     length: sizeInfo.hd.height - temp.length,
-                }).fill([]))
+                }).fill([]));
                 temp.forEach((arr, i) => {
                     temp[i] = arr.concat(Array.from({
                         length: sizeInfo.hd.width - arr.length,
-                    }, () => 0))
-                })
+                    }, () => 0));
+                });
             }
             else {
                 temp.splice(
                     sizeInfo.normal.height,
                     temp.length - sizeInfo.normal.height
-                )
+                );
                 temp.forEach(arr => {
                     arr.splice(
                         sizeInfo.normal.width,
                         arr.length - sizeInfo.normal.width
-                    )
-                })
+                    );
+                });
             }
-            newPainter()
-            state.painter.painting = temp
-            state.painter.init()
+            newPainter();
+            state.painter.painting = temp;
+            state.painter.init();
         }
         else {
-            state.painter[action]()
+            state.painter[action]();
         }
-        emitter.emit('render')
-    })
+        emitter.emit('render');
+    });
 
     emitter.on('moose-name-change', (name) => {
-        state.moose.name = name
-    })
+        state.moose.name = name;
+    });
 
     emitter.on('moose-save', () => {
         if (state.moose.shaded) 
-            state.moose.shade = gridToShade(state.painter.painting)
-        state.moose.image = gridToMoose(state.painter.painting)
+            state.moose.shade = gridToShade(state.painter.painting);
+        state.moose.image = gridToMoose(state.painter.painting);
         api.saveMoose(state.moose, (err, body) => {
             if (err || !body || body.status == 'error') {
                 if (!body) body = { 
                     msg: err.toString() || 'unknown error',
-                }
+                };
                 if (typeof body.msg == 'object') 
-                    body.msg = JSON.stringify(body.msg)
+                    body.msg = JSON.stringify(body.msg);
                 state.title.msg = 
-                    `failed to save moose: ${body.msg}`
-                state.title.status = 'danger'
+                    `failed to save moose: ${body.msg}`;
+                state.title.status = 'danger';
             }
             else {
-                state.title.msg = body.msg
-                state.title.status = 'success'
+                state.title.msg = body.msg;
+                state.title.status = 'success';
             }
              
-            emitter.emit('render')
-        })
-    })
+            emitter.emit('render');
+        });
+    });
 
     emitter.on('moose-edit', (editmoose) => {
-        state.moose.name = editmoose || ''
-        state.title.msg = `editing ${editmoose}...`
+        state.moose.name = editmoose || '';
+        state.title.msg = `editing ${editmoose}...`;
         api.getMoose(editmoose, (err, body) => {
             if (!err && body && body.image) {
                 // not all moose have the hd field
                 // this will convert undefined/null
                 // to false
-                body.hd = !!body.hd
+                body.hd = !!body.hd;
                 if (state.moose.hd != body.hd) {
-                    state.moose.hd = body.hd
-                    destoryPainter()
-                    newPainter()
-                    state.painter.init()
+                    state.moose.hd = body.hd;
+                    destoryPainter();
+                    newPainter();
+                    state.painter.init();
                 }
 
-                state.moose.shaded = body.shaded
+                state.moose.shaded = body.shaded;
                 if (body.shaded) {
-                    state.painter.painting = mooseShadeToGrid(body.image,body.shade)
+                    state.painter.painting = mooseShadeToGrid(body.image,body.shade);
                 }
                 else {
-                    state.painter.painting = mooseToGrid(body.image)
+                    state.painter.painting = mooseToGrid(body.image);
                 }
             }
-            emitter.emit('render')
-        })
-    })
+            emitter.emit('render');
+        });
+    });
 
     emitter.on('canvas-wrap-exists', () => {
-        state.canvasWrap = document.getElementById('mousewrap')
-    })
+        state.canvasWrap = document.getElementById('mousewrap');
+    });
 
     emitter.on('pushState', () => {
         if (getParameterByName('edit')) 
-            emitter.emit('moose-edit', getParameterByName('edit'))
-    })
+            emitter.emit('moose-edit', getParameterByName('edit'));
+    });
 
-    state.painter.init()
+    state.painter.init();
     if (getParameterByName('edit')) 
-        emitter.emit('moose-edit', getParameterByName('edit'))
+        emitter.emit('moose-edit', getParameterByName('edit'));
 
     emitter.on('DOMContentLoaded', () => {
         // TODO: remove me
         // hack to disable canvas drawing while out of canvas
-        state.canvasWrap = document.getElementById('mousewrap')
+        state.canvasWrap = document.getElementById('mousewrap');
         document.addEventListener('mousemove', e => {
-            var canvasRect = state.canvasWrap.getBoundingClientRect() 
+            if (state.canvasWrap === null) return;
+            var canvasRect = state.canvasWrap.getBoundingClientRect(); 
             if (e.clientX > canvasRect.left && 
                 e.clientX < canvasRect.right &&
                 e.clientY > canvasRect.top && 
                 e.clientY < canvasRect.bottom
             ) {
-                if (state.painter.drawing) return
-                state.painter.drawing = true
-                state.painter.draw()
+                if (state.painter.drawing) return;
+                state.painter.drawing = true;
+                state.painter.draw();
             }
             else {
-                state.painter.drawing = false
+                state.painter.drawing = false;
             }
-        })
-    })
+        });
+    });
 
     emitter.on('*', () => {
-        if (state.painter.drawing) return
-        state.painter.draw()
-    })
-}
+        if (state.painter.drawing) return;
+        state.painter.draw();
+    });
+};
 
 },{"../lib/api.js":63,"../lib/color-palette":64,"../lib/moose-grid":65,"../lib/moose-size":66,"gridpaint":29}],70:[function(require,module,exports){
 /*
@@ -5845,8 +5838,9 @@ module.exports = function(state, emitter) {
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
-var html = require('choo/html')
+var html = require('choo/html');
 
 module.exports = function(state, emit) {
     return html`
@@ -5880,6 +5874,12 @@ module.exports = function(state, emit) {
             <div class="container">
                 <div class="field has-addons">
                     <p class="control">
+                        <button value="prev"
+                            onclick=${queryPrevious}
+                            class="button"
+                        >
+                            ${'<<'}
+                        </button>
                         <button value="oldest" 
                                 onclick=${queryAge} 
                                 class="button ${state.query.age == 'oldest' ? 'is-info' : ''}"
@@ -5902,11 +5902,17 @@ module.exports = function(state, emit) {
                         >
                             newest
                         </button>
+                        <button value="next"
+                            onclick=${queryNext}
+                            class="button"
+                        >
+                            ${'>>'}
+                        </button>
                     </p>
                 </div>
                 <div class="columns is-multiline">
                     ${state.gallery.map(moose => {
-                        return html`
+        return html`
                             <div class="column is-3">
                                 <div class="box has-text-centered">
                                     <a href="#?edit=${moose.name}">
@@ -5916,8 +5922,8 @@ module.exports = function(state, emit) {
                                     </a>
                                 </div>
                             </div>
-                        `
-                    })}
+                        `;
+    })}
                 </div>
             </div>
         </div>
@@ -5937,15 +5943,24 @@ module.exports = function(state, emit) {
           </div>
         </div>
         </div>
-    `
+    `;
+
+    function queryPrevious() {
+        emit('gallery-prev');
+    }
+
     function queryAge(e) {
-        emit('gallery-age', e.target.value)
+        emit('gallery-age', e.target.value);
     }
 
     function queryName(e) {
-        emit('gallery-name', e.target.value) 
+        emit('gallery-name', e.target.value); 
     }
-}
+
+    function queryNext() {
+        emit('gallery-next');
+    }
+};
 
 },{"choo/html":20}],71:[function(require,module,exports){
 /*
@@ -5964,9 +5979,10 @@ module.exports = function(state, emit) {
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+'use strict';
 
 var html = require('choo/html'),
-    colors = require('../lib/color-palette')
+    colors = require('../lib/color-palette');
 
 module.exports = function(state, emit) {
     return html`
@@ -6034,58 +6050,58 @@ module.exports = function(state, emit) {
 
                         <div class="field has-addons has-addons-centered">
                             ${state.tools.map(tool => {
-                                var extra = ''
-                                if (tool == state.painter.tool)
-                                    extra += ' is-info'
-                                else if (tool == 'grid' && state.painter.grid)
-                                    extra += ' is-success'
-                                else if (tool == 'hd' && state.moose.hd)
-                                    extra += ' is-success'
-                                else if (tool == 'shaded' && state.moose.shaded)
-                                    extra += ' is-success'
-                                else if (tool == 'clear')
-                                    extra += ' is-danger'
-                                return html`<p class="control"><button 
+        var extra = '';
+        if (tool == state.painter.tool)
+            extra += ' is-info';
+        else if (tool == 'grid' && state.painter.grid)
+            extra += ' is-success';
+        else if (tool == 'hd' && state.moose.hd)
+            extra += ' is-success';
+        else if (tool == 'shaded' && state.moose.shaded)
+            extra += ' is-success';
+        else if (tool == 'clear')
+            extra += ' is-danger';
+        return html`<p class="control"><button 
                                     onclick=${toolSelect}
                                     class="button ${extra}"
                                 >
                                     ${tool}
-                                </button></p>`
-                            })}
+                                </button></p>`;
+    })}
                         </div>
 
                         ${colors.canvasPalette[3].map((color, ind) => {
-                            var extra = '', style = `background-color: ${color}`
-                            if (color == 'transparent') {
-                                extra += 'moose-palette-color-transparent'
-                                style = 'background: transparent url(\'transparent.png\') repeat;'
-                            }
-                            if (ind == state.painter.colour % 17)
-                                extra += ' moose-palette-color-selected'
-                            return html`<button 
+        var extra = '', style = `background-color: ${color}`;
+        if (color == 'transparent') {
+            extra += 'moose-palette-color-transparent';
+            style = 'background: transparent url(\'transparent.png\') repeat;';
+        }
+        if (ind == state.painter.colour % 17)
+            extra += ' moose-palette-color-selected';
+        return html`<button 
                                 onclick=${colorSelect.bind(null, ind+(17*3))}
                                 class="moose-palette-color ${extra}"
                                 style="${style}">
-                            </button>`
-                        })}
+                            </button>`;
+    })}
                         <br>
                         ${colors.canvasPalette.map((row, ind) => {
-                            if (!state.moose.shaded) return
-                            var ind2 = state.painter.colour % 17
-                            var color = row[state.painter.colour % 17]
-                            var extra = '', style = `background-color: ${color}`
-                            if (color == 'transparent') {
-                                extra += 'moose-palette-color-transparent'
-                                style = 'background: transparent url(\'transparent.png\') repeat;'
-                            }
-                            if (color == colors.fullPallete[state.painter.colour])
-                                extra += ' moose-palette-color-selected'
-                            return html`<button 
+        if (!state.moose.shaded) return;
+        var ind2 = state.painter.colour % 17;
+        var color = row[state.painter.colour % 17];
+        var extra = '', style = `background-color: ${color}`;
+        if (color == 'transparent') {
+            extra += 'moose-palette-color-transparent';
+            style = 'background: transparent url(\'transparent.png\') repeat;';
+        }
+        if (color == colors.fullPallete[state.painter.colour])
+            extra += ' moose-palette-color-selected';
+        return html`<button 
                                 onclick=${colorSelect.bind(null, ind2+(17*ind))}
                                 class="moose-palette-color ${extra}"
                                 style="${style}">
-                            </button>`
-                        })}
+                            </button>`;
+    })}
                     </div>
 
                 </div>
@@ -6108,28 +6124,28 @@ module.exports = function(state, emit) {
           </div>
         </div>
         </div>
-    `
+    `;
 
     function mooseName(e) {
-        emit('moose-name-change', e.target.value)
+        emit('moose-name-change', e.target.value);
     }
 
     function mooseSaveEnter(e) {
         if (e.keyCode == 13)
-            emit('moose-save')
+            emit('moose-save');
     }
 
     function mooseSave() {
-        emit('moose-save')
+        emit('moose-save');
     }
 
     function colorSelect(color) {
-        emit('color-select', color)
+        emit('color-select', color);
     }
 
     function toolSelect(e) {
-        emit('tool-select', e.target.innerText)
+        emit('tool-select', e.target.innerText);
     }
-}
+};
 
 },{"../lib/color-palette":64,"choo/html":20}]},{},[62]);
