@@ -5429,10 +5429,13 @@ var {getGalleryPage} = require('../lib/api.js'),
     sizeInfo = require('../lib/moose-size.js'),
     colors = require('../lib/color-palette');
 
-function getGalleryPageCallback(state, emitter, err, body) {
-    if (err) return;
-    if (!(body instanceof Array)) return;
-    if (body == []) return;
+function getGalleryPageCallback(state, emitter, direction, err, body) {
+    if (err ||
+        !Array.isArray(body) ||
+        body.length === 0
+    ) {
+        return;
+    }
 
     state.gallery = [];
 
@@ -5454,6 +5457,12 @@ function getGalleryPageCallback(state, emitter, err, body) {
                 cb();
             });
     }, () => {
+        if (direction === 'next') {
+            ++state.galleryPage;
+        }
+        else if (direction === 'prev') {
+            --state.galleryPage;
+        }
         emitter.emit('render');
     });
 }
@@ -5502,10 +5511,18 @@ function generateGalleryShadedMoose(image, shade, isHd, cb) {
 }
 
 module.exports = function(state, emitter) {
-    const getGallCb = getGalleryPageCallback.bind(
+    const getGalleryNextCb = getGalleryPageCallback.bind(
         this,
         state,
-        emitter
+        emitter,
+        'next' /* pagination direction */,
+    );
+
+    const getGalleryPrevCb = getGalleryPageCallback.bind(
+        this,
+        state,
+        emitter,
+        'prev' /* pagination direction */,
     );
 
     state.gallery = [];
@@ -5528,41 +5545,36 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('gallery-get', () => {
-        state.galleryPage = 0;
+        state.galleryPage = -1;
 
         getGalleryPage(
             state.query.age,
             state.query.name,
             0,
-            getGallCb,
+            getGalleryNextCb,
         );
     });
 
     emitter.on('gallery-prev', () => {
         if (state.galleryPage < 1) return;
-        state.galleryPage -= 1;
 
         getGalleryPage(
             state.query.age,
             state.query.name,
-            state.galleryPage,
-            getGallCb,
+            state.galleryPage - 1,
+            getGalleryPrevCb,
         );
     });
 
     emitter.on('gallery-next', () => {
-        state.galleryPage += 1;
         // no more meese to show
-        if (state.gallery.length < galleryPageSize) {
-            state.galleryPage -= 1;
-            return;
-        }
+        if (state.gallery.length < galleryPageSize) return;
 
         getGalleryPage(
             state.query.age,
             state.query.name,
-            state.galleryPage,
-            getGallCb,
+            state.galleryPage + 1,
+            getGalleryNextCb,
         );
     });
 
