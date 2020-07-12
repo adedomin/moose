@@ -5570,7 +5570,6 @@ module.exports = function(state, emitter) {
     };
 
     emitter.on('gallery-age', (value) => {
-        if (value !== 'newest' || value !== 'oldest') return;
         state.query.age = value;
         emitter.emit('gallery-get');
     });
