@@ -16,21 +16,27 @@
  */
 'use strict';
 
-var galleryPageSize = 12;
+const galleryPageSize = 12;
 
-var {getGalleryPage} = require('../lib/api.js'),
-    GridPaint = require('gridpaint'),
-    {mooseToGrid} = require('../lib/moose-grid.js'),
-    {mooseShadeToGrid} = require('../lib/moose-grid.js'),
-    each = require('async.each'),
-    sizeInfo = require('../lib/moose-size.js'),
-    colors = require('../lib/color-palette');
+const { getGalleryPage } = require('../lib/api.js');
+const GridPaint = require('gridpaint');
+const {
+    mooseToGrid,
+    mooseShadeToGrid,
+} = require('../lib/moose-grid.js');
+const each = require('async.each');
+const sizeInfo = require('../lib/moose-size.js');
+const colors = require('../lib/color-palette.js');
 
-function getGalleryPageCallback(state, emitter, direction, err, body) {
+function getGalleryPageCallback(state, emitter, action, err, body) {
     if (err ||
         !Array.isArray(body) ||
         body.length === 0
     ) {
+        if (action == 'init') {
+            state.gallery = [];
+            emitter.emit('render');
+        }
         return;
     }
 
@@ -54,11 +60,8 @@ function getGalleryPageCallback(state, emitter, direction, err, body) {
                 cb();
             });
     }, () => {
-        if (direction === 'next') {
-            ++state.galleryPage;
-        }
-        else if (direction === 'prev') {
-            --state.galleryPage;
+        if (action === 'page') {
+            state.galleryPage = state.galleryNextPage;
         }
         emitter.emit('render');
     });
@@ -66,7 +69,7 @@ function getGalleryPageCallback(state, emitter, direction, err, body) {
 
 // generates data urls from moose
 function generateGalleryMoose(image, isHd, cb) {
-    var painter = new GridPaint({
+    let painter = new GridPaint({
         width: isHd ? 
             sizeInfo.hd.width :
             sizeInfo.normal.width, 
@@ -87,7 +90,7 @@ function generateGalleryMoose(image, isHd, cb) {
 }
 
 function generateGalleryShadedMoose(image, shade, isHd, cb) {
-    var painter = new GridPaint({
+    let painter = new GridPaint({
         width: isHd ? 
             sizeInfo.hd.width :
             sizeInfo.normal.width, 
@@ -108,18 +111,18 @@ function generateGalleryShadedMoose(image, shade, isHd, cb) {
 }
 
 module.exports = function(state, emitter) {
-    const getGalleryNextCb = getGalleryPageCallback.bind(
+    const getGalleryInitCb = getGalleryPageCallback.bind(
         this,
         state,
         emitter,
-        'next' /* pagination direction */,
+        'init' /* pagination type */,
     );
 
-    const getGalleryPrevCb = getGalleryPageCallback.bind(
+    const getGalleryPageCb = getGalleryPageCallback.bind(
         this,
         state,
         emitter,
-        'prev' /* pagination direction */,
+        'page' /* pagination type */,
     );
 
     state.gallery = [];
@@ -132,6 +135,7 @@ module.exports = function(state, emitter) {
     };
 
     emitter.on('gallery-age', (value) => {
+        if (value !== 'newest' || value !== 'oldest') return;
         state.query.age = value;
         emitter.emit('gallery-get');
     });
@@ -142,36 +146,39 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('gallery-get', () => {
-        state.galleryPage = -1;
+        state.galleryPage = 0;
+        state.galleryNextPage = 0;
 
         getGalleryPage(
             state.query.age,
             state.query.name,
             0,
-            getGalleryNextCb,
+            getGalleryInitCb,
         );
     });
 
-    emitter.on('gallery-prev', () => {
+    emitter.on('gallery-prev', (pnum = state.galleryPage - 1) => {
         if (state.galleryPage < 1) return;
+        state.galleryNextPage = pnum;
 
         getGalleryPage(
             state.query.age,
             state.query.name,
-            state.galleryPage - 1,
-            getGalleryPrevCb,
+            pnum,
+            getGalleryPageCb,
         );
     });
 
-    emitter.on('gallery-next', () => {
+    emitter.on('gallery-next', (pnum = state.galleryPage + 1) => {
         // no more meese to show
         if (state.gallery.length < galleryPageSize) return;
+        state.galleryNextPage = pnum;
 
         getGalleryPage(
             state.query.age,
             state.query.name,
-            state.galleryPage + 1,
-            getGalleryNextCb,
+            pnum,
+            getGalleryPageCb,
         );
     });
 

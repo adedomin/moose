@@ -16,7 +16,7 @@
  */
 'use strict';
 
-var html = require('choo/html');
+const html = require('choo/html');
 
 module.exports = function(state, emit) {
     return html`
@@ -54,8 +54,11 @@ module.exports = function(state, emit) {
                             onclick=${queryPrevious}
                             class="button"
                         >
-                            ${'<<'}
+                            ${`← ${state.galleryPage - 1}`}
                         </button>
+                    </p>
+                    <p class="control">
+
                         <button value="oldest" 
                                 onclick=${queryAge} 
                                 class="button ${state.query.age == 'oldest' ? 'is-info' : ''}"
@@ -78,11 +81,13 @@ module.exports = function(state, emit) {
                         >
                             newest
                         </button>
+                    </p>
+                    <p class="control">
                         <button value="next"
                             onclick=${queryNext}
                             class="button"
                         >
-                            ${'>>'}
+                            ${`${state.galleryPage + 1} →`}
                         </button>
                     </p>
                 </div>

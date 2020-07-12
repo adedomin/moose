@@ -16,7 +16,7 @@
  */
 'use strict';
 
-var http = require('xhr');
+const http = require('xhr');
 
 function request(req, cb) {
     http(req, (err, res, body) => {

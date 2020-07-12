@@ -16,24 +16,17 @@
  */
 'use strict';
 
-var GridPaint = require('gridpaint'),
-    api = require('../lib/api.js'),
-    {mooseToGrid} = require('../lib/moose-grid'),
-    {mooseShadeToGrid} = require('../lib/moose-grid'),
-    {gridToMoose} = require('../lib/moose-grid'),
-    {gridToShade} = require('../lib/moose-grid'),
-    sizeInfo = require('../lib/moose-size'),
-    colors = require('../lib/color-palette');
-
-function getParameterByName(name) {
-    var url = window.location.href;
-    name = name.replace(/[[]]/g, '\\$&');
-    var regex = new RegExp(`[?&]${name}(=([^&]*)|&|$)`),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
+const GridPaint = require('gridpaint');
+const api = require('../lib/api.js');
+const {
+    mooseToGrid,
+    mooseShadeToGrid,
+    gridToMoose,
+    gridToShade,
+} = require('../lib/moose-grid.js');
+const sizeInfo = require('../lib/moose-size.js');
+const colors = require('../lib/color-palette.js');
+const { getParameterByName } = require('../lib/helpers.js');
 
 module.exports = function(state, emitter) {
     state.title = {
@@ -47,7 +40,7 @@ module.exports = function(state, emitter) {
         shaded: true,
     };
 
-    var newPainter = () => {
+    let newPainter = () => {
         state.painter = new GridPaint({
             width: 
                 state.moose.hd ?
@@ -67,7 +60,7 @@ module.exports = function(state, emitter) {
         state.painter.grid = true;
     };
 
-    var destoryPainter = () => {
+    let destoryPainter = () => {
         state.painter.destroy();
         if (state.painter.dom) {
             state.painter.dom
@@ -96,7 +89,7 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('tool-select', (action) => {
-        var temp;
+        let temp;
         if (action == 'pencil' || action == 'bucket') {
             state.painter.tool = action;
         }
@@ -222,12 +215,11 @@ module.exports = function(state, emitter) {
         emitter.emit('moose-edit', getParameterByName('edit'));
 
     emitter.on('DOMContentLoaded', () => {
-        // TODO: remove me
-        // hack to disable canvas drawing while out of canvas
         state.canvasWrap = document.getElementById('mousewrap');
+        // prevent live updating canvas while not being actively hovered.
         document.addEventListener('mousemove', e => {
             if (state.canvasWrap === null) return;
-            var canvasRect = state.canvasWrap.getBoundingClientRect(); 
+            let canvasRect = state.canvasWrap.getBoundingClientRect(); 
             if (e.clientX > canvasRect.left && 
                 e.clientX < canvasRect.right &&
                 e.clientY > canvasRect.top && 

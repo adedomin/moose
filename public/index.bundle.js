@@ -5067,7 +5067,7 @@ app.route('/gallery', gallery);
 
 document.body.appendChild(app.start());
 
-},{"../node_modules/bulma/css/bulma.css":19,"./moose-style.css":67,"./use/gallery-use.js":68,"./use/root-use.js":69,"./view/gallery.js":70,"./view/root.js":71,"choo":21}],63:[function(require,module,exports){
+},{"../node_modules/bulma/css/bulma.css":19,"./moose-style.css":68,"./use/gallery-use.js":69,"./use/root-use.js":70,"./view/gallery.js":71,"./view/root.js":72,"choo":21}],63:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5086,7 +5086,7 @@ document.body.appendChild(app.start());
  */
 'use strict';
 
-var http = require('xhr');
+const http = require('xhr');
 
 function request(req, cb) {
     http(req, (err, res, body) => {
@@ -5139,7 +5139,7 @@ module.exports.getGalleryPage = function(age, query, page, cb) {
  */
 'use strict';
 
-var palettes = {
+const palettes = {
     // legacy palette
     legacyColorToMoose: [
         't', '0', '1', '2', '3', '4', '5', '6','7','8','9','a','b','c','d','e','f',
@@ -5323,6 +5323,38 @@ module.exports = palettes;
 
 },{}],65:[function(require,module,exports){
 /*
+ * Copyright (C) 2020  Anthony DeDominic <adedomin@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+'use strict';
+
+function getParameterByName(name) {
+    const url = window.location.href;
+    name = name.replace(/[[]]/g, '\\$&');
+    let regex = new RegExp(`[?&]${name}(=([^&]*)|&|$)`);
+    let results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+module.exports = { getParameterByName };
+
+},{}],66:[function(require,module,exports){
+/*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
  * This program is free software: you can redistribute it and/or modify
@@ -5340,7 +5372,7 @@ module.exports = palettes;
  */
 'use strict';
 
-var colors = require('./color-palette');
+const colors = require('./color-palette');
 
 module.exports.mooseToGrid = function mooseToGrid(image) {
     return image.split('\n').map(str => {
@@ -5351,7 +5383,7 @@ module.exports.mooseToGrid = function mooseToGrid(image) {
 };
 
 module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
-    var shadeLayer = shader.split('\n').map(str =>{
+    const shadeLayer = shader.split('\n').map(str =>{
         return str.split('').map(char=>{
             return +char || 0;
         });
@@ -5382,7 +5414,7 @@ module.exports.gridToShade = function(painting) {
     }).join('\n');
 };
 
-},{"./color-palette":64}],66:[function(require,module,exports){
+},{"./color-palette":64}],67:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -5398,9 +5430,9 @@ module.exports = {
     hasShade: true,
 };
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 var css = "html {\n  background-color: #f5f5f5;\n}\n.moose-button {\n  margin-top: 5px;\n  margin-right: 5px;\n}\n.moose-palette {\n  background-color: #f0f0f0;\n  padding: 10px;\n}\n.moose-palette-color {\n  width: 35px;\n  height: 35px;\n  margin-right: 5px;\n  border-style: none;\n  border-radius: 5px;\n}\n.moose-palette-color-selected {\n  border-width: 3px;\n  border-color: black;\n  border-style: dashed;\n}\n"; (require("browserify-css").createStyle(css, { "href": "public/moose-style.css" }, { "insertAt": "bottom" })); module.exports = css;
-},{"browserify-css":17}],68:[function(require,module,exports){
+},{"browserify-css":17}],69:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
@@ -5419,21 +5451,27 @@ var css = "html {\n  background-color: #f5f5f5;\n}\n.moose-button {\n  margin-to
  */
 'use strict';
 
-var galleryPageSize = 12;
+const galleryPageSize = 12;
 
-var {getGalleryPage} = require('../lib/api.js'),
-    GridPaint = require('gridpaint'),
-    {mooseToGrid} = require('../lib/moose-grid.js'),
-    {mooseShadeToGrid} = require('../lib/moose-grid.js'),
-    each = require('async.each'),
-    sizeInfo = require('../lib/moose-size.js'),
-    colors = require('../lib/color-palette');
+const { getGalleryPage } = require('../lib/api.js');
+const GridPaint = require('gridpaint');
+const {
+    mooseToGrid,
+    mooseShadeToGrid,
+} = require('../lib/moose-grid.js');
+const each = require('async.each');
+const sizeInfo = require('../lib/moose-size.js');
+const colors = require('../lib/color-palette.js');
 
-function getGalleryPageCallback(state, emitter, direction, err, body) {
+function getGalleryPageCallback(state, emitter, action, err, body) {
     if (err ||
         !Array.isArray(body) ||
         body.length === 0
     ) {
+        if (action == 'init') {
+            state.gallery = [];
+            emitter.emit('render');
+        }
         return;
     }
 
@@ -5457,11 +5495,8 @@ function getGalleryPageCallback(state, emitter, direction, err, body) {
                 cb();
             });
     }, () => {
-        if (direction === 'next') {
-            ++state.galleryPage;
-        }
-        else if (direction === 'prev') {
-            --state.galleryPage;
+        if (action === 'page') {
+            state.galleryPage = state.galleryNextPage;
         }
         emitter.emit('render');
     });
@@ -5469,7 +5504,7 @@ function getGalleryPageCallback(state, emitter, direction, err, body) {
 
 // generates data urls from moose
 function generateGalleryMoose(image, isHd, cb) {
-    var painter = new GridPaint({
+    let painter = new GridPaint({
         width: isHd ? 
             sizeInfo.hd.width :
             sizeInfo.normal.width, 
@@ -5490,7 +5525,7 @@ function generateGalleryMoose(image, isHd, cb) {
 }
 
 function generateGalleryShadedMoose(image, shade, isHd, cb) {
-    var painter = new GridPaint({
+    let painter = new GridPaint({
         width: isHd ? 
             sizeInfo.hd.width :
             sizeInfo.normal.width, 
@@ -5511,18 +5546,18 @@ function generateGalleryShadedMoose(image, shade, isHd, cb) {
 }
 
 module.exports = function(state, emitter) {
-    const getGalleryNextCb = getGalleryPageCallback.bind(
+    const getGalleryInitCb = getGalleryPageCallback.bind(
         this,
         state,
         emitter,
-        'next' /* pagination direction */,
+        'init' /* pagination type */,
     );
 
-    const getGalleryPrevCb = getGalleryPageCallback.bind(
+    const getGalleryPageCb = getGalleryPageCallback.bind(
         this,
         state,
         emitter,
-        'prev' /* pagination direction */,
+        'page' /* pagination type */,
     );
 
     state.gallery = [];
@@ -5535,6 +5570,7 @@ module.exports = function(state, emitter) {
     };
 
     emitter.on('gallery-age', (value) => {
+        if (value !== 'newest' || value !== 'oldest') return;
         state.query.age = value;
         emitter.emit('gallery-get');
     });
@@ -5545,43 +5581,46 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('gallery-get', () => {
-        state.galleryPage = -1;
+        state.galleryPage = 0;
+        state.galleryNextPage = 0;
 
         getGalleryPage(
             state.query.age,
             state.query.name,
             0,
-            getGalleryNextCb,
+            getGalleryInitCb,
         );
     });
 
-    emitter.on('gallery-prev', () => {
+    emitter.on('gallery-prev', (pnum = state.galleryPage - 1) => {
         if (state.galleryPage < 1) return;
+        state.galleryNextPage = pnum;
 
         getGalleryPage(
             state.query.age,
             state.query.name,
-            state.galleryPage - 1,
-            getGalleryPrevCb,
+            pnum,
+            getGalleryPageCb,
         );
     });
 
-    emitter.on('gallery-next', () => {
+    emitter.on('gallery-next', (pnum = state.galleryPage + 1) => {
         // no more meese to show
         if (state.gallery.length < galleryPageSize) return;
+        state.galleryNextPage = pnum;
 
         getGalleryPage(
             state.query.age,
             state.query.name,
-            state.galleryPage + 1,
-            getGalleryNextCb,
+            pnum,
+            getGalleryPageCb,
         );
     });
 
     emitter.emit('gallery-get');
 };
 
-},{"../lib/api.js":63,"../lib/color-palette":64,"../lib/moose-grid.js":65,"../lib/moose-size.js":66,"async.each":5,"gridpaint":29}],69:[function(require,module,exports){
+},{"../lib/api.js":63,"../lib/color-palette.js":64,"../lib/moose-grid.js":66,"../lib/moose-size.js":67,"async.each":5,"gridpaint":29}],70:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
@@ -5600,24 +5639,17 @@ module.exports = function(state, emitter) {
  */
 'use strict';
 
-var GridPaint = require('gridpaint'),
-    api = require('../lib/api.js'),
-    {mooseToGrid} = require('../lib/moose-grid'),
-    {mooseShadeToGrid} = require('../lib/moose-grid'),
-    {gridToMoose} = require('../lib/moose-grid'),
-    {gridToShade} = require('../lib/moose-grid'),
-    sizeInfo = require('../lib/moose-size'),
-    colors = require('../lib/color-palette');
-
-function getParameterByName(name) {
-    var url = window.location.href;
-    name = name.replace(/[[]]/g, '\\$&');
-    var regex = new RegExp(`[?&]${name}(=([^&]*)|&|$)`),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
+const GridPaint = require('gridpaint');
+const api = require('../lib/api.js');
+const {
+    mooseToGrid,
+    mooseShadeToGrid,
+    gridToMoose,
+    gridToShade,
+} = require('../lib/moose-grid.js');
+const sizeInfo = require('../lib/moose-size.js');
+const colors = require('../lib/color-palette.js');
+const { getParameterByName } = require('../lib/helpers.js');
 
 module.exports = function(state, emitter) {
     state.title = {
@@ -5631,7 +5663,7 @@ module.exports = function(state, emitter) {
         shaded: true,
     };
 
-    var newPainter = () => {
+    let newPainter = () => {
         state.painter = new GridPaint({
             width: 
                 state.moose.hd ?
@@ -5651,7 +5683,7 @@ module.exports = function(state, emitter) {
         state.painter.grid = true;
     };
 
-    var destoryPainter = () => {
+    let destoryPainter = () => {
         state.painter.destroy();
         if (state.painter.dom) {
             state.painter.dom
@@ -5680,7 +5712,7 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('tool-select', (action) => {
-        var temp;
+        let temp;
         if (action == 'pencil' || action == 'bucket') {
             state.painter.tool = action;
         }
@@ -5806,12 +5838,11 @@ module.exports = function(state, emitter) {
         emitter.emit('moose-edit', getParameterByName('edit'));
 
     emitter.on('DOMContentLoaded', () => {
-        // TODO: remove me
-        // hack to disable canvas drawing while out of canvas
         state.canvasWrap = document.getElementById('mousewrap');
+        // prevent live updating canvas while not being actively hovered.
         document.addEventListener('mousemove', e => {
             if (state.canvasWrap === null) return;
-            var canvasRect = state.canvasWrap.getBoundingClientRect(); 
+            let canvasRect = state.canvasWrap.getBoundingClientRect(); 
             if (e.clientX > canvasRect.left && 
                 e.clientX < canvasRect.right &&
                 e.clientY > canvasRect.top && 
@@ -5833,7 +5864,7 @@ module.exports = function(state, emitter) {
     });
 };
 
-},{"../lib/api.js":63,"../lib/color-palette":64,"../lib/moose-grid":65,"../lib/moose-size":66,"gridpaint":29}],70:[function(require,module,exports){
+},{"../lib/api.js":63,"../lib/color-palette.js":64,"../lib/helpers.js":65,"../lib/moose-grid.js":66,"../lib/moose-size.js":67,"gridpaint":29}],71:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>
  *
@@ -5852,7 +5883,7 @@ module.exports = function(state, emitter) {
  */
 'use strict';
 
-var html = require('choo/html');
+const html = require('choo/html');
 
 module.exports = function(state, emit) {
     return html`
@@ -5890,8 +5921,11 @@ module.exports = function(state, emit) {
                             onclick=${queryPrevious}
                             class="button"
                         >
-                            ${'<<'}
+                            ${`← ${state.galleryPage - 1}`}
                         </button>
+                    </p>
+                    <p class="control">
+
                         <button value="oldest" 
                                 onclick=${queryAge} 
                                 class="button ${state.query.age == 'oldest' ? 'is-info' : ''}"
@@ -5914,11 +5948,13 @@ module.exports = function(state, emit) {
                         >
                             newest
                         </button>
+                    </p>
+                    <p class="control">
                         <button value="next"
                             onclick=${queryNext}
                             class="button"
                         >
-                            ${'>>'}
+                            ${`${state.galleryPage + 1} →`}
                         </button>
                     </p>
                 </div>
@@ -5974,7 +6010,7 @@ module.exports = function(state, emit) {
     }
 };
 
-},{"choo/html":20}],71:[function(require,module,exports){
+},{"choo/html":20}],72:[function(require,module,exports){
 /*
  * Copyright (C) 2017 Anthony DeDominic <adedomin@gmail.com>, Underdoge
  *
@@ -5993,8 +6029,8 @@ module.exports = function(state, emit) {
  */
 'use strict';
 
-var html = require('choo/html'),
-    colors = require('../lib/color-palette');
+const html = require('choo/html');
+const colors = require('../lib/color-palette.js');
 
 module.exports = function(state, emit) {
     return html`
@@ -6062,7 +6098,7 @@ module.exports = function(state, emit) {
 
                         <div class="field has-addons has-addons-centered">
                             ${state.tools.map(tool => {
-        var extra = '';
+        let extra = '';
         if (tool == state.painter.tool)
             extra += ' is-info';
         else if (tool == 'grid' && state.painter.grid)
@@ -6083,7 +6119,7 @@ module.exports = function(state, emit) {
                         </div>
 
                         ${colors.canvasPalette[3].map((color, ind) => {
-        var extra = '', style = `background-color: ${color}`;
+        let extra = '', style = `background-color: ${color}`;
         if (color == 'transparent') {
             extra += 'moose-palette-color-transparent';
             style = 'background: transparent url(\'transparent.png\') repeat;';
@@ -6099,9 +6135,9 @@ module.exports = function(state, emit) {
                         <br>
                         ${colors.canvasPalette.map((row, ind) => {
         if (!state.moose.shaded) return;
-        var ind2 = state.painter.colour % 17;
-        var color = row[state.painter.colour % 17];
-        var extra = '', style = `background-color: ${color}`;
+        let ind2 = state.painter.colour % 17;
+        let color = row[state.painter.colour % 17];
+        let extra = '', style = `background-color: ${color}`;
         if (color == 'transparent') {
             extra += 'moose-palette-color-transparent';
             style = 'background: transparent url(\'transparent.png\') repeat;';
@@ -6160,4 +6196,4 @@ module.exports = function(state, emit) {
     }
 };
 
-},{"../lib/color-palette":64,"choo/html":20}]},{},[62]);
+},{"../lib/color-palette.js":64,"choo/html":20}]},{},[62]);

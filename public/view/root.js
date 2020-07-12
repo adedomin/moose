@@ -16,8 +16,8 @@
  */
 'use strict';
 
-var html = require('choo/html'),
-    colors = require('../lib/color-palette');
+const html = require('choo/html');
+const colors = require('../lib/color-palette.js');
 
 module.exports = function(state, emit) {
     return html`
@@ -85,7 +85,7 @@ module.exports = function(state, emit) {
 
                         <div class="field has-addons has-addons-centered">
                             ${state.tools.map(tool => {
-        var extra = '';
+        let extra = '';
         if (tool == state.painter.tool)
             extra += ' is-info';
         else if (tool == 'grid' && state.painter.grid)
@@ -106,7 +106,7 @@ module.exports = function(state, emit) {
                         </div>
 
                         ${colors.canvasPalette[3].map((color, ind) => {
-        var extra = '', style = `background-color: ${color}`;
+        let extra = '', style = `background-color: ${color}`;
         if (color == 'transparent') {
             extra += 'moose-palette-color-transparent';
             style = 'background: transparent url(\'transparent.png\') repeat;';
@@ -122,9 +122,9 @@ module.exports = function(state, emit) {
                         <br>
                         ${colors.canvasPalette.map((row, ind) => {
         if (!state.moose.shaded) return;
-        var ind2 = state.painter.colour % 17;
-        var color = row[state.painter.colour % 17];
-        var extra = '', style = `background-color: ${color}`;
+        let ind2 = state.painter.colour % 17;
+        let color = row[state.painter.colour % 17];
+        let extra = '', style = `background-color: ${color}`;
         if (color == 'transparent') {
             extra += 'moose-palette-color-transparent';
             style = 'background: transparent url(\'transparent.png\') repeat;';

@@ -16,7 +16,7 @@
  */
 'use strict';
 
-var colors = require('./color-palette');
+const colors = require('./color-palette');
 
 module.exports.mooseToGrid = function mooseToGrid(image) {
     return image.split('\n').map(str => {
@@ -27,7 +27,7 @@ module.exports.mooseToGrid = function mooseToGrid(image) {
 };
 
 module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
-    var shadeLayer = shader.split('\n').map(str =>{
+    const shadeLayer = shader.split('\n').map(str =>{
         return str.split('').map(char=>{
             return +char || 0;
         });
