@@ -16,18 +16,21 @@
  */
 'use strict';
 
-const http = require('xhr');
-
 function request(req, cb) {
-    http(req, (err, res, body) => {
-        try {
-            body = JSON.parse(body);
-        }
-        catch (e) {
-            return cb(e, null);
-        }
-        cb(err, body);
-    });
+    let err = null;
+    fetch(req.uri, req)
+        .then(res => {
+            if (!res.ok) {
+                err = res.statusText;
+            }
+            return res.json();
+        })
+        .then(json => {
+            cb(err, json);
+        })
+        .catch(e => {
+            cb(e, null);
+        });
 }
 
 module.exports = request;

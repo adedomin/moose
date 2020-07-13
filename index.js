@@ -16,16 +16,15 @@
  */
 'use strict';
 
-let { join } = require('path');
-let log = require('./lib/logger.js');
-let config = require(process.env.CONFIG_PATH);
+const { join } = require('path');
+const config = require(process.env.CONFIG_PATH);
 
-let { MooseDB } = require('./lib/db.js');
-let db = new MooseDB(join(config.moose.db, 'moose.db'));
+const { MooseDB } = require('./lib/db.js');
+const db = new MooseDB(join(config.moose.db, 'moose.db'));
 
 db.open(err => {
     if (err) throw err;
-    let moosedb = require('./lib/moose-storage.js')(log, db);
-    require('./lib/web.js')(moosedb, log);
-    require('./lib/irc.js')(moosedb, log);
+    const moosedb = require('./lib/moose-storage.js')(db);
+    require('./lib/web.js')(moosedb);
+    require('./lib/irc.js')(moosedb);
 });

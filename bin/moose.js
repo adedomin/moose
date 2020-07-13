@@ -17,17 +17,54 @@
  */
 'use strict';
 
-var path = require('path'),
-    fs = require('fs'),
-    { argv } = require('yargs')
-        .usage('usage: $0 [init] [-c config_path]')
-        .command('init [-c path]', 'create default configuration in home folder or optional path')
-        .example('$0 init', 'write default config to home folder as .moose.js or as $XDG_CONFIG_HOME/moose.js')
-        .example('$0 -c config.js & disown', 'start server, run in background')
-        .describe('c', 'config path')
-        .alias('c', 'config')
-        .help('h')
-        .alias('h', 'help');
+const usageText = `\
+usage: /home/prussian/projects/moose/bin/moose.js [init] [-c config_path]
+
+Commands:
+  init [-c path]  create default configuration in home folder or optional path
+
+Options:
+  -c, --config  config path
+  -h, --help    Show help                                              [boolean]
+
+Examples:
+  /home/prussian/projects/moose/bin/moose.  write default config to home folder
+  js init                                   as .moose.js or as
+                                            $XDG_CONFIG_HOME/moose.js
+  /home/prussian/projects/moose/bin/moose.  start server, run in background
+  js -c config.js & disown`;
+
+const path = require('path');
+const fs = require('fs');
+const { argv: args, exit } = require('process');
+
+let argv = {};
+let argtype = '';
+
+for (let arg of args.slice(2)) {
+    if (arg === '-c' || arg === '--config') {
+        argtype = '-c';
+    }
+    else if (/^--config=./.test(arg)) {
+        argv.c = arg.match(/^--config=(.+)/)[1];
+    }
+    else if (arg === 'init') {
+        argv.init = true;
+    }
+    else if (argtype === '-c') {
+        argv.c = arg;
+        argtype = '';
+    }
+    else {
+        console.error(usageText);
+        exit(1);
+    }
+}
+
+if (argtype !== '') {
+    console.error(`No argument given for type: ${argtype}`);
+    exit(1);
+}
 
 if (argv.c) {
     process.env.CONFIG_PATH = path.resolve(argv.c);
@@ -45,7 +82,7 @@ else {
     );
 }
 
-if (argv._[0] == 'init') {
+if (argv.init) {
     fs.createReadStream(
         path.join(__dirname, '../config/test.js')
     ).pipe(fs.createWriteStream(
