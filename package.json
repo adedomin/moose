@@ -4,7 +4,9 @@
   "description": "next gen moose technology including infinite scroll gallary, range searchable titles, author notices, etc.",
   "main": "index.js",
   "scripts": {
-    "bundle": "npx browserify -g [ browserify-css --autoInject=true ] public/index.js -o public/index.bundle.js"
+    "prepublish": "cp node_modules/bulma/css/bulma.css public/bulma.css && npx browserify public/index.js -o public/index.bundle.js",
+    "bundle": "cp node_modules/bulma/css/bulma.css public/bulma.css && npx browserify public/index.js -o public/index.bundle.js",
+    "start": "bin/moose.js -c config/test.js"
   },
   "bin": {
     "moose": "bin/moose.js",
@@ -29,7 +31,6 @@
   "dependencies": {
     "async.each": "0.5.2",
     "body-parser": "1.19.0",
-    "deep-diff": "0.3.4",
     "express": "4.17.1",
     "express-rate-limit": "2.8.0",
     "irc-colors": "1.5.0",
@@ -37,9 +38,11 @@
     "relative-date": "1.1.3",
     "sqlite3": "5.0.0"
   },
+  "resolutions": {
+      "deep-diff": "0.3.4"
+  },
   "devDependencies": {
     "browserify": "16.5.1",
-    "browserify-css": "0.15.0",
     "bulma": "0.4.1",
     "choo": "5.6.1",
     "gridpaint": "1.3.0"

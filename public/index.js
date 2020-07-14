@@ -16,16 +16,12 @@
  */
 'use strict';
 
-// css
-require('../node_modules/bulma/css/bulma.css');
-require('./moose-style.css');
-
-var choo = require('choo'),
-    root = require('./view/root.js'),
-    gallery = require('./view/gallery.js'),
-    rootState = require('./use/root-use.js'),
-    galleryState = require('./use/gallery-use.js'),
-    app = choo();
+const choo = require('choo');
+const root = require('./view/root.js');
+const gallery = require('./view/gallery.js');
+const rootState = require('./use/root-use.js');
+const galleryState = require('./use/gallery-use.js');
+const app = choo();
 
 app.use(rootState);
 app.use(galleryState);
