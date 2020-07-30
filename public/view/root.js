@@ -17,7 +17,9 @@
 'use strict';
 
 const html = require('choo/html');
-const colors = require('../lib/color-palette.js');
+
+const toolsWidget = require('./fragments/tools-widget.js');
+const paletteWidget = require('./fragments/palette-tool-widget.js');
 
 module.exports = function(state, emit) {
     return html`
@@ -84,58 +86,10 @@ module.exports = function(state, emit) {
                         </div>
 
                         <div class="field has-addons has-addons-centered">
-                            ${state.tools.map(tool => {
-        let extra = '';
-        if (tool == state.painter.tool)
-            extra += ' is-info';
-        else if (tool == 'grid' && state.painter.grid)
-            extra += ' is-success';
-        else if (tool == 'hd' && state.moose.hd)
-            extra += ' is-success';
-        else if (tool == 'shaded' && state.moose.shaded)
-            extra += ' is-success';
-        else if (tool == 'clear')
-            extra += ' is-danger';
-        return html`<p class="control"><button 
-                                    onclick=${toolSelect}
-                                    class="button ${extra}"
-                                >
-                                    ${tool}
-                                </button></p>`;
-    })}
+                            ${toolsWidget(state, emit)}
                         </div>
 
-                        ${colors.canvasPalette[3].map((color, ind) => {
-        let extra = '', style = `background-color: ${color}`;
-        if (color == 'transparent') {
-            extra += 'moose-palette-color-transparent';
-            style = 'background: transparent url(\'transparent.png\') repeat;';
-        }
-        if (ind == state.painter.colour % 17)
-            extra += ' moose-palette-color-selected';
-        return html`<button 
-                                onclick=${colorSelect.bind(null, ind+(17*3))}
-                                class="moose-palette-color ${extra}"
-                                style="${style}">
-                            </button>`;
-    })}
-                        <br>
-                        ${state.moose.shaded ? colors.canvasPalette.map((row, ind) => {
-        let ind2 = state.painter.colour % 17;
-        let color = row[state.painter.colour % 17];
-        let extra = '', style = `background-color: ${color}`;
-        if (color == 'transparent') {
-            extra += 'moose-palette-color-transparent';
-            style = 'background: transparent url(\'transparent.png\') repeat;';
-        }
-        if (color == colors.fullPallete[state.painter.colour])
-            extra += ' moose-palette-color-selected';
-        return html`<button 
-                                onclick=${colorSelect.bind(null, ind2+(17*ind))}
-                                class="moose-palette-color ${extra}"
-                                style="${style}">
-                            </button>`;
-    }) : ''}
+                        ${paletteWidget(state, emit)}
                     </div>
 
                 </div>
@@ -171,13 +125,5 @@ module.exports = function(state, emit) {
 
     function mooseSave() {
         emit('moose-save');
-    }
-
-    function colorSelect(color) {
-        emit('color-select', color);
-    }
-
-    function toolSelect(e) {
-        emit('tool-select', e.target.innerText);
     }
 };

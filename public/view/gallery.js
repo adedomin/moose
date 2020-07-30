@@ -17,6 +17,7 @@
 'use strict';
 
 const html = require('choo/html');
+const galleryPicturesFragment = require('./fragments/gallery-images.js');
 
 module.exports = function(state, emit) {
     return html`
@@ -92,19 +93,7 @@ module.exports = function(state, emit) {
                     </p>
                 </div>
                 <div class="columns is-multiline">
-                    ${state.gallery.map(moose => {
-        return html`
-                            <div class="column is-3">
-                                <div class="box has-text-centered">
-                                    <a href="#?edit=${moose.name}">
-                                        <img src="${URL.createObjectURL(moose.image)}">
-                                        <br>
-                                        ${moose.name}
-                                    </a>
-                                </div>
-                            </div>
-                        `;
-    })}
+                    ${galleryPicturesFragment(state)}
                 </div>
             </div>
         </div>
