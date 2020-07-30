@@ -106,7 +106,7 @@ const palettes = {
             '#dedede',
         ],
         // legacy colors - 100%
-        [ 
+        [
             'transparent',
             'white',
             'black',
@@ -117,7 +117,7 @@ const palettes = {
             'purple',
             'olive',
             'yellow',
-            'lime', 
+            'lime',
             'teal',
             'cyan',
             'blue',

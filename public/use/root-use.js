@@ -42,18 +42,18 @@ module.exports = function(state, emitter) {
 
     let newPainter = () => {
         state.painter = new GridPaint({
-            width: 
+            width:
                 state.moose.hd ?
                     sizeInfo.hd.width :
-                    sizeInfo.normal.width, 
-            height: 
+                    sizeInfo.normal.width,
+            height:
                 state.moose.hd ?
                     sizeInfo.hd.height :
                     sizeInfo.normal.height,
             cellWidth: 16,
             cellHeight: 24,
             palette: colors.fullPallete,
-        }); 
+        });
         state.painter.tool = 'pencil';
         state.painter.color = 0;
         state.painter.colour = 0;
@@ -66,18 +66,18 @@ module.exports = function(state, emitter) {
             state.painter.dom
                 .parentNode
                 .removeChild(
-                    state.painter.dom
+                    state.painter.dom,
                 );
         }
     };
 
     newPainter();
-    state.tools = [ 
-        'pencil', 
-        'bucket', 
+    state.tools = [
+        'pencil',
+        'bucket',
         'grid',
-        'undo', 
-        'redo', 
+        'undo',
+        'redo',
         'hd',
         'shaded',
         'clear',
@@ -126,12 +126,12 @@ module.exports = function(state, emitter) {
             else {
                 temp.splice(
                     sizeInfo.normal.height,
-                    temp.length - sizeInfo.normal.height
+                    temp.length - sizeInfo.normal.height,
                 );
                 temp.forEach(arr => {
                     arr.splice(
                         sizeInfo.normal.width,
-                        arr.length - sizeInfo.normal.width
+                        arr.length - sizeInfo.normal.width,
                     );
                 });
             }
@@ -150,17 +150,17 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('moose-save', () => {
-        if (state.moose.shaded) 
+        if (state.moose.shaded)
             state.moose.shade = gridToShade(state.painter.painting);
         state.moose.image = gridToMoose(state.painter.painting);
         api.saveMoose(state.moose, (err, body) => {
             if (err || !body || body.status == 'error') {
-                if (!body) body = { 
+                if (!body) body = {
                     msg: err.toString() || 'unknown error',
                 };
-                if (typeof body.msg == 'object') 
+                if (typeof body.msg == 'object')
                     body.msg = JSON.stringify(body.msg);
-                state.title.msg = 
+                state.title.msg =
                     `failed to save moose: ${body.msg}`;
                 state.title.status = 'danger';
             }
@@ -168,7 +168,7 @@ module.exports = function(state, emitter) {
                 state.title.msg = body.msg;
                 state.title.status = 'success';
             }
-             
+
             emitter.emit('render');
         });
     });
@@ -206,12 +206,12 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('pushState', () => {
-        if (getParameterByName('edit')) 
+        if (getParameterByName('edit'))
             emitter.emit('moose-edit', getParameterByName('edit'));
     });
 
     state.painter.init();
-    if (getParameterByName('edit')) 
+    if (getParameterByName('edit'))
         emitter.emit('moose-edit', getParameterByName('edit'));
 
     emitter.on('DOMContentLoaded', () => {
@@ -219,10 +219,10 @@ module.exports = function(state, emitter) {
         // prevent live updating canvas while not being actively hovered.
         document.addEventListener('mousemove', e => {
             if (state.canvasWrap === null) return;
-            let canvasRect = state.canvasWrap.getBoundingClientRect(); 
-            if (e.clientX > canvasRect.left && 
+            let canvasRect = state.canvasWrap.getBoundingClientRect();
+            if (e.clientX > canvasRect.left &&
                 e.clientX < canvasRect.right &&
-                e.clientY > canvasRect.top && 
+                e.clientY > canvasRect.top &&
                 e.clientY < canvasRect.bottom
             ) {
                 if (state.painter.drawing) return;

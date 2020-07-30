@@ -37,16 +37,16 @@ if (!argv._[0]) {
 }
 
 const { MooseDB } = require(
-    path.join(__dirname, '../lib/db.js')
+    path.join(__dirname, '../lib/db.js'),
 );
 let moosedb = new MooseDB(
-    path.join(argv.d || process.cwd(), 'moose.db')
+    path.join(argv.d || process.cwd(), 'moose.db'),
 );
 
 moosedb.open(err => {
     if (err) throw err;
     moosedb.deleteMoose(argv._[0], err => {
         if (err) throw err;
-        console.log(`Deleted Moose: ${argv._[0]}`);
+        console.log(`Deleted Moose: ${argv._[0]}`); // eslint-disable-line
     });
 });

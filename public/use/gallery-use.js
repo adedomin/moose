@@ -48,7 +48,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
                 state.gallery.push({
                     name: moose.name,
                     image: blob,
-                });               
+                });
                 cb();
             });
         else
@@ -56,7 +56,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
                 state.gallery.push({
                     name: moose.name,
                     image: blob,
-                });               
+                });
                 cb();
             });
     }, () => {
@@ -70,9 +70,9 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
 // generates data urls from moose
 function generateGalleryMoose(image, isHd, cb) {
     let painter = new GridPaint({
-        width: isHd ? 
+        width: isHd ?
             sizeInfo.hd.width :
-            sizeInfo.normal.width, 
+            sizeInfo.normal.width,
         height: isHd ?
             sizeInfo.hd.height :
             sizeInfo.normal.height,
@@ -91,9 +91,9 @@ function generateGalleryMoose(image, isHd, cb) {
 
 function generateGalleryShadedMoose(image, shade, isHd, cb) {
     let painter = new GridPaint({
-        width: isHd ? 
+        width: isHd ?
             sizeInfo.hd.width :
-            sizeInfo.normal.width, 
+            sizeInfo.normal.width,
         height: isHd ?
             sizeInfo.hd.height :
             sizeInfo.normal.height,

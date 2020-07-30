@@ -5,9 +5,10 @@
         "es6": true
     },
     "parserOptions": {
-        "ecmaVersion": 2017,
+        "ecmaVersion": 2018,
         "extends": "eslint:recommended"
     },
+    "ignorePatterns": [ "*.bundle.js" ],
     "rules": {
         // 'use strict';
         "strict": [ "error", "global" ],

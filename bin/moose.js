@@ -46,7 +46,7 @@ for (let arg of args.slice(2)) {
         argtype = '-c';
     }
     else if (/^--config=./.test(arg)) {
-        argv.c = arg.match(/^--config=(.+)/)[1];
+        [ , argv.c ] = arg.match(/^--config=(.+)/);
     }
     else if (arg === 'init') {
         argv.init = true;
@@ -68,25 +68,25 @@ if (argtype !== '') {
 
 if (argv.c) {
     process.env.CONFIG_PATH = path.resolve(argv.c);
-} 
+}
 else if (process.env.XDG_CONFIG_HOME) {
     process.env.CONFIG_PATH = path.join(
         process.env.XDG_CONFIG_HOME,
-        'moose.js'
+        'moose.js',
     );
 }
 else {
     process.env.CONFIG_PATH = path.join(
         process.env.HOME,
-        '.moose.js'
+        '.moose.js',
     );
 }
 
 if (argv.init) {
     fs.createReadStream(
-        path.join(__dirname, '../config/test.js')
+        path.join(__dirname, '../config/test.js'),
     ).pipe(fs.createWriteStream(
-        process.env.CONFIG_PATH
+        process.env.CONFIG_PATH,
     ));
     // eslint-disable-next-line
     console.log(`Configuration was written to ${process.env.CONFIG_PATH}

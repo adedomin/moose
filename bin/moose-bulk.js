@@ -31,10 +31,10 @@ meese = JSON.parse(fs.readFileSync(argv._[0] || '/dev/stdin').toString());
 
 let exit_code = 0;
 const { MooseDB, rowToMoose } = require(
-    path.join(__dirname, '../lib/db.js')
+    path.join(__dirname, '../lib/db.js'),
 );
 let moosedb = new MooseDB(
-    path.join(argv.d || process.cwd(), 'moose.db')
+    path.join(argv.d || process.cwd(), 'moose.db'),
 );
 
 moosedb.open(err => {

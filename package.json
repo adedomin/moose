@@ -6,7 +6,8 @@
   "scripts": {
     "prepublish": "cp node_modules/bulma/css/bulma.css public/bulma.css && npx browserify public/index.js -o public/index.bundle.js",
     "bundle": "cp node_modules/bulma/css/bulma.css public/bulma.css && npx browserify public/index.js -o public/index.bundle.js",
-    "start": "bin/moose.js -c config/test.js"
+    "start": "bin/moose.js -c config/test.js",
+    "lint": "eslint ."
   },
   "bin": {
     "moose": "bin/moose.js",

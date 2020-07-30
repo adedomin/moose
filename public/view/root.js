@@ -120,8 +120,7 @@ module.exports = function(state, emit) {
                             </button>`;
     })}
                         <br>
-                        ${colors.canvasPalette.map((row, ind) => {
-        if (!state.moose.shaded) return;
+                        ${state.moose.shaded ? colors.canvasPalette.map((row, ind) => {
         let ind2 = state.painter.colour % 17;
         let color = row[state.painter.colour % 17];
         let extra = '', style = `background-color: ${color}`;
@@ -136,7 +135,7 @@ module.exports = function(state, emit) {
                                 class="moose-palette-color ${extra}"
                                 style="${style}">
                             </button>`;
-    })}
+    }) : ''}
                     </div>
 
                 </div>

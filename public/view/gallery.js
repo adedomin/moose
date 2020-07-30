@@ -135,7 +135,7 @@ module.exports = function(state, emit) {
     }
 
     function queryName(e) {
-        emit('gallery-name', e.target.value); 
+        emit('gallery-name', e.target.value);
     }
 
     function queryNext() {
