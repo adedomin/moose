@@ -76,6 +76,7 @@ module.exports = function(state, emitter) {
     state.tools = [
         'pencil',
         'bucket',
+        'checkered',
         'grid',
         'undo',
         'redo',
@@ -94,10 +95,13 @@ module.exports = function(state, emitter) {
         if (action == 'pencil' || action == 'bucket') {
             state.painter.tool = action;
         }
-        else if (action == 'grid') {
+        else if (action === 'checkered') {
+            state.painter.background = !state.painter.background;
+        }
+        else if (action === 'grid') {
             state.painter.grid = !state.painter.grid;
         }
-        else if (action == 'shaded') {
+        else if (action === 'shaded') {
             state.moose.shaded = !state.moose.shaded;
             if (!state.moose.shaded) {
                 temp = state.painter.painting;
@@ -109,7 +113,7 @@ module.exports = function(state, emitter) {
                 state.painter.colour = (state.painter.colour % 17) + (3 * 17);
             }
         }
-        else if (action == 'hd') {
+        else if (action === 'hd') {
             state.moose.hd = !state.moose.hd;
             destoryPainter();
             temp = state.painter.painting;

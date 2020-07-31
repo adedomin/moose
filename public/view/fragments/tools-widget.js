@@ -22,15 +22,17 @@ const html = require('choo/html');
 module.exports = function(state, emit) {
     return state.tools.map(tool => {
         let extra = '';
-        if (tool == state.painter.tool)
+        if (tool === state.painter.tool)
             extra += ' is-info';
-        else if (tool == 'grid' && state.painter.grid)
+        else if (tool === 'checkered' && state.painter.background)
+            extra += 'is-success';
+        else if (tool === 'grid' && state.painter.grid)
             extra += ' is-success';
-        else if (tool == 'hd' && state.moose.hd)
+        else if (tool === 'hd' && state.moose.hd)
             extra += ' is-success';
-        else if (tool == 'shaded' && state.moose.shaded)
+        else if (tool === 'shaded' && state.moose.shaded)
             extra += ' is-success';
-        else if (tool == 'clear')
+        else if (tool === 'clear')
             extra += ' is-danger';
 
         return html`<p class="control">
