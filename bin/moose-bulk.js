@@ -17,15 +17,15 @@
  */
 'use strict';
 
-var path = require('path'),
-    fs = require('fs'),
-    meese = null,
-    { argv } = require('yargs')
-        .usage('usage: $0 [-d db dir] moose.json')
-        .describe('d', 'path to create a moosedb')
-        .alias('d', 'db')
-        .help('h')
-        .alias('h', 'help');
+const path = require('path'),
+ fs = require('fs'),
+ meese = null,
+ { argv } = require('yargs')
+     .usage('usage: $0 [-d db dir] moose.json')
+     .describe('d', 'path to create a moosedb')
+     .alias('d', 'db')
+     .help('h')
+     .alias('h', 'help');
 
 meese = JSON.parse(fs.readFileSync(argv._[0] || '/dev/stdin').toString());
 
