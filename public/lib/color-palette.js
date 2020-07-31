@@ -46,7 +46,7 @@ const palettes = {
     canvasPalette: [
         // 25%
         [
-            'transparent',
+            'rgba(0,0,0,0)', // transparent
             '#ffffff',
             '#7d7d7d',
             '#8c8cff',
@@ -67,7 +67,7 @@ const palettes = {
         ],
         // 50%
         [
-            'transparent',
+            'rgba(0,0,0,0)', // transparent
             '#ffffff',
             '#525252',
             '#5b5bd4',
@@ -87,7 +87,7 @@ const palettes = {
         ],
         // 75%
         [
-            'transparent',
+            'rgba(0,0,0,0)', // transparent
             '#ffffff',
             '#292929',
             '#2e2eab',
@@ -107,27 +107,27 @@ const palettes = {
         ],
         // legacy colors - 100%
         [
-            'transparent',
-            'white',
-            'black',
-            'navy',
-            'green',
-            'red',
-            'brown',
-            'purple',
-            'olive',
-            'yellow',
-            'lime',
-            'teal',
-            'cyan',
-            'blue',
-            'fuchsia',
-            'grey',
-            'lightgrey',
+            'rgba(0,0,0,0)', // transparent
+            '#ffffff', // white
+            '#000000', // black
+            '#000080', // navy
+            '#008000', // green
+            '#ff0000', // red
+            '#a52a2a', // brown
+            '#800080', // purple
+            '#808000', // olive
+            '#ffff00', // yellow
+            '#00ff00', // lime
+            '#008080', // teal
+            '#00ffff', // cyan
+            '#0000ff', // blue
+            '#ff00ff', // fuchsia
+            '#808080', // grey
+            '#d3d3d3', // lightgrey
         ],
         // 125%
         [
-            'transparent',
+            'rgba(0,0,0,0)', // transparent
             '#f0f0f0',
             '#000000',
             '#00006e',
@@ -147,7 +147,7 @@ const palettes = {
         ],
         // 150%
         [
-            'transparent',
+            'rgba(0,0,0,0)', // transparent
             '#e0e0e0',
             '#000000',
             '#00005c',
@@ -167,7 +167,7 @@ const palettes = {
         ],
         // 175%
         [
-            'transparent',
+            'rgba(0,0,0,0)', // transparent
             '#cfcfcf',
             '#000000',
             '#00004d',

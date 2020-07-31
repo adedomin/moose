@@ -26,11 +26,11 @@ module.exports = function(state, emit) {
     return html`<div>
         ${colors.canvasPalette[3].map((color, ind) => {
             let extra = '', style = `background-color: ${color}`;
-            if (color == 'transparent') {
+            if (color === 'rgba(0,0,0,0)') {
                 extra += 'moose-palette-color-transparent';
                 style = 'background: transparent url(\'transparent.png\') repeat;';
             }
-            if (ind == state.painter.colour % 17)
+            if (ind === state.painter.colour % 17)
                 extra += ' moose-palette-color-selected';
             return html`
                 <button onclick=${colorSelect.bind(null, ind+(17*3))}
@@ -44,11 +44,11 @@ module.exports = function(state, emit) {
             let ind2 = state.painter.colour % 17;
             let color = row[state.painter.colour % 17];
             let extra = '', style = `background-color: ${color}`;
-            if (color == 'transparent') {
+            if (color === 'rgba(0,0,0,0)') {
                 extra += 'moose-palette-color-transparent';
                 style = 'background: transparent url(\'transparent.png\') repeat;';
             }
-            if (color == colors.fullPallete[state.painter.colour])
+            if (color === colors.fullPallete[state.painter.colour])
                 extra += ' moose-palette-color-selected';
             return html`
                 <button onclick=${colorSelect.bind(null, ind2+(17*ind))}
