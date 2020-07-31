@@ -44,7 +44,7 @@ config.irc = {
     // time between moose to send
     moose_delay: 10 * 1000,
     // timeout for generating image links
-    moose_image_spam: 5 * 1000,
+    moose_image_spam: 2 * 1000,
     // timeout for .help, .source, .bots and .moose --help commands
     help_spam: 10 * 1000,
     // timeout for searching for moose or generating image links
