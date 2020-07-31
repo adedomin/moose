@@ -54,6 +54,7 @@ module.exports = function(state, emitter) {
             cellWidth: 16,
             cellHeight: 24,
             palette: colors.fullPallete,
+            outline: true,
         });
         state.painter.tool = 'pencil';
         state.painter.color = 0;
