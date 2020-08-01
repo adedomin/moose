@@ -12,13 +12,32 @@ config.moose = {
     dump: true,
     // dump moose every x amount of ms
     dumpEvery: 1000 * 60 * 60, // 1 hour
-    // max moose per minute, per ip
-    maxNew: 3, // 3 moose a minute per ip
-    maxPageReq: 50, // 50 gallery req every 30 sec before throttling
-    maxGetReq: 10, // max number of moose gets before throttling
 };
 
 config.web = {
+    // new antispam options
+    antispam: {
+        new_moose: {
+            time_window: 60 * 1000, // 1 min in ms
+            max: 3,
+        },
+        gallery: {
+            time_window: 10 * 1000, // 30 sec
+            delay_request: 150, // 300ms
+            max: 20, // 10 gallery pages til delay
+        },
+        get_moose: {
+            time_window: 30 * 1000,
+            delay_request: 300,
+            max: 50, // 60 moose a time window before delay
+        },
+        // this api is very slow due to how images are generated
+        get_image: {
+            time_window: 15 * 1000,
+            delay_request: 300,
+            max: 5, // 5 pics a time window
+        },
+    },
     // size in bytes of moose images to cache in memory
     cache_max_size: (1024 * 1024) * 5,
     // only set true if you're behind
@@ -54,7 +73,7 @@ config.irc = {
     // timeout for sending a "please wait message" when
     // a moose is being drawn somewhere
     moose_please_wait_spam: 10 * 1000,
-    moose_url: 'https://moose.ghetty.space',
+    moose_url: 'http://localhost:7512',
 };
 
 module.exports = config;
