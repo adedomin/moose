@@ -34,6 +34,9 @@ module.exports = function(state, emit) {
                     (<a href="#?edit=${moose.name}">
                         Edit
                     </a>)
+                    (<a href="#gallery?view=${moose.name}">
+                        Link
+                    </a>)
                 </div>
             </div>
         `;

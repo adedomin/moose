@@ -19,7 +19,7 @@
 
 const galleryPageSize = 12;
 
-const { getGalleryPage } = require('../lib/api.js');
+const { getMoose, getGalleryPage } = require('../lib/api.js');
 const GridPaint = require('gridpaint');
 const {
     mooseToGrid,
@@ -28,6 +28,9 @@ const {
 const each = require('async.each');
 const sizeInfo = require('../lib/moose-size.js');
 const colors = require('../lib/color-palette.js');
+const { getParameterByName } = require('../lib/helpers.js');
+
+const isGalleryRoute = /^#gallery(\?.*)?$/;
 
 function getGalleryPageCallback(state, emitter, action, err, body) {
     if (err ||
@@ -187,9 +190,55 @@ module.exports = function(state, emitter) {
 
     // setting this to undefined has the effect of turning the modal off.
     emitter.on('gallery-modal', (blob) => {
+        if (blob === undefined &&
+            getParameterByName('view') &&
+            isGalleryRoute.test(window.location.hash)
+        ) {
+            window.location.hash = '#gallery';
+        }
         state.galleryModal = blob;
         emitter.emit('render');
     });
+
+    emitter.on('view-moose', name => {
+        getMoose(name, (err, body) => {
+            if (!err && body && body.image) {
+                if (body.shaded) {
+                    generateGalleryShadedMoose(
+                        body.image, body.shade, body.hd, blob => {
+                            emitter.emit(
+                                'gallery-modal',
+                                URL.createObjectURL(blob),
+                            );
+                        },
+                    );
+                }
+                else {
+                    generateGalleryMoose(
+                        body.image, body.hd, blob => {
+                            emitter.emit(
+                                'gallery-modal',
+                                URL.createObjectURL(blob),
+                            );
+                        },
+                    );
+                }
+            }
+        });
+    });
+
+    emitter.on('pushState', () => {
+        if (!isGalleryRoute.test(window.location.hash)) return;
+        if (!getParameterByName('view') && state.galleryModal) {
+            return emitter.emit('gallery-modal', undefined);
+        }
+        else if (!getParameterByName('view')) return;
+        emitter.emit('view-moose', getParameterByName('view'));
+    });
+
+    if (getParameterByName('view')) {
+        emitter.emit('view-moose', getParameterByName('view'));
+    }
 
     emitter.emit('gallery-get');
 };

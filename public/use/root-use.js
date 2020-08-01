@@ -29,6 +29,8 @@ const sizeInfo = require('../lib/moose-size.js');
 const colors = require('../lib/color-palette.js');
 const { getParameterByName } = require('../lib/helpers.js');
 
+const isRootRoute = /^#(\?.*)?$/;
+
 module.exports = function(state, emitter) {
     state.title = {
         msg: 'Make a Moose today',
@@ -208,13 +210,15 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('pushState', () => {
+        if (!isRootRoute.test(window.location.hash)) return;
         if (getParameterByName('edit'))
             emitter.emit('moose-edit', getParameterByName('edit'));
     });
 
     state.painter.init();
-    if (getParameterByName('edit'))
+    if (getParameterByName('edit')) {
         emitter.emit('moose-edit', getParameterByName('edit'));
+    }
 
     emitter.on('*', () => {
         if (state.painter.drawing) return;
