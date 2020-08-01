@@ -49,6 +49,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
                 state.gallery.push({
                     name: moose.name,
                     image: blob,
+                    url: URL.createObjectURL(blob),
                 });
                 cb();
             });
@@ -57,6 +58,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
                 state.gallery.push({
                     name: moose.name,
                     image: blob,
+                    url: URL.createObjectURL(blob),
                 });
                 cb();
             });
@@ -80,15 +82,14 @@ function generateGalleryMoose(image, isHd, cb) {
         cellWidth: 16,
         cellHeight: 24,
         palette: colors.fullPallete,
+        autoStopDrawing: false,
     });
 
     painter.painting = mooseToGrid(image);
     painter.color = 0; // remove dumb errors from dom
     painter.colour = 0;
     painter.drawing = false;
-    painter.draw();
-
-    painter.dom.toBlob(cb, 'image/png');
+    painter.saveAs(':blob:').then(cb);
 }
 
 function generateGalleryShadedMoose(image, shade, isHd, cb) {
@@ -102,6 +103,7 @@ function generateGalleryShadedMoose(image, shade, isHd, cb) {
         cellWidth: 16,
         cellHeight: 24,
         palette: colors.fullPallete,
+        autoStopDrawing: false,
     });
 
     painter.painting = mooseShadeToGrid(image,shade);
@@ -109,7 +111,7 @@ function generateGalleryShadedMoose(image, shade, isHd, cb) {
     painter.colour = 0;
     painter.draw();
     painter.drawing = false;
-    painter.dom.toBlob(cb, 'image/png');
+    painter.saveAs(':blob:').then(cb);
 }
 
 module.exports = function(state, emitter) {
@@ -181,6 +183,12 @@ module.exports = function(state, emitter) {
             pnum,
             getGalleryPageCb,
         );
+    });
+
+    // setting this to undefined has the effect of turning the modal off.
+    emitter.on('gallery-modal', (blob) => {
+        state.galleryModal = blob;
+        emitter.emit('render');
     });
 
     emitter.emit('gallery-get');

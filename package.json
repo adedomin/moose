@@ -1,6 +1,6 @@
 {
   "name": "moose",
-  "version": "2020.7.31",
+  "version": "2020.8.1",
   "description": "next gen moose technology including infinite scroll gallary, range searchable titles, author notices, etc.",
   "main": "index.js",
   "scripts": {

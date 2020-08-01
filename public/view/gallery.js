@@ -19,34 +19,16 @@
 
 const html = require('choo/html');
 const galleryPicturesFragment = require('./fragments/gallery-images.js');
+const headerFragment = require('./fragments/header-bar.js');
+const imageModalFragment = require('./fragments/image-modal.js');
 
 module.exports = function(state, emit) {
     return html`
         <div>
-        <div class="nav">
-          <div class="nav-left">
-            <a class="nav-item is-tab" href="#">
-                <img src="moose.png" alt="Moose Logo">
-            </a>
-            <a class="nav-item is-tab" href="#">Create</a>
-            <a class=" nav-item is-active is-tab" href="#gallery">Gallery</a>
-            <a data-no-routing 
-                class=" nav-item is-tab" 
-                href="/dump"
-            >
-                Database (JSON)
-            </a>
-          </div>
-        </div>
 
-        <div class="hero is-primary">
-           <div class="hero-body">
-               <div class="container">
-                   <h1 class="title">Moose</h1>
-                   <h2 class="subtitle">Gallery Page</h2>
-               </div>
-           </div>
-        </div>
+        ${headerFragment('gallery', 'Gallery Page', 'primary')}
+
+        ${imageModalFragment(state, emit)}
 
         <div class="section">
             <div class="container">
@@ -94,7 +76,7 @@ module.exports = function(state, emit) {
                     </p>
                 </div>
                 <div class="columns is-multiline">
-                    ${galleryPicturesFragment(state)}
+                    ${galleryPicturesFragment(state, emit)}
                 </div>
             </div>
         </div>

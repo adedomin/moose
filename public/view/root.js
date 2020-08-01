@@ -20,35 +20,14 @@
 const html = require('choo/html');
 
 const toolsWidget = require('./fragments/tools-widget.js');
+const headerFragment = require('./fragments/header-bar.js');
 const paletteWidget = require('./fragments/palette-tool-widget.js');
 
 module.exports = function(state, emit) {
     return html`
         <div>
-        <div class="nav">
-          <div class="nav-left">
-            <a class="nav-item is-tab" href="#">
-                <img src="moose.png" alt="Moose Logo">
-            </a>
-            <a class="nav-item is-active is-tab" href="#">Create</a>
-            <a class=" nav-item is-tab" href="#gallery">Gallery</a>
-            <a data-no-routing 
-                class=" nav-item is-tab" 
-                href="/dump"
-            >
-                Database (JSON)
-            </a>
-          </div>
-        </div>
 
-        <div class="hero is-${state.title.status}">
-            <div class="hero-body">
-                <div class="container">
-                    <h1 class="title">Moose</h1>
-                    <h2 class="subtitle">${state.title.msg}</h2>
-                </div>
-            </div>
-        </div>
+        ${headerFragment('root', state.title.msg, state.title.status)}
 
         <div class="section">
             <div class="container">

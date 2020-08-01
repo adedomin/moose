@@ -20,22 +20,19 @@
 const html = require('choo/html');
 
 module.exports = function(state, emit) {
-    return state.gallery.map(moose => {
-        return html`
-            <div class="column is-3">
-                <div class="box has-text-centered">
-                    <a onclick=${() => emit('gallery-modal', moose.url)}>
-                        <img class="moose-gallery-img-background"
-                             src="${moose.url}">
-                        <br>
-                        ${moose.name}
-                    </a>
-                    <br>
-                    (<a href="#?edit=${moose.name}">
-                        Edit
-                    </a>)
-                </div>
-            </div>
-        `;
-    });
+    if (state.galleryModal === undefined) return '';
+
+    return html`
+      <div class="modal is-active">
+        <div onclick=${() => emit('gallery-modal', undefined)}
+             class="modal-background">
+        </div>
+        <div class="modal-card">
+          <div class="modal-card-body box has-text-centered">
+            <img class="moose-gallery-img-background" 
+                 src="${state.galleryModal}">
+          </div>
+        </div>
+      </div> 
+   `;
 };

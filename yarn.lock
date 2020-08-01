@@ -1000,8 +1000,8 @@ grapheme-splitter@^1.0.4:
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
 "gridpaint@https://github.com/adedomin/gridpaint.git":
-  version "2.0.0"
-  resolved "https://github.com/adedomin/gridpaint.git#8e261325ea9ec09637aec54dccd1b206753ef423"
+  version "2.1.0"
+  resolved "https://github.com/adedomin/gridpaint.git#40a6de20113b5e1afa816b0142ff9f83893e67d5"
   dependencies:
     deep-diff "0.3.4"
     file-saver "^1.3.3"

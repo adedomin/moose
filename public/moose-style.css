@@ -25,3 +25,7 @@ html {
     border-color: black;
     border-style: dashed;
 }
+
+.moose-gallery-img-background {
+    background: transparent url('transparent.png') repeat;
+}
