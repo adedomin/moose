@@ -37,6 +37,7 @@
     "gridpaint": "https://github.com/adedomin/gridpaint.git",
     "irc-colors": "1.5.0",
     "irc-framework": "4.9.0",
+    "lru-cache": "^6.0.0",
     "relative-date": "1.1.3",
     "sqlite3": "5.0.0"
   },

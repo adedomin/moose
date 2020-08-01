@@ -207,10 +207,6 @@ module.exports = function(state, emitter) {
         });
     });
 
-    emitter.on('canvas-wrap-exists', () => {
-        state.canvasWrap = document.getElementById('mousewrap');
-    });
-
     emitter.on('pushState', () => {
         if (getParameterByName('edit'))
             emitter.emit('moose-edit', getParameterByName('edit'));
@@ -219,27 +215,6 @@ module.exports = function(state, emitter) {
     state.painter.init();
     if (getParameterByName('edit'))
         emitter.emit('moose-edit', getParameterByName('edit'));
-
-    emitter.on('DOMContentLoaded', () => {
-        state.canvasWrap = document.getElementById('mousewrap');
-        // prevent live updating canvas while not being actively hovered.
-        document.addEventListener('mousemove', e => {
-            if (state.canvasWrap === null) return;
-            let canvasRect = state.canvasWrap.getBoundingClientRect();
-            if (e.clientX > canvasRect.left &&
-                e.clientX < canvasRect.right &&
-                e.clientY > canvasRect.top &&
-                e.clientY < canvasRect.bottom
-            ) {
-                if (state.painter.drawing) return;
-                state.painter.drawing = true;
-                state.painter.draw();
-            }
-            else {
-                state.painter.drawing = false;
-            }
-        });
-    });
 
     emitter.on('*', () => {
         if (state.painter.drawing) return;

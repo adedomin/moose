@@ -1000,8 +1000,8 @@ grapheme-splitter@^1.0.4:
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
 "gridpaint@https://github.com/adedomin/gridpaint.git":
-  version "2020.7.31"
-  resolved "https://github.com/adedomin/gridpaint.git#8b348530b989a9b727fc1f8ca62e010283c22df8"
+  version "2.0.0"
+  resolved "https://github.com/adedomin/gridpaint.git#8e261325ea9ec09637aec54dccd1b206753ef423"
   dependencies:
     deep-diff "0.3.4"
     file-saver "^1.3.3"
@@ -1263,10 +1263,10 @@ isstream@~0.1.2:
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
   integrity sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=
 
-jpeg-js@^0.3.3:
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/jpeg-js/-/jpeg-js-0.3.7.tgz#471a89d06011640592d314158608690172b1028d"
-  integrity sha512-9IXdWudL61npZjvLuVe/ktHiA41iE8qFyLB+4VDTblEsWBzeg8WQTlktdUK4CdncUqtUgUg0bbOmTE2bKBKaBQ==
+jpeg-js@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/jpeg-js/-/jpeg-js-0.4.1.tgz#937a3ae911eb6427f151760f8123f04c8bfe6ef7"
+  integrity sha512-jA55yJiB5tCXEddos8JBbvW+IMrqY0y1tjjx9KNVtA+QPmu7ND5j0zkKopClpUTsaETL135uOM2XfcYG4XRjmw==
 
 jsbn@~0.1.0:
   version "0.1.1"
@@ -1332,6 +1332,13 @@ lodash@^4.17.15:
   version "4.17.19"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
   integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
+
+lru-cache@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-6.0.0.tgz#6d6fe6570ebd96aaf90fcad1dafa3b2566db3a94"
+  integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
+  dependencies:
+    yallist "^4.0.0"
 
 md5.js@^1.3.4:
   version "1.3.5"
@@ -1822,11 +1829,11 @@ punycode@^2.1.0, punycode@^2.1.1:
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
 pureimage@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/pureimage/-/pureimage-0.2.1.tgz#44a207611f8cd62cc563afc5983048b8d65763fa"
-  integrity sha512-BBwehZ4RyzGklMvLdTgoix/QfVcY95QuNriaedGxZaNi8aLeGmTeDEJMORdPTNbBFglpEAdo+8hdaZjFdMJ8Jw==
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/pureimage/-/pureimage-0.2.4.tgz#7084e6de202beea1b2a4723545efce19266f5cfb"
+  integrity sha512-8/KkBM3nkUixfjFNw59UQJJ2HFIfiBgL3Cwxtrc9ObVe8yjcUfc/8ZCG0tbQ0qVjnlsCMq6binBueYbIlCb4qA==
   dependencies:
-    jpeg-js "^0.3.3"
+    jpeg-js "^0.4.1"
     opentype.js "^0.4.3"
     pngjs "^3.3.1"
 
@@ -2433,3 +2440,8 @@ yallist@^3.0.0, yallist@^3.0.3:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.1.1.tgz#dbb7daf9bfd8bac9ab45ebf602b8cbad0d5d08fd"
   integrity sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==
+
+yallist@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
+  integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==

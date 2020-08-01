@@ -56,7 +56,7 @@ module.exports = function(state, emit) {
                 <div class="columns is-centered">
                 <div class="column has-text-centered is-two-thirds-desktop">
                     
-                    <div id="mousewrap" onload=${() => emit('canvas-wrap-exists')}>
+                    <div id="mousewrap">
                       ${state.painter.dom}
                     </div>
                     

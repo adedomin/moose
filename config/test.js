@@ -19,6 +19,8 @@ config.moose = {
 };
 
 config.web = {
+    // size in bytes of moose images to cache in memory
+    cache_max_size: (1024 * 1024) * 5,
     // only set true if you're behind
     // nginx or other load balancer/revproxy
     proxied: false,

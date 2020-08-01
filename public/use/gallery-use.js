@@ -85,8 +85,9 @@ function generateGalleryMoose(image, isHd, cb) {
     painter.painting = mooseToGrid(image);
     painter.color = 0; // remove dumb errors from dom
     painter.colour = 0;
-    painter.draw();
     painter.drawing = false;
+    painter.draw();
+
     painter.dom.toBlob(cb, 'image/png');
 }
 
