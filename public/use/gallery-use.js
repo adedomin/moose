@@ -189,14 +189,14 @@ module.exports = function(state, emitter) {
     });
 
     // setting this to undefined has the effect of turning the modal off.
-    emitter.on('gallery-modal', (blob) => {
-        if (blob === undefined &&
+    emitter.on('gallery-modal', (moose) => {
+        if (moose === undefined &&
             getParameterByName('view') &&
             isGalleryRoute.test(window.location.hash)
         ) {
             window.location.hash = '#gallery';
         }
-        state.galleryModal = blob;
+        state.galleryModal = moose;
         emitter.emit('render');
     });
 
@@ -207,8 +207,11 @@ module.exports = function(state, emitter) {
                     generateGalleryShadedMoose(
                         body.image, body.shade, body.hd, blob => {
                             emitter.emit(
-                                'gallery-modal',
-                                URL.createObjectURL(blob),
+                                'gallery-modal', {
+                                    name,
+                                    image: blob,
+                                    url: URL.createObjectURL(blob),
+                                },
                             );
                         },
                     );
@@ -217,8 +220,11 @@ module.exports = function(state, emitter) {
                     generateGalleryMoose(
                         body.image, body.hd, blob => {
                             emitter.emit(
-                                'gallery-modal',
-                                URL.createObjectURL(blob),
+                                'gallery-modal', {
+                                    name,
+                                    image: blob,
+                                    url: URL.createObjectURL(blob),
+                                },
                             );
                         },
                     );
