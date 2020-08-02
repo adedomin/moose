@@ -60,6 +60,9 @@ module.exports = function(state, emit) {
     </div>`;
 
     function colorSelect(color) {
+        // map all transparent colors (num % 17 == 0) to default
+        // default (51) is the "unshaded palette" transparent
+        color = color % 17 === 0 ? colors.defaultValue : color;
         emit('color-select', color);
     }
 };

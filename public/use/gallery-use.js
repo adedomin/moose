@@ -89,8 +89,8 @@ function generateGalleryMoose(image, isHd, cb) {
     });
 
     painter.painting = mooseToGrid(image);
-    painter.color = 0; // remove dumb errors from dom
-    painter.colour = 0;
+    painter.color = colors.defaultValue; // remove dumb errors from dom
+    painter.colour = colors.defaultValue;
     painter.drawing = false;
     painter.saveAs(':blob:').then(cb);
 }
@@ -110,8 +110,8 @@ function generateGalleryShadedMoose(image, shade, isHd, cb) {
     });
 
     painter.painting = mooseShadeToGrid(image,shade);
-    painter.color = 0; // remove dumb errors from dom
-    painter.colour = 0;
+    painter.color = colors.defaultValue; // remove dumb errors from dom
+    painter.colour = colors.defaultValue;
     painter.draw();
     painter.drawing = false;
     painter.saveAs(':blob:').then(cb);

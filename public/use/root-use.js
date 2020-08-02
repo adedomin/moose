@@ -43,7 +43,27 @@ module.exports = function(state, emitter) {
         shaded: true,
     };
 
-    let newPainter = () => {
+    // force defaults on the painting to the default (51)
+    // SEE: comment in public/lib/color-palette.js for defaultValue
+    const setDefaultsOnClear = () => {
+        for (let i = 0; i < state.painter.height; ++i) {
+            for (let j = 0; j < state.painter.width; ++j) {
+                state.painter.painting[i][j] = colors.defaultValue;
+            }
+        }
+    };
+
+    const setTransparentShadeToDefault = () => {
+        for (let i = 0; i < state.painter.height; ++i) {
+            for (let j = 0; j < state.painter.width; ++j) {
+                if (state.painter.painting[i][j] % 17 === 0) {
+                    state.painter.painting[i][j] = colors.defaultValue;
+                }
+            }
+        }
+    };
+
+    const newPainter = () => {
         state.painter = new GridPaint({
             width:
                 state.moose.hd ?
@@ -58,13 +78,16 @@ module.exports = function(state, emitter) {
             palette: colors.fullPallete,
             outline: true,
         });
+
         state.painter.tool = 'pencil';
-        state.painter.color = 0;
-        state.painter.colour = 0;
+        state.painter.color = colors.defaultValue;
+        state.painter.colour = colors.defaultValue;
         state.painter.grid = true;
+
+        setDefaultsOnClear();
     };
 
-    let destoryPainter = () => {
+    const destoryPainter = () => {
         state.painter.destroy();
         if (state.painter.dom) {
             state.painter.dom
@@ -85,6 +108,7 @@ module.exports = function(state, emitter) {
         'redo',
         'hd',
         'shaded',
+        'save png',
         'clear',
     ];
 
@@ -107,8 +131,7 @@ module.exports = function(state, emitter) {
         else if (action === 'shaded') {
             state.moose.shaded = !state.moose.shaded;
             if (!state.moose.shaded) {
-                temp = state.painter.painting;
-                state.painter.painting = temp.map(arr => {
+                state.painter.painting = state.painter.painting.map(arr => {
                     return arr.map(color => {
                         return (color % 17) + (3 * 17);
                     });
@@ -122,13 +145,17 @@ module.exports = function(state, emitter) {
             temp = state.painter.painting;
             // resize image for new canvas
             if (state.moose.hd) {
-                temp = temp.concat(Array.from({
-                    length: sizeInfo.hd.height - temp.length,
-                }).fill([]));
+                temp = temp.concat(Array.from(
+                    { length: sizeInfo.hd.height - temp.length },
+                    () => Array.from(
+                        { length: temp.length },
+                        () => colors.defaultValue,
+                    ),
+                ));
                 temp.forEach((arr, i) => {
                     temp[i] = arr.concat(Array.from({
                         length: sizeInfo.hd.width - arr.length,
-                    }, () => 0));
+                    }, () => colors.defaultValue));
                 });
             }
             else {
@@ -146,6 +173,17 @@ module.exports = function(state, emitter) {
             newPainter();
             state.painter.painting = temp;
             state.painter.init();
+        }
+        else if (action === 'save png') {
+            state.painter.saveAs(
+                state.moose.name
+                    ? `${state.moose.name}.png`
+                    : 'moose.png',
+            );
+        }
+        else if (action === 'clear') {
+            state.painter.clear();
+            setDefaultsOnClear();
         }
         else {
             state.painter[action]();
@@ -200,6 +238,7 @@ module.exports = function(state, emitter) {
                 state.moose.shaded = body.shaded;
                 if (body.shaded) {
                     state.painter.painting = mooseShadeToGrid(body.image,body.shade);
+                    setTransparentShadeToDefault();
                 }
                 else {
                     state.painter.painting = mooseToGrid(body.image);

@@ -189,6 +189,11 @@ const palettes = {
     ],
     // for gridpaint, concat of above
     fullPallete: [],
+    // This is the default because it maps to the UNSHADED transparent
+    // color, All transparent values will map to this
+    // This prevents a bug where "transparent" pencil does not "erase"
+    // as reported in: https://github.com/adedomin/moose/issues/10
+    defaultValue: 51, // transparent in unshaded
 };
 
 palettes.fullPallete = palettes

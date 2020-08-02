@@ -23,14 +23,19 @@ module.exports = function(state, emit) {
     if (state.galleryModal === undefined) return '';
 
     return html`
-      <div class="modal is-active">
-        <div onclick=${() => emit('gallery-modal', undefined)}
-             class="modal-background">
+      <div class="modal is-active"
+           onclick=${() => emit('gallery-modal', undefined)}>
+        <div class="modal-background">
         </div>
         <div class="modal-card">
           <div class="modal-card-body box has-text-centered">
-            <img class="moose-gallery-img-background" 
-                 src="${state.galleryModal}">
+            <a data-no-routing
+               href=${state.galleryModal.url}
+               download="${state.galleryModal.name.replace(/"/g, '')}.png"
+            >
+              <img class="moose-gallery-img-background"
+                   src="${state.galleryModal.url}">
+            </a>
           </div>
         </div>
       </div> 

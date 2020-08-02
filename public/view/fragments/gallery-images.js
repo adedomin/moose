@@ -24,7 +24,7 @@ module.exports = function(state, emit) {
         return html`
             <div class="column is-3">
                 <div class="box has-text-centered">
-                    <a onclick=${() => emit('gallery-modal', moose.url)}>
+                    <a onclick=${() => emit('gallery-modal', moose)}>
                         <img class="moose-gallery-img-background"
                              src="${moose.url}">
                         <br>
