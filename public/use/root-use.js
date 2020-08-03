@@ -119,7 +119,7 @@ module.exports = function(state, emitter) {
 
     emitter.on('tool-select', (action) => {
         let temp;
-        if (action == 'pencil' || action == 'bucket') {
+        if (action === 'pencil' || action === 'bucket') {
             state.painter.tool = action;
         }
         else if (action === 'checkered') {
@@ -196,16 +196,21 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('moose-save', () => {
-        if (state.moose.shaded)
+        if (state.moose.shaded) {
             state.moose.shade = gridToShade(state.painter.painting);
+        }
+
         state.moose.image = gridToMoose(state.painter.painting);
         api.saveMoose(state.moose, (err, body) => {
-            if (err || !body || body.status == 'error') {
-                if (!body) body = {
-                    msg: err.toString() || 'unknown error',
-                };
-                if (typeof body.msg == 'object')
+            if (err || !body || body.status === 'error') {
+                if (!body) {
+                    body = { msg: err.toString() || 'unknown error' };
+                }
+
+                if (typeof body.msg === 'object') {
                     body.msg = JSON.stringify(body.msg);
+                }
+
                 state.title.msg =
                     `failed to save moose: ${body.msg}`;
                 state.title.status = 'danger';
@@ -228,7 +233,7 @@ module.exports = function(state, emitter) {
                 // this will convert undefined/null
                 // to false
                 body.hd = !!body.hd;
-                if (state.moose.hd != body.hd) {
+                if (state.moose.hd !== body.hd) {
                     state.moose.hd = body.hd;
                     destoryPainter();
                     newPainter();
@@ -250,8 +255,9 @@ module.exports = function(state, emitter) {
 
     emitter.on('pushState', () => {
         if (!isRootRoute.test(window.location.hash)) return;
-        if (getParameterByName('edit'))
+        if (getParameterByName('edit')) {
             emitter.emit('moose-edit', getParameterByName('edit'));
+        }
     });
 
     state.painter.init();

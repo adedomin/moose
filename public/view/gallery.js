@@ -45,7 +45,7 @@ module.exports = function(state, emit) {
 
                         <button value="oldest" 
                                 onclick=${queryAge} 
-                                class="button ${state.query.age == 'oldest' ? 'is-info' : ''}"
+                                class="button ${state.query.age === 'oldest' ? 'is-info' : ''}"
                         >
                             oldest
                         </button>
@@ -61,7 +61,7 @@ module.exports = function(state, emit) {
                     <p class="control">
                         <button value="newest" 
                                 onclick=${queryAge} 
-                                class="button ${state.query.age == 'newest' ? 'is-info' : ''}"
+                                class="button ${state.query.age === 'newest' ? 'is-info' : ''}"
                         >
                             newest
                         </button>

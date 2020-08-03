@@ -16,6 +16,7 @@
  */
 
 'use strict';
+/* eslint indent: off */
 
 const html = require('choo/html');
 
@@ -34,11 +35,29 @@ module.exports = function(state, emit) {
                     (<a href="#?edit=${moose.name}">
                         Edit
                     </a>)
-                    (<a href="#gallery?view=${moose.name}">
-                        Link
+
+                    (<a onclick=${(e) => copyLink(moose.name, e)}
+                        href="#gallery?view=${moose.name}">
+                        ${ state.inClipboard !== moose.name
+                            ? 'Copy Link'
+                            : 'Copied' }
                     </a>)
                 </div>
             </div>
         `;
     });
+
+    function copyLink(mooseName, e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (mooseName === state.inClipboard) return;
+        const href=`${location.href}?view=${mooseName}`;
+        const fakeInput = document.createElement('textarea');
+        fakeInput.value = href;
+        document.body.appendChild(fakeInput);
+        fakeInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(fakeInput);
+        emit('clipboard-link', mooseName);
+    }
 };

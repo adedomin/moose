@@ -37,7 +37,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
         !Array.isArray(body) ||
         body.length === 0
     ) {
-        if (action == 'init') {
+        if (action === 'init') {
             state.gallery = [];
             emitter.emit('render');
         }
@@ -47,7 +47,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
     state.gallery = [];
 
     each(body, (moose, cb) => {
-        if (moose.shaded)
+        if (moose.shaded) {
             generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
                 state.gallery.push({
                     name: moose.name,
@@ -56,7 +56,8 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
                 });
                 cb();
             });
-        else
+        }
+        else {
             generateGalleryMoose(moose.image, moose.hd, (blob) => {
                 state.gallery.push({
                     name: moose.name,
@@ -65,6 +66,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
                 });
                 cb();
             });
+        }
     }, () => {
         if (action === 'page') {
             state.galleryPage = state.galleryNextPage;
@@ -141,6 +143,8 @@ module.exports = function(state, emitter) {
         age: 'newest',
     };
 
+    state.inClipboard = null;
+
     emitter.on('gallery-age', (value) => {
         state.query.age = value;
         emitter.emit('gallery-get');
@@ -197,6 +201,11 @@ module.exports = function(state, emitter) {
             window.location.hash = '#gallery';
         }
         state.galleryModal = moose;
+        emitter.emit('render');
+    });
+
+    emitter.on('clipboard-link', mooseName => {
+        state.inClipboard = mooseName;
         emitter.emit('render');
     });
 

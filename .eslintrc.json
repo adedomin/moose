@@ -57,6 +57,8 @@
         "space-before-blocks": [ "error" ],
         "keyword-spacing": [ "error" ],
         "comma-dangle": [ "error", "always-multiline" ],
-        "no-var": [ "warn" ]
+        "no-var": [ "warn" ],
+        "nonblock-statement-body-position": [ "error", "beside" ],
+        "eqeqeq": [ "error", "always", { "null": "ignore" } ]
     }
 }

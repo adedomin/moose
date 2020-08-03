@@ -99,8 +99,7 @@ module.exports = function(state, emit) {
     }
 
     function mooseSaveEnter(e) {
-        if (e.keyCode == 13)
-            emit('moose-save');
+        if (e.keyCode === 13) emit('moose-save');
     }
 
     function mooseSave() {
