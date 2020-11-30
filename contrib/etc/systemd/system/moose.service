@@ -1,0 +1,12 @@
+[Unit]
+Description=Moose Service
+
+[Service]
+User=moose
+ExecStart=/usr/local/bin/moose -c /etc/moose.js
+WorkingDirectory=/var/lib/moose
+Restart=on-failure
+RestartSec=1min
+
+[Install]
+WantedBy=multi-user.target

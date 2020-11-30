@@ -26,5 +26,4 @@ db.open(err => {
     if (err) throw err;
     const moosedb = require('./lib/moose-storage.js')(db);
     require('./lib/web.js')(moosedb);
-    require('./lib/irc.js')(moosedb);
 });

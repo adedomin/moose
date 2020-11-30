@@ -20,7 +20,7 @@
 'use strict';
 
 const usageText = `\
-usage: /home/prussian/projects/moose/bin/moose.js [init] [-c config_path]
+usage: moose [init] [-c config_path]
 
 Commands:
   init [-c path]  create default configuration in home folder or optional path
@@ -30,11 +30,10 @@ Options:
   -h, --help    Show help                                              [boolean]
 
 Examples:
-  /home/prussian/projects/moose/bin/moose.  write default config to home folder
-  js init                                   as .moose.js or as
-                                            $XDG_CONFIG_HOME/moose.js
-  /home/prussian/projects/moose/bin/moose.  start server, run in background
-  js -c config.js & disown`;
+  moose init                   Write default config to home folder as
+                               $XDG_CONFIG_HOME/moose.js
+  moose -c config.js & disown  Start server; run in background.
+`;
 
 const path = require('path');
 const fs = require('fs');

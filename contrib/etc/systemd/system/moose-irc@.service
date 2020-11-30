@@ -1,0 +1,12 @@
+[Unit]
+Description=Moose IRC Service
+
+[Service]
+User=moose
+ExecStart=/usr/local/bin/moose-irc -c /etc/moose.js %i
+WorkingDirectory=/var/lib/moose
+Restart=on-failure
+RestartSec=1min
+
+[Install]
+WantedBy=multi-user.target

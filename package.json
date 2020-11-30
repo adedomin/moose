@@ -1,6 +1,6 @@
 {
   "name": "moose",
-  "version": "2020.8.1",
+  "version": "2020.11.30",
   "description": "next gen moose technology including infinite scroll gallary, range searchable titles, author notices, etc.",
   "main": "index.js",
   "scripts": {
@@ -11,8 +11,7 @@
   },
   "bin": {
     "moose": "bin/moose.js",
-    "moose-bulk": "bin/moose-bulk.js",
-    "moose-del": "bin/moose-del.js"
+    "moose-irc": "bin/moose-irc.js"
   },
   "repository": {
     "type": "git",
@@ -38,6 +37,7 @@
     "irc-colors": "1.5.0",
     "irc-framework": "4.9.0",
     "lru-cache": "^6.0.0",
+    "needle": "^2.5.2",
     "relative-date": "1.1.3",
     "sqlite3": "5.0.0"
   },

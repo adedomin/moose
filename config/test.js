@@ -51,29 +51,43 @@ config.web = {
     interface: null,
 };
 
-// set diabled to true to disable the irc client
+// Note, bin/moose.js no longer runs an irc client
+// SEE: bin/moose-irc.js
 config.irc = {
-    disabled: false,
-    server: 'irc.rizon.net',
-    port: 6697,
-    nick: 'moose_',
-    tls: true,
-    nickserv_pass: '',
-    channels: ['#prussian'],
-    // delay per moose
-    send_delay: 350, // be very careful adjusting this
-    // time between moose to send
-    moose_delay: 10 * 1000,
-    // timeout for generating image links
-    moose_image_spam: 2 * 1000,
-    // timeout for .help, .source, .bots and .moose --help commands
-    help_spam: 10 * 1000,
-    // timeout for searching for moose or generating image links
-    moose_search_spam: 10 * 1000,
-    // timeout for sending a "please wait message" when
-    // a moose is being drawn somewhere
-    moose_please_wait_spam: 10 * 1000,
+    // URL used by the ircbot
+    // if unset, uses moose_url
+    api_url: 'http://localhost:7512',
+    // URL displayed in irc messages
+    // if unset, defaults to https://moose.ghetty.space
     moose_url: 'http://localhost:7512',
+
+    servers: {
+        Rizon: {
+            server: 'irc.rizon.net',
+            port: 6697,
+            nick: 'moose_',
+            tls: true,
+            // password used for NickServ Auth or SASL Plain Auth
+            nickserv: '',
+            channels: ['#prussian'],
+            // file that persists server /INVITE list
+            inviteFile: './invites-Rizon.json',
+
+            // delay per moose
+            send_delay: 350, // be very careful adjusting this
+            // time between moose to send
+            moose_delay: 10 * 1000,
+            // timeout for generating image links
+            moose_image_spam: 2 * 1000,
+            // timeout for .help, .source, .bots and .moose --help commands
+            help_spam: 10 * 1000,
+            // timeout for searching for moose or generating image links
+            moose_search_spam: 10 * 1000,
+            // timeout for sending a "please wait message" when
+            // a moose is being drawn somewhere
+            moose_please_wait_spam: 10 * 1000,
+        },
+    },
 };
 
 module.exports = config;

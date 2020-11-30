@@ -41,3 +41,6 @@ jspm_packages
 .temp.dump.json
 dump.json
 invites.json
+
+# emacs autosave
+*~
