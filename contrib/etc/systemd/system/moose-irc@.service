@@ -1,5 +1,6 @@
 [Unit]
 Description=Moose IRC Service
+After=moose.service
 
 [Service]
 User=moose
