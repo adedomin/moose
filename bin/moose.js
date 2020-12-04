@@ -23,7 +23,8 @@ const usageText = `\
 usage: moose [init] [-c config_path]
 
 Commands:
-  init [-c path]  create default configuration in home folder or optional path
+  init   [-c path]  Create default configuration at path or default.
+  import [-c path]  Import moose dump api (/dump) from stdin
 
 Options:
   -c, --config  config path
@@ -32,6 +33,8 @@ Options:
 Examples:
   moose init                   Write default config to home folder as
                                $XDG_CONFIG_HOME/moose.js
+  curl https://moose.ghetty.space/dump | moose import -c config.js
+                               Import moose from another moose instance.
   moose -c config.js & disown  Start server; run in background.
 `;
 
@@ -49,12 +52,15 @@ for (let arg of args.slice(2)) {
     else if (/^--config=./.test(arg)) {
         [ , argv.c ] = arg.match(/^--config=(.+)/);
     }
-    else if (arg === 'init') {
-        argv.init = true;
-    }
     else if (argtype === '-c') {
         argv.c = arg;
         argtype = '';
+    }
+    else if (arg === 'init') {
+        argv.init = true;
+    }
+    else if (arg === 'import') {
+        argv.import = true;
     }
     else {
         console.error(usageText);
@@ -92,8 +98,10 @@ if (argv.init) {
     // eslint-disable-next-line
     console.log(`Configuration was written to ${process.env.CONFIG_PATH}
 Please make sure to change the defaults.`);
-
-    return;
 }
-
-require(path.join(__dirname, '../index.js'));
+else if (argv.import) {
+    require(path.join(__dirname, '../lib/import-json.js'));
+}
+else {
+    require(path.join(__dirname, '../index.js'));
+}
