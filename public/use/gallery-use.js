@@ -24,6 +24,7 @@ const GridPaint = require('gridpaint');
 const {
     mooseToGrid,
     mooseShadeToGrid,
+    mooseExtendedToGrid,
 } = require('../lib/moose-grid.js');
 const each = require('async.each');
 const sizeInfo = require('../lib/moose-size.js');
@@ -47,7 +48,17 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
     state.gallery = [];
 
     each(body, (moose, cb) => {
-        if (moose.shaded) {
+        if (moose.extended) {
+            generateGalleryExtendedMoose(moose.image, moose.shade, moose.hd, (blob) => {
+                state.gallery.push({
+                    name: moose.name,
+                    image: blob,
+                    url: URL.createObjectURL(blob),
+                });
+                cb();
+            });
+        }
+        else if (moose.shaded) {
             generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
                 state.gallery.push({
                     name: moose.name,
@@ -112,6 +123,28 @@ function generateGalleryShadedMoose(image, shade, isHd, cb) {
     });
 
     painter.painting = mooseShadeToGrid(image,shade);
+    painter.color = colors.defaultValue; // remove dumb errors from dom
+    painter.colour = colors.defaultValue;
+    painter.draw();
+    painter.drawing = false;
+    painter.saveAs(':blob:').then(cb);
+}
+
+function generateGalleryExtendedMoose(image, shade, isHd, cb) {
+    let painter = new GridPaint({
+        width: isHd ?
+            sizeInfo.hd.width :
+            sizeInfo.normal.width,
+        height: isHd ?
+            sizeInfo.hd.height :
+            sizeInfo.normal.height,
+        cellWidth: 16,
+        cellHeight: 24,
+        palette: colors.fullExtendedColors,
+        autoStopDrawing: false,
+    });
+
+    painter.painting = mooseExtendedToGrid(image,shade);
     painter.color = colors.defaultValue; // remove dumb errors from dom
     painter.colour = colors.defaultValue;
     painter.draw();
@@ -212,7 +245,20 @@ module.exports = function(state, emitter) {
     emitter.on('view-moose', name => {
         getMoose(name, (err, body) => {
             if (!err && body && body.image) {
-                if (body.shaded) {
+                if (body.extended) {
+                    generateGalleryExtendedMoose(
+                        body.image, body.shade, body.hd, blob => {
+                            emitter.emit(
+                                'gallery-modal', {
+                                    name,
+                                    image: blob,
+                                    url: URL.createObjectURL(blob),
+                                },
+                            );
+                        },
+                    );
+                }
+                else if (body.shaded) {
                     generateGalleryShadedMoose(
                         body.image, body.shade, body.hd, blob => {
                             emitter.emit(

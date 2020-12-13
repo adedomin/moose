@@ -11,4 +11,5 @@ module.exports = {
     },
     isHd: true,
     hasShade: true,
+    hasExtended: true,
 };

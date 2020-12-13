@@ -37,6 +37,9 @@ module.exports = function(state, emit) {
         else if (tool === 'shaded' && state.moose.shaded) {
             extra += ' is-success';
         }
+        else if (tool === '82c' && state.moose.extended) {
+            extra += ' is-success';
+        }
         else if (tool === 'clear') {
             extra += ' is-danger';
         }

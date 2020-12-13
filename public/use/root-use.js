@@ -22,8 +22,11 @@ const api = require('../lib/api.js');
 const {
     mooseToGrid,
     mooseShadeToGrid,
+    mooseExtendedToGrid,
     gridToMoose,
     gridToShade,
+    gridToExtendedMoose,
+    gridToExtendedShade,
 } = require('../lib/moose-grid.js');
 const sizeInfo = require('../lib/moose-size.js');
 const colors = require('../lib/color-palette.js');
@@ -40,7 +43,8 @@ module.exports = function(state, emitter) {
     state.moose = {
         name: '',
         hd: false,
-        shaded: true,
+        shaded: false,
+        extended: true,
     };
 
     // force defaults on the painting to the default (51)
@@ -48,17 +52,9 @@ module.exports = function(state, emitter) {
     const setDefaultsOnClear = () => {
         for (let i = 0; i < state.painter.height; ++i) {
             for (let j = 0; j < state.painter.width; ++j) {
-                state.painter.painting[i][j] = colors.defaultValue;
-            }
-        }
-    };
-
-    const setTransparentShadeToDefault = () => {
-        for (let i = 0; i < state.painter.height; ++i) {
-            for (let j = 0; j < state.painter.width; ++j) {
-                if (state.painter.painting[i][j] % 17 === 0) {
-                    state.painter.painting[i][j] = colors.defaultValue;
-                }
+                state.painter.painting[i][j] = state.moose.extended
+                    ? colors.extendedColorsDefault
+                    : colors.defaultValue;
             }
         }
     };
@@ -75,7 +71,9 @@ module.exports = function(state, emitter) {
                     sizeInfo.normal.height,
             cellWidth: 16,
             cellHeight: 24,
-            palette: colors.fullPallete,
+            palette: state.moose.extended
+                ? colors.fullExtendedColors
+                : colors.fullPallete,
             outline: true,
         });
 
@@ -108,6 +106,7 @@ module.exports = function(state, emitter) {
         'redo',
         'hd',
         'shaded',
+        '82c',
         'save png',
         'clear',
     ];
@@ -118,7 +117,6 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('tool-select', (action) => {
-        let temp;
         if (action === 'pencil' || action === 'bucket') {
             state.painter.tool = action;
         }
@@ -128,9 +126,42 @@ module.exports = function(state, emitter) {
         else if (action === 'grid') {
             state.painter.grid = !state.painter.grid;
         }
-        else if (action === 'shaded') {
-            state.moose.shaded = !state.moose.shaded;
-            if (!state.moose.shaded) {
+        else if (action === 'shaded' || action === '82c') {
+            state.moose.extended = action === '82c'
+                ? !state.moose.extended
+                : state.moose.extended;
+            state.moose.shaded = action === 'shaded'
+                ? !state.moose.shaded
+                : state.moose.shaded;
+            if (state.moose.extended && state.moose.shaded) {
+                if (action === 'shaded') state.moose.extended = false;
+                else state.moose.shaded = false;
+            }
+
+            if (state.moose.extended) {
+                state.moose.shaded = false;
+                state.painter.palette = colors.fullExtendedColors;
+                state.painter.painting = state.painter.painting.map(arr => {
+                    return arr.map(color => {
+                        if (color === colors.defaultValue) {
+                            return colors.extendedColorsDefault;
+                        }
+                        else {
+                            // clamp color to max palette range, this does destroy the paining
+                            return Math.max(
+                                0,
+                                Math.min(color, colors.fullExtendedColors.length),
+                            );
+                        }
+                    });
+                });
+            }
+            else if (state.moose.shaded) {
+                state.moose.extended = false;
+                state.painter.palette = colors.fullPallete;
+            }
+            else if (!state.moose.shaded && !state.moose.extended) {
+                state.painter.palette = colors.fullPallete;
                 state.painter.painting = state.painter.painting.map(arr => {
                     return arr.map(color => {
                         return (color % 17) + (3 * 17);
@@ -142,7 +173,7 @@ module.exports = function(state, emitter) {
         else if (action === 'hd') {
             state.moose.hd = !state.moose.hd;
             destoryPainter();
-            temp = state.painter.painting;
+            let temp = state.painter.painting;
             // resize image for new canvas
             if (state.moose.hd) {
                 temp = temp.concat(Array.from(
@@ -196,11 +227,16 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('moose-save', () => {
-        if (state.moose.shaded) {
-            state.moose.shade = gridToShade(state.painter.painting);
+        if (state.moose.shaded || state.moose.extended) {
+            state.moose.shade = state.moose.extended
+                ? gridToExtendedShade(state.painter.painting)
+                : gridToShade(state.painter.painting);
         }
 
-        state.moose.image = gridToMoose(state.painter.painting);
+        state.moose.image = state.moose.extended
+            ? gridToExtendedMoose(state.painter.painting)
+            : gridToMoose(state.painter.painting);
+
         api.saveMoose(state.moose, (err, body) => {
             if (err || !body || body.status === 'error') {
                 if (!body) {
@@ -233,6 +269,8 @@ module.exports = function(state, emitter) {
                 // this will convert undefined/null
                 // to false
                 body.hd = !!body.hd;
+                body.shaded = !!body.shaded;
+                body.extended = !!body.extended;
                 if (state.moose.hd !== body.hd) {
                     state.moose.hd = body.hd;
                     destoryPainter();
@@ -240,10 +278,17 @@ module.exports = function(state, emitter) {
                     state.painter.init();
                 }
 
-                state.moose.shaded = body.shaded;
                 if (body.shaded) {
-                    state.painter.painting = mooseShadeToGrid(body.image,body.shade);
-                    setTransparentShadeToDefault();
+                    state.moose.shaded = true;
+                    state.moose.extended = false;
+                    state.painter.palette = colors.fullPallete;
+                    state.painter.painting = mooseShadeToGrid(body.image, body.shade);
+                }
+                else if (body.extended) {
+                    state.moose.extended = true;
+                    state.moose.shaded = false;
+                    state.painter.palette = colors.fullExtendedColors;
+                    state.painter.painting = mooseExtendedToGrid(body.image, body.shade);
                 }
                 else {
                     state.painter.painting = mooseToGrid(body.image);

@@ -56,7 +56,7 @@ module.exports = function(state, emit) {
                                 >
                             </p>
                             <p class="control">
-                                <button 
+                                <button
                                     onclick=${mooseSave} 
                                     class="button is-primary"
                                 >

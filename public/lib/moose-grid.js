@@ -19,7 +19,12 @@
 
 const colors = require('./color-palette');
 
-module.exports.mooseToGrid = function mooseToGrid(image) {
+/**
+ * Legacy Moose to gridpaint image.
+ * @param {string} image - a moose.image string.
+ * @return {number[][]} a string to a gridpain canvas.
+ */
+module.exports.mooseToGrid = function(image) {
     return image.split('\n').map(str => {
         return str.split('').map(char => {
             return colors.colorToMooseString.indexOf(char)+51;
@@ -27,8 +32,17 @@ module.exports.mooseToGrid = function mooseToGrid(image) {
     });
 };
 
-module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
-    const shadeLayer = shader.split('\n').map(str =>{
+/**
+ * Shaded Moose or Extended Moose to gridpaint image.
+ * @param {number} rowlen - length of colors in a shade row.
+ * @param {string[]} charToColor - moose string positions.
+ * @param {number} transDefault - default transparent color number.
+ * @param {string} image - a Moose.image string.
+ * @param {string} shade - a Moose.shade string.
+ * @return {number[][]} a string to a gridpain canvas.
+ */
+function mooseShadeToGrid(rowlen, charToColor, transDefault, image, shade) {
+    const shadeLayer = shade.split('\n').map(str =>{
         return str.split('').map(char=>{
             return +char || 0;
         });
@@ -36,25 +50,56 @@ module.exports.mooseShadeToGrid = function mooseShadeToGrid(image,shader) {
 
     return image.split('\n').map((str,ind) => {
         return str.split('').map((char,ind2) => {
-            return colors.legacyColorToMoose.indexOf(char)+(17*shadeLayer[ind][ind2]);
+            if (char === 't') return transDefault;
+            return charToColor.indexOf(char)+(rowlen*shadeLayer[ind][ind2]);
         });
     });
-};
+}
 
-module.exports.gridToMoose = function(painting) {
+module.exports.mooseShadeToGrid = mooseShadeToGrid.bind(
+    null,
+    colors.legacyColorToMoose.length,
+    colors.legacyColorToMoose,
+    colors.defaultValue,
+);
+module.exports.mooseExtendedToGrid = mooseShadeToGrid.bind(
+    null,
+    colors.smallExtendedToMoose.length - 1, // transparent is 83
+    colors.smallExtendedToMoose,
+    colors.extendedColorsDefault,
+);
+
+/**
+ * Convert a gridpaint canvas to a moose.image string
+ * @param {number[][]} painting - a grid paint painting
+ * @return {string} moose image string.
+ */
+function gridToMooseImage(paletteString, transparentInd, painting) {
     return painting.map(arr => {
         return arr.map(char => {
-            if (isNaN(char)) char = 0;
-            return colors.colorToMooseString[char];
+            if (isNaN(char)) char = transparentInd;
+            return paletteString[char];
         }).join('');
     }).join('\n');
-};
+}
 
-module.exports.gridToShade = function(painting) {
-    return painting.map(arr => {
-        return arr.map(char => {
-            if (isNaN(char)) char = 0;
-            return colors.colorToShadeString[char];
-        }).join('');
-    }).join('\n');
-};
+module.exports.gridToMoose = gridToMooseImage.bind(
+    null,
+    colors.colorToMooseString,
+    colors.defaultValue,
+);
+module.exports.gridToShade = gridToMooseImage.bind(
+    null,
+    colors.colorToShadeString,
+    0,
+);
+module.exports.gridToExtendedMoose = gridToMooseImage.bind(
+    null,
+    colors.extendedToMooseString,
+    colors.extendedColorsDefault,
+);
+module.exports.gridToExtendedShade = gridToMooseImage.bind(
+    null,
+    colors.extendedToShadeString,
+    colors.extendedColorsDefault,
+);

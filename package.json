@@ -1,12 +1,13 @@
 {
   "name": "moose",
-  "version": "2020.12.3",
+  "version": "2020.12.13",
   "description": "next gen moose technology including infinite scroll gallary, range searchable titles, author notices, etc.",
   "main": "index.js",
   "scripts": {
     "prepublish": "cp node_modules/bulma/css/bulma.css public/bulma.css && npx webpack-cli",
     "bundle": "cp node_modules/bulma/css/bulma.css public/bulma.css && npx webpack-cli",
     "start": "bin/moose.js -c config/test.js",
+    "start-irc": "bin/moose-irc.js -c config/test.js",
     "lint": "eslint ."
   },
   "bin": {

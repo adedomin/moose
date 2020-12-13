@@ -20,9 +20,10 @@
 const html = require('choo/html');
 const colors = require('../../lib/color-palette.js');
 
-module.exports = function(state, emit) {
-    /* eslint indent: off */
-    // eslint has a strange opinion about indenting here
+/* eslint indent: off */
+// eslint has a strange opinion about indenting here
+
+function legacyShadeWidget(state, emit) {
     return html`<div>
         ${colors.canvasPalette[3].map((color, ind) => {
             let extra = '', style = `background-color: ${color}`;
@@ -72,4 +73,88 @@ module.exports = function(state, emit) {
         color = color % 17 === 0 ? colors.defaultValue : color;
         emit('color-select', color);
     }
+}
+
+function extendedColorWidget(state, emit) {
+    const transparentStyle = 'background: transparent url(\'transparent.png\') repeat;';
+    const transparentClass = 'moose-palette-color-transparent';
+    const extendedRowLen = colors.extendedColors[0].length;
+    const transparentSelect = state.painter.colour >= 72
+        ? 'moose-palette-color-selected'
+        : '';
+    return html`<div>
+        <button onclick=${/* add transparent first */
+            colorSelect.bind(null, colors.extendedColorsDefault)
+        }
+                class="moose-palette-color ${transparentClass} ${transparentSelect}"
+                style="${transparentStyle}">
+        </button>
+        ${colors.extendedColors[3].map((color, ind) => {
+            const style = `background-color: ${color}`;
+            let extra = '';
+
+            if (
+                ind === state.painter.colour % extendedRowLen &&
+                state.painter.colour < 72
+            ) {
+                extra += 'moose-palette-color-selected';
+            }
+
+            return html`
+                <button onclick=${colorSelect.bind(null, ind+(extendedRowLen*3))}
+                        class="moose-palette-color ${extra}"
+                        style="${style}">
+                </button>
+            `;
+        })}
+        <br>
+        ${state.painter.colour >= 72
+            ? colors.extendedColors[6].map((color, ind) => {
+                const style = `background-color: ${color}`;
+                let extra = '';
+
+                if (color === 'rgba(0,0,0,0)') {
+                    return '';
+                }
+
+                if (color === colors.fullExtendedColors[state.painter.colour]) {
+                    extra += 'moose-palette-color-selected';
+                }
+
+                return html`
+                    <button onclick=${colorSelect.bind(null, ind+(extendedRowLen*6))}
+                            class="moose-palette-color ${extra}"
+                            style="${style}">
+                    </button>
+                `;
+              })
+            : colors.extendedColors.map((row, ind) => {
+                // index 7 is white through black, we set that above.
+                if (ind === 6) return '';
+                const ind2 = state.painter.colour % extendedRowLen;
+                const color = row[state.painter.colour % extendedRowLen];
+                const style = `background-color: ${color}`;
+                let extra = '';
+
+                if (color === colors.fullExtendedColors[state.painter.colour]) {
+                    extra += ' moose-palette-color-selected';
+                }
+                return html`
+                    <button onclick=${colorSelect.bind(null, ind2+(extendedRowLen*ind))}
+                            class="moose-palette-color ${extra}"
+                            style="${style}">
+                    </button>
+                `;
+            })
+        }
+    </div>`;
+
+    function colorSelect(color) {
+        emit('color-select', color);
+    }
+}
+
+module.exports = function(state, emit) {
+    if (state.moose.extended) return extendedColorWidget(state, emit);
+    else return legacyShadeWidget(state, emit);
 };

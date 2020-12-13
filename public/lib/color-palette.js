@@ -17,6 +17,22 @@
 
 'use strict';
 
+/**
+ * All the color pallets and mapping form color pallet to moose.
+ * @namespace
+ * @property {string[]} legacyColorToMoose   - The original colors.
+ * @property {string[]} colorToMooseString   - The extended colors
+ *                                             repeated and function in conjecture
+ *                                             with colorToShadeString.
+ * @property {number[]} shadeIntensities     - Valid shade range.
+ * @property {Array<string[]>} canvasPalette - All the legacy colors and their shades
+ *                                             as hex color codes.
+ * @property {string[]} fullPallete          - All of the colors in canvasPalette as
+ *                                             one array.
+ * @property {number} defaultValue           - default color for all cell (transparent).
+ * @property {string[]} extendedToMooseString - all the chars making up an extended moose.
+ * @property {string[]} extendedToShadeString - all the chars making up an extended moose shade.
+ */
 const palettes = {
     // legacy palette
     legacyColorToMoose: [
@@ -194,10 +210,143 @@ const palettes = {
     // This prevents a bug where "transparent" pencil does not "erase"
     // as reported in: https://github.com/adedomin/moose/issues/10
     defaultValue: 51, // transparent in unshaded
+    // new mIRC-based Colors (16-99).
+    // see: http://anti.teamidiot.de/static/nei/*/extended_mirc_color_proposal.html
+    smallExtendedToMoose: [
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 't',
+    ],
+    extendedToMooseString: [
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 't',
+    ],
+    extendedToShadeString: [
+        '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
+        '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',
+        '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2',
+        '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3', '3',
+        '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4', '4',
+        '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5', '5',
+        '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', 't',
+    ],
+    extendedColors: [
+        // darkest
+        [
+            '#470000', // code 16 0
+            '#472100', // code 17 1
+            '#474700', // code 18 2
+            '#324700', // code 19 3
+            '#004700', // code 20 4
+            '#00472c', // code 21 5
+            '#004747', // code 22 6
+            '#002747', // code 23 7
+            '#000047', // code 24 8
+            '#2e0047', // code 25 9
+            '#470047', // code 26 a
+            '#47002a', // code 27 b
+        ],
+        [
+            '#740000', // code 28
+            '#743a00', // code 29
+            '#747400', // code 30
+            '#517400', // code 31
+            '#007400', // code 32
+            '#007449', // code 33
+            '#007474', // code 34
+            '#004074', // code 35
+            '#000074', // code 36
+            '#4b0074', // code 37
+            '#740074', // code 38
+            '#740045', // code 39
+        ],
+        [
+            '#b50000', // code 40
+            '#b56300', // code 41
+            '#b5b500', // code 42
+            '#7db500', // code 43
+            '#00b500', // code 44
+            '#00b571', // code 45
+            '#00b5b5', // code 46
+            '#0063b5', // code 47
+            '#0000b5', // code 48
+            '#7500b5', // code 49
+            '#b500b5', // code 50
+            '#b5006b', // code 51 end of column
+        ],
+        [
+            '#ff0000', // code 52
+            '#ff8c00', // code 53
+            '#ffff00', // code 54
+            '#b2ff00', // code 55
+            '#00ff00', // code 56
+            '#00ffa0', // code 57
+            '#00ffff', // code 58
+            '#008cff', // code 59
+            '#0000ff', // code 60
+            '#a500ff', // code 61
+            '#ff00ff', // code 62
+            '#ff0098', // code 63
+        ],
+        [
+            '#ff5959', // code 64
+            '#ffb459', // code 65
+            '#ffff71', // code 66
+            '#cfff60', // code 67
+            '#6fff6f', // code 68
+            '#65ffc9', // code 69
+            '#6dffff', // code 70
+            '#59b4ff', // code 71
+            '#5959ff', // code 72
+            '#c459ff', // code 73
+            '#ff66ff', // code 74
+            '#ff59bc', // code 75
+        ],
+        // lightest
+        [
+            '#ff9c9c', // code 76
+            '#ffd39c', // code 77
+            '#ffff9c', // code 78
+            '#e2ff9c', // code 79
+            '#9cff9c', // code 80
+            '#9cffdb', // code 81
+            '#9cffff', // code 82
+            '#9cd3ff', // code 83
+            '#9c9cff', // code 84
+            '#dc9cff', // code 85
+            '#ff9cff', // code 86
+            '#ff94d3', // code 87
+        ],
+        // black. greys, white, transparent.
+        [
+            '#000000', // code 88
+            '#131313', // code 89
+            '#282828', // code 90
+            '#363636', // code 91
+            '#4d4d4d', // code 92
+            '#656565', // code 93
+            '#818181', // code 94
+            '#9f9f9f', // code 95
+            '#bcbcbc', // code 96
+            '#e2e2e2', // code 97
+            '#ffffff', // code 98
+            'rgba(0,0,0,0)', // transparent (code 99)
+        ],
+    ],
+    fullExtendedColors: [],
+    extendedColorsDefault: 83,
 };
 
 palettes.fullPallete = palettes
     .canvasPalette
+    .reduce((full, part) => {
+        return full.concat(part);
+    });
+palettes.fullExtendedColors = palettes
+    .extendedColors
     .reduce((full, part) => {
         return full.concat(part);
     });
