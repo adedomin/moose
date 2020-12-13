@@ -291,6 +291,8 @@ module.exports = function(state, emitter) {
                     state.painter.painting = mooseExtendedToGrid(body.image, body.shade);
                 }
                 else {
+                    state.moose.shaded = false;
+                    state.moose.extended = false;
                     state.painter.painting = mooseToGrid(body.image);
                 }
             }
