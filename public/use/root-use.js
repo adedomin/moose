@@ -293,6 +293,7 @@ module.exports = function(state, emitter) {
                 else {
                     state.moose.shaded = false;
                     state.moose.extended = false;
+                    state.painter.palette = colors.fullPallete;
                     state.painter.painting = mooseToGrid(body.image);
                 }
             }
