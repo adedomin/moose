@@ -47,14 +47,19 @@ module.exports = function(state, emitter) {
         extended: true,
     };
 
+    // pick default transparency based on palette
+    const defaultColor = () => {
+        return state.moose.extended
+            ? colors.extendedColorsDefault
+            : colors.defaultValue;
+    };
+
     // force defaults on the painting to the default (51)
     // SEE: comment in public/lib/color-palette.js for defaultValue
     const setDefaultsOnClear = () => {
         for (let i = 0; i < state.painter.height; ++i) {
             for (let j = 0; j < state.painter.width; ++j) {
-                state.painter.painting[i][j] = state.moose.extended
-                    ? colors.extendedColorsDefault
-                    : colors.defaultValue;
+                state.painter.painting[i][j] = defaultColor();
             }
         }
     };
@@ -78,8 +83,8 @@ module.exports = function(state, emitter) {
         });
 
         state.painter.tool = 'pencil';
-        state.painter.color = colors.defaultValue;
-        state.painter.colour = colors.defaultValue;
+        state.painter.color = defaultColor();
+        state.painter.colour = defaultColor();
         state.painter.grid = true;
 
         setDefaultsOnClear();
@@ -180,13 +185,13 @@ module.exports = function(state, emitter) {
                     { length: sizeInfo.hd.height - temp.length },
                     () => Array.from(
                         { length: temp.length },
-                        () => colors.defaultValue,
+                        () => defaultColor(),
                     ),
                 ));
                 temp.forEach((arr, i) => {
                     temp[i] = arr.concat(Array.from({
                         length: sizeInfo.hd.width - arr.length,
-                    }, () => colors.defaultValue));
+                    }, () => defaultColor()));
                 });
             }
             else {
