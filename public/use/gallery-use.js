@@ -45,12 +45,12 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
         return;
     }
 
-    state.gallery = [];
+    const gallery = [];
 
     each(body, (moose, cb) => {
         if (moose.extended) {
             generateGalleryExtendedMoose(moose.image, moose.shade, moose.hd, (blob) => {
-                state.gallery.push({
+                gallery.push({
                     name: moose.name,
                     image: blob,
                     url: URL.createObjectURL(blob),
@@ -60,7 +60,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
         }
         else if (moose.shaded) {
             generateGalleryShadedMoose(moose.image, moose.shade, moose.hd, (blob) => {
-                state.gallery.push({
+                gallery.push({
                     name: moose.name,
                     image: blob,
                     url: URL.createObjectURL(blob),
@@ -70,7 +70,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
         }
         else {
             generateGalleryMoose(moose.image, moose.hd, (blob) => {
-                state.gallery.push({
+                gallery.push({
                     name: moose.name,
                     image: blob,
                     url: URL.createObjectURL(blob),
@@ -82,6 +82,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
         if (action === 'page') {
             state.galleryPage = state.galleryNextPage;
         }
+        state.gallery = gallery;
         emitter.emit('render');
     });
 }
@@ -176,6 +177,10 @@ module.exports = function(state, emitter) {
         age: 'newest',
     };
 
+    state.debounce = {
+        query: null,
+    };
+
     state.inClipboard = null;
 
     emitter.on('gallery-age', (value) => {
@@ -185,7 +190,10 @@ module.exports = function(state, emitter) {
 
     emitter.on('gallery-name', (value) => {
         state.query.name = value;
-        emitter.emit('gallery-get');
+        clearTimeout(state.debounce.query);
+        state.debounce.query = setTimeout(() => {
+            emitter.emit('gallery-get');
+        }, 250);
     });
 
     emitter.on('gallery-get', () => {

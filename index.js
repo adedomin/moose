@@ -16,14 +16,4 @@
  */
 'use strict';
 
-const { join } = require('path');
-const config = require(process.env.CONFIG_PATH);
-
-const { MooseDB } = require('./lib/db.js');
-const db = new MooseDB(join(config.moose.db, 'moose.db'));
-
-db.open(err => {
-    if (err) throw err;
-    const moosedb = require('./lib/moose-storage.js')(db);
-    require('./lib/web.js')(moosedb);
-});
+require('./lib/web.js')();
