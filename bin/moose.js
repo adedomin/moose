@@ -103,5 +103,5 @@ else if (argv.import) {
     require(path.join(__dirname, '../lib/import-json.js'));
 }
 else {
-    require(path.join(__dirname, '../index.js'));
+    require(path.join(__dirname, '../lib/web.js'))();
 }
