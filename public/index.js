@@ -30,4 +30,4 @@ app.use(galleryState);
 app.route('/', root);
 app.route('/gallery', gallery);
 
-document.body.appendChild(app.start());
+document.getElementById('moose-app').appendChild(app.start());

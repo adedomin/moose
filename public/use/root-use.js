@@ -105,7 +105,7 @@ module.exports = function(state, emitter) {
     state.tools = [
         'pencil',
         'bucket',
-        'checkered',
+        'line',
         'grid',
         'undo',
         'redo',
@@ -122,11 +122,9 @@ module.exports = function(state, emitter) {
     });
 
     emitter.on('tool-select', (action) => {
-        if (action === 'pencil' || action === 'bucket') {
+        if (action === 'pencil' || action === 'bucket' || action === 'line') {
+            if (state.painter.tool === 'line') state.painter.line(/* cancel */ true);
             state.painter.tool = action;
-        }
-        else if (action === 'checkered') {
-            state.painter.background = !state.painter.background;
         }
         else if (action === 'grid') {
             state.painter.grid = !state.painter.grid;

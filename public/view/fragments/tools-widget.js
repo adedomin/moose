@@ -25,9 +25,6 @@ module.exports = function(state, emit) {
         if (tool === state.painter.tool) {
             extra += ' is-info';
         }
-        else if (tool === 'checkered' && state.painter.background) {
-            extra += 'is-success';
-        }
         else if (tool === 'grid' && state.painter.grid) {
             extra += ' is-success';
         }
