@@ -50,7 +50,7 @@ module.exports = function(state, emit) {
                     ${`← ${state.galleryPage - 1}`}
                 </button>
             </p>
-            ${ageSel('oldest')}
+            ${ageSel('oldest', state, emit)}
             <p class="control is-expanded">
                 <input 
                     type="text" 
@@ -59,7 +59,7 @@ module.exports = function(state, emit) {
                     oninput=${queryName}
                 >
             </p>
-            ${ageSel('newest')}
+            ${ageSel('newest', state, emit)}
             <p class="control">
                 <button value="next"
                     onclick=${queryNext}
