@@ -41,7 +41,7 @@ module.exports = function(activeTab, subtitle, status) {
               class=" nav-item is-tab" 
               href="/dump"
           >
-            Database (JSON)
+            DB Dump
           </a>
         </div>
       </div>

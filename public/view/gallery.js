@@ -21,6 +21,7 @@ const html = require('choo/html');
 const galleryPicturesFragment = require('./fragments/gallery-images.js');
 const headerFragment = require('./fragments/header-bar.js');
 const imageModalFragment = require('./fragments/image-modal.js');
+const searchBar = require('./fragments/search-bar.js');
 
 module.exports = function(state, emit) {
     return html`
@@ -32,70 +33,14 @@ module.exports = function(state, emit) {
 
         <div class="section">
             <div class="container">
-                <div class="field has-addons">
-                    <p class="control">
-                        <button value="prev"
-                            onclick=${queryPrevious}
-                            class="button"
-                        >
-                            ${`← ${state.galleryPage - 1}`}
-                        </button>
-                    </p>
-                    <p class="control">
-
-                        <button value="oldest" 
-                                onclick=${queryAge} 
-                                class="button ${state.query.age === 'oldest' ? 'is-info' : ''}"
-                        >
-                            oldest
-                        </button>
-                    </p>
-                    <p class="control is-expanded">
-                        <input 
-                            type="text" 
-                            class="input is-expanded"
-                            value="${state.query.name}"
-                            oninput=${queryName}
-                        >
-                    </p>
-                    <p class="control">
-                        <button value="newest" 
-                                onclick=${queryAge} 
-                                class="button ${state.query.age === 'newest' ? 'is-info' : ''}"
-                        >
-                            newest
-                        </button>
-                    </p>
-                    <p class="control">
-                        <button value="next"
-                            onclick=${queryNext}
-                            class="button"
-                        >
-                            ${`${state.galleryPage + 1} →`}
-                        </button>
-                    </p>
-                </div>
+                ${searchBar(state, emit)}
                 <div class="columns is-multiline">
                     ${galleryPicturesFragment(state, emit)}
                 </div>
+                ${state.gallery.length > 0 ? searchBar(state, emit) : ''}
             </div>
         </div>
         </div>
     `;
 
-    function queryPrevious() {
-        emit('gallery-prev');
-    }
-
-    function queryAge(e) {
-        emit('gallery-age', e.target.value);
-    }
-
-    function queryName(e) {
-        emit('gallery-name', e.target.value);
-    }
-
-    function queryNext() {
-        emit('gallery-next');
-    }
 };

@@ -27,4 +27,8 @@ function getParameterByName(name) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-module.exports = { getParameterByName };
+function isMobile() {
+    return document.documentElement.clientWidth < 700;
+}
+
+module.exports = { getParameterByName, isMobile };

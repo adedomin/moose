@@ -1,8 +1,9 @@
 {
-  "compilerOptions":
-  {
-    "module": "commonjs",
-    "target": "es6"
-  },
-  "include": ["lib/*", "bin/*", "public/*", "config/test.js"]
+    "compilerOptions":
+    {
+        "module": "commonjs",
+        "target": "esnext",
+        "checkJs": true
+    },
+    "include": ["lib/*", "bin/*", "public/*", "config/test.js"]
 }

@@ -30,7 +30,7 @@ const {
 } = require('../lib/moose-grid.js');
 const sizeInfo = require('../lib/moose-size.js');
 const colors = require('../lib/color-palette.js');
-const { getParameterByName } = require('../lib/helpers.js');
+const { getParameterByName, isMobile } = require('../lib/helpers.js');
 
 const isRootRoute = /^#(\?.*)?$/;
 
@@ -74,7 +74,7 @@ module.exports = function(state, emitter) {
                 state.moose.hd ?
                     sizeInfo.hd.height :
                     sizeInfo.normal.height,
-            cellWidth: 16,
+            cellWidth:  16,
             cellHeight: 24,
             palette: state.moose.extended
                 ? colors.fullExtendedColors
@@ -86,6 +86,14 @@ module.exports = function(state, emitter) {
         state.painter.color = defaultColor();
         state.painter.colour = defaultColor();
         state.painter.grid = true;
+
+        if (isMobile()) {
+            state.setCanvasSize = setInterval(() => {
+                if (!state.painter.canvas.parentNode) return;
+                state.painter.fitToWindow();
+                clearInterval(state.setCanvasSize);
+            }, 10);
+        }
 
         setDefaultsOnClear();
     };
@@ -102,19 +110,30 @@ module.exports = function(state, emitter) {
     };
 
     newPainter();
-    state.tools = [
-        'pencil',
-        'bucket',
-        'line',
-        'grid',
-        'undo',
-        'redo',
-        'hd',
-        'shaded',
-        '82c',
-        'save png',
-        'clear',
-    ];
+    if (!isMobile()) {
+        state.tools = [
+            'pencil',
+            'bucket',
+            'line',
+            'grid',
+            'undo',
+            'redo',
+            'hd',
+            'shaded',
+            '82c',
+            'save png',
+            'clear',
+        ];
+    }
+    else {
+        state.tools = [
+            'pencil',
+            'bucket',
+            'line',
+            'undo',
+            'clear',
+        ];
+    }
 
     emitter.on('color-select', (color) => {
         state.painter.colour = color;

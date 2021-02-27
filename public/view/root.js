@@ -35,7 +35,7 @@ module.exports = function(state, emit) {
                 <div class="columns is-centered">
                 <div class="column has-text-centered is-two-thirds-desktop">
                     
-                    <div id="mousewrap">
+                    <div>
                       ${state.painter.dom}
                     </div>
                     
@@ -78,6 +78,10 @@ module.exports = function(state, emit) {
         </div>
         </div>
     `;
+
+    function sizeToFit() {
+        emit('canvas-attached');
+    }
 
     function mooseName(e) {
         emit('moose-name-change', e.target.value);
