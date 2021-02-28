@@ -25,7 +25,7 @@ function ageSel(age, state, emit) {
     else return html`
         <p class="control">
 
-            <button value="oldest"
+            <button value="${age}"
                     onclick=${queryAge}
                     class="button ${state.query.age === age ? 'is-info' : ''}"
             >

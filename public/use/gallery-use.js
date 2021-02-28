@@ -28,7 +28,7 @@ const {
 } = require('../lib/moose-grid.js');
 const each = require('async.each');
 const sizeInfo = require('../lib/moose-size.js');
-const colors = require('../lib/color-palette.js');
+const { palettes: colors } = require('../lib/color-palette.js');
 const { getParameterByName } = require('../lib/helpers.js');
 
 const isGalleryRoute = /^#gallery(\?.*)?$/;

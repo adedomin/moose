@@ -18,7 +18,7 @@
 'use strict';
 
 const html = require('choo/html');
-const colors = require('../../lib/color-palette.js');
+const { palettes: colors } = require('../../lib/color-palette.js');
 
 /* eslint indent: off */
 // eslint has a strange opinion about indenting here

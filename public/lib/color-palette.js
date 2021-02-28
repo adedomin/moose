@@ -351,4 +351,26 @@ palettes.fullExtendedColors = palettes
         return full.concat(part);
     });
 
-module.exports = palettes;
+// pick default transparency based on palette
+const defaultColor = (state) => {
+    return state.moose.extended
+        ? palettes.extendedColorsDefault
+        : palettes.defaultValue;
+};
+
+// force defaults on the painting to the default (51)
+// SEE: comment in public/lib/color-palette.js for defaultValue
+const setDefaultsOnClear = (state) => {
+    const def = defaultColor(state);
+    for (let i = 0; i < state.painter.height; ++i) {
+        for (let j = 0; j < state.painter.width; ++j) {
+            state.painter.painting[i][j] = def;
+        }
+    }
+};
+
+module.exports = {
+    palettes,
+    defaultColor,
+    setDefaultsOnClear,
+};

@@ -42,5 +42,11 @@ jspm_packages
 dump.json
 invites.json
 
+# source map
+public/index.bundle.js
+public/index.bundle.js.map
+
 # emacs autosave
 *~
+\#*#
+.\#*#

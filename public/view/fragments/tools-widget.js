@@ -18,9 +18,14 @@
 'use strict';
 
 const html = require('choo/html');
+const { tools, toolsMobile } = require('../../use/stores/tools.js');
+const { isMobile } = require('../../lib/helpers.js');
 
 module.exports = function(state, emit) {
-    return state.tools.map(tool => {
+
+    const tooliter = isMobile() ? toolsMobile[0] : tools;
+
+    return tooliter.map(tool => {
         let extra = '';
         if (tool === state.painter.tool) {
             extra += ' is-info';
@@ -42,9 +47,9 @@ module.exports = function(state, emit) {
         }
 
         return html`<p class="control">
-          <button onclick=${toolSelect} class="button ${extra}">
+        <button onclick=${toolSelect} class="button ${extra}">
             ${tool}
-          </button>
+        </button>
         </p>`;
     });
 

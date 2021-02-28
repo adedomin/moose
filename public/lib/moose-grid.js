@@ -17,7 +17,7 @@
 
 'use strict';
 
-const colors = require('./color-palette');
+const { palettes: colors } = require('./color-palette');
 
 /**
  * Legacy Moose to gridpaint image.
