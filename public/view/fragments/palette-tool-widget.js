@@ -30,7 +30,6 @@ function lightness(color) {
     const g = ( rgb >> 8 ) & 0xFF;
     const b = rgb & 0xFF;
     const lightness = ((r*299)+(g*587)+(b*114)) /1000;
-    console.log(color, lightness);
     return (lightness > 125) ? 'dark' : 'light';
 }
 
