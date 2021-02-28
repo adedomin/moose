@@ -23,6 +23,17 @@ const { palettes: colors } = require('../../lib/color-palette.js');
 /* eslint indent: off */
 // eslint has a strange opinion about indenting here
 
+function lightness(color) {
+    if (color.indexOf('#') !== 0 || color.length !== 7) 'dark';
+    const rgb = parseInt(color.slice(1), 16);
+    const r = rgb >> 16 ;
+    const g = ( rgb >> 8 ) & 0xFF;
+    const b = rgb & 0xFF;
+    const lightness = ((r*299)+(g*587)+(b*114)) /1000;
+    console.log(color, lightness);
+    return (lightness > 125) ? 'dark' : 'light';
+}
+
 function legacyShadeWidget(state, emit) {
     return html`<div>
         ${colors.canvasPalette[3].map((color, ind) => {
@@ -34,7 +45,7 @@ function legacyShadeWidget(state, emit) {
             }
 
             if (ind === state.painter.colour % 17) {
-                extra += ' moose-palette-color-selected';
+                extra += ` moose-palette-color-selected-${lightness(color)}`;
             }
 
             return html`
@@ -56,7 +67,7 @@ function legacyShadeWidget(state, emit) {
             }
 
             if (color === colors.fullPallete[state.painter.colour]) {
-                extra += ' moose-palette-color-selected';
+                extra +=  ` moose-palette-color-selected-${lightness(color)}`;
             }
             return html`
                 <button onclick=${colorSelect.bind(null, ind2+(17*ind))}
@@ -80,7 +91,7 @@ function extendedColorWidget(state, emit) {
     const transparentClass = 'moose-palette-color-transparent';
     const extendedRowLen = colors.extendedColors[0].length;
     const transparentSelect = state.painter.colour >= 72
-        ? 'moose-palette-color-selected'
+        ? 'moose-palette-color-selected-dark'
         : '';
     return html`<div>
         <button onclick=${/* add transparent first */
@@ -97,7 +108,7 @@ function extendedColorWidget(state, emit) {
                 ind === state.painter.colour % extendedRowLen &&
                 state.painter.colour < 72
             ) {
-                extra += 'moose-palette-color-selected';
+                extra += `moose-palette-color-selected-${lightness(color)}`;
             }
 
             return html`
@@ -118,7 +129,7 @@ function extendedColorWidget(state, emit) {
                 }
 
                 if (color === colors.fullExtendedColors[state.painter.colour]) {
-                    extra += 'moose-palette-color-selected';
+                    extra += `moose-palette-color-selected-${lightness(color)}`;
                 }
 
                 return html`
@@ -137,7 +148,7 @@ function extendedColorWidget(state, emit) {
                 let extra = '';
 
                 if (color === colors.fullExtendedColors[state.painter.colour]) {
-                    extra += ' moose-palette-color-selected';
+                    extra += ` moose-palette-color-selected-${lightness(color)}`;
                 }
                 return html`
                     <button onclick=${colorSelect.bind(null, ind2+(extendedRowLen*ind))}

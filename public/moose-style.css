@@ -20,9 +20,16 @@ html {
     border-radius: 5px;
 }
 
-.moose-palette-color-selected {
+.moose-palette-color-selected,
+.moose-palette-color-selected-dark {
     border-width: 3px;
     border-color: black;
+    border-style: dashed;
+}
+
+.moose-palette-color-selected-light {
+    border-width: 3px;
+    border-color: white;
     border-style: dashed;
 }
 
