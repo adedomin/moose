@@ -21,11 +21,16 @@ const html = require('choo/html');
 const { tools, toolsMobile } = require('../../use/stores/tools.js');
 const { isMobile } = require('../../lib/helpers.js');
 
-module.exports = function(state, emit) {
+function wrap(partial) {
+    return html`
+        <div class="field has-addons has-addons-centered">
+            ${partial}
+        </div>
+    `;
+}
 
-    const tooliter = isMobile() ? toolsMobile[0] : tools;
-
-    return tooliter.map(tool => {
+function toolbar(state, emit, tool) {
+    return wrap(tool.map(tool => {
         let extra = '';
         if (tool === state.painter.tool) {
             extra += ' is-info';
@@ -51,9 +56,24 @@ module.exports = function(state, emit) {
             ${tool}
         </button>
         </p>`;
-    });
+    }));
 
     function toolSelect(e) {
         emit('tool-select', e.target.innerText);
     }
+}
+
+function mobileToolbar(state, emit) {
+    const topBar = toolbar(state, emit, toolsMobile[0]);
+    const bottomBar = toolbar(state, emit, toolsMobile[1]);
+    return html`<div>
+        ${topBar}
+        ${bottomBar}<br>
+    </div>`;
+}
+
+module.exports = function(state, emit) {
+    return !isMobile() ?
+        toolbar(state, emit, tools) :
+        mobileToolbar(state, emit);
 };

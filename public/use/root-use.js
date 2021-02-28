@@ -19,7 +19,7 @@
 
 const { getParameterByName } = require('../lib/helpers.js');
 const { newPainter } = require('../lib/painter.js');
-const { editMoose, saveMoose } = require('../lib/moose-save-edit-action.js');
+const MooseReplacer = require('./stores/moose-replace.js');
 const { ToolStore } = require('./stores/tools.js');
 
 const isRootRoute = /^#(\?.*)?$/;
@@ -48,21 +48,19 @@ module.exports = function(state, emitter) {
     emitter.on('tool-select', (action) => {
         const tool = toolStore.get(action);
         if (tool === undefined) return;
-        else tool(action);
-        emitter.emit('render');
+        else {
+            tool(action);
+            emitter.emit('render');
+        }
     });
 
     emitter.on('moose-name-change', (name) => {
         state.moose.name = name;
     });
 
-    emitter.on('moose-save', () => {
-        saveMoose(state, emitter);
-    });
-
-    emitter.on('moose-edit', (editmoose) => {
-        editMoose(editmoose, state, emitter);
-    });
+    const { saveMoose, editMoose } = MooseReplacer(state, emitter);
+    emitter.on('moose-save', saveMoose);
+    emitter.on('moose-edit', editMoose);
 
     emitter.on('pushState', () => {
         if (!isRootRoute.test(window.location.hash)) return;

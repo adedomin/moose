@@ -137,7 +137,7 @@ const toolsMobile = [
         'clear',
     ],
     [
-        'redo',
+        /* 'redo', */
         'grid',
         'hd',
         'shaded',

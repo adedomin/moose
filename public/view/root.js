@@ -65,9 +65,7 @@ module.exports = function(state, emit) {
                             </p>
                         </div>
 
-                        <div class="field has-addons has-addons-centered">
-                            ${toolsWidget(state, emit)}
-                        </div>
+                        ${toolsWidget(state, emit)}
 
                         ${paletteWidget(state, emit)}
                     </div>
@@ -78,10 +76,6 @@ module.exports = function(state, emit) {
         </div>
         </div>
     `;
-
-    function sizeToFit() {
-        emit('canvas-attached');
-    }
 
     function mooseName(e) {
         emit('moose-name-change', e.target.value);
