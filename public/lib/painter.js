@@ -15,7 +15,7 @@
 
 'use strict';
 
-const GridPaint = require('gridpaint');
+const { GridPaint } = require('gridpaint');
 const {
     palettes: colors,
     defaultColor,
@@ -43,7 +43,6 @@ const newPainter = (state) => {
     });
 
     state.painter.tool = 'pencil';
-    state.painter.color = defaultColor(state);
     state.painter.colour = defaultColor(state);
     state.painter.grid = true;
 
@@ -60,11 +59,11 @@ const newPainter = (state) => {
 
 const destroyPainter = (state) => {
     state.painter.destroy();
-    if (state.painter.dom) {
-        state.painter.dom
+    if (state.painter.canvas) {
+        state.painter.canvas
             .parentNode
             .removeChild(
-                state.painter.dom,
+                state.painter.canvas,
             );
     }
 };

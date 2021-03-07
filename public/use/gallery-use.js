@@ -20,7 +20,7 @@
 const galleryPageSize = 12;
 
 const { getMoose, getGalleryPage } = require('../lib/api.js');
-const GridPaint = require('gridpaint');
+const { GridPaint } = require('gridpaint');
 const {
     mooseToGrid,
     mooseShadeToGrid,

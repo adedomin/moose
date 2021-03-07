@@ -36,7 +36,7 @@ module.exports = function(state, emit) {
                 <div class="column has-text-centered is-two-thirds-desktop">
                     
                     <div>
-                      ${state.painter.dom}
+                      ${state.painter.canvas}
                     </div>
                     
                     <br>

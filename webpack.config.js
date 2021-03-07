@@ -1,5 +1,6 @@
 'use strict';
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     mode: 'production',
@@ -9,12 +10,16 @@ module.exports = {
         filename: 'index.bundle.js',
     },
     // filter these from the frontend code
-    node: {
-        fs: 'empty',
-    },
     resolve: {
         alias: {
-            pureimage: 'fs',
+            pureimage: false,
+            stream: false,
+            fs: false,
         },
     },
+    plugins: [
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+        }),
+    ],
 };
