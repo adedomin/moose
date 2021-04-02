@@ -3,12 +3,19 @@ Description=Moose Service
 
 [Service]
 User=moose
+# replace this with the web service group
+#Group=webstuff
 # Comment out if you don't want to use a listen path of /run/moose/xyz.socket
 RuntimeDirectory=moose
+# only allow moose user and moose group
+RuntimeDirectoryMode=0770
+# Change umask to make the moose socket more permissive
+#UMask=0770
 # Automatically creates a path for moose db and dumps at /var/lib/moose
 StateDirectory=moose
 ExecStart=/usr/local/bin/moose -c /etc/moose.js
-WorkingDirectory=/var/lib/moose
+# default to homedir
+WorkingDirectory=~
 Restart=on-failure
 RestartSec=1min
 
