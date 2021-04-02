@@ -3,6 +3,10 @@ Description=Moose Service
 
 [Service]
 User=moose
+# Comment out if you don't want to use a listen path of /run/moose/xyz.socket
+RuntimeDirectory=moose
+# Automatically creates a path for moose db and dumps at /var/lib/moose
+StateDirectory=moose
 ExecStart=/usr/local/bin/moose -c /etc/moose.js
 WorkingDirectory=/var/lib/moose
 Restart=on-failure

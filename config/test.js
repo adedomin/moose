@@ -6,6 +6,8 @@ config.logger = { level: 'debug' };
 config.moose = {
     // where your moose are kept safe
     // and where channel invites are persisted.
+    // When deploying using the example systemd service, consider using
+    // db: process.env['STATE_DIRECTORY'] ?? './',
     db: './',
     // dump moose db every 2 hours if enables to same path as moose_db
     // as dump.json
@@ -41,6 +43,10 @@ config.web = {
     // only set true if you're behind
     // nginx or other load balancer/revproxy
     proxied: false,
+    // A unix path to listen on, when undefined this is not used.
+    // If you use the example systemd service unit file, just uncomment
+    // this to get it.
+    unix: `${process.env['RUNTIME_DIRECTORY'] ?? '.'}/moose.socket`,
     // local port to listen on
     port: 7512,
     // keep this null to listen on all interfaces
