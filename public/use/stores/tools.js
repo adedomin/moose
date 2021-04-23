@@ -60,6 +60,7 @@ function colorSelect(state, action) {
                 }
             });
         });
+        state.painter.colour = colors.fullToExtended[state.painter.colour];
     }
     else if (state.moose.shaded) {
         state.moose.extended = false;
@@ -72,6 +73,9 @@ function colorSelect(state, action) {
                 });
             });
         }
+        state.painter.colour = wasExtended
+            ? colors.extendedToFull[state.painter.colour]
+            : state.painter.colour;
     }
     else if (!state.moose.shaded && !state.moose.extended) {
         state.painter.palette = colors.fullPallete;
@@ -81,7 +85,9 @@ function colorSelect(state, action) {
                 else return (color % 17) + (3 * 17);
             });
         });
-        state.painter.colour = (state.painter.colour % 17) + (3 * 17);
+        state.painter.colour = wasExtended
+            ? colors.extendedToOrig[state.painter.colour]
+            : (state.painter.colour % 17) + (3 * 17);
     }
 }
 
