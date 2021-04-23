@@ -5,7 +5,9 @@ After=moose.service
 [Service]
 User=moose
 ExecStart=/usr/local/bin/moose-irc -c /etc/moose.js %i
-WorkingDirectory=/var/lib/moose
+# auto creates /var/lib/moose-irc and sets $STATE_DIRECTORY
+StateDirectory=moose-irc
+WorkingDirectory=~
 Restart=on-failure
 RestartSec=1min
 

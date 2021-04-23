@@ -46,7 +46,7 @@ config.web = {
     // A unix path to listen on, when undefined this is not used.
     // If you use the example systemd service unit file, just uncomment
     // this to get it.
-    unix: `${process.env['RUNTIME_DIRECTORY'] ?? '.'}/moose.socket`,
+    //unix: `${process.env['RUNTIME_DIRECTORY'] ?? '.'}/moose.socket`,
     // local port to listen on
     port: 7512,
     // keep this null to listen on all interfaces
@@ -61,6 +61,8 @@ config.irc = {
     // URL used by the ircbot
     // if unset, uses moose_url
     api_url: 'http://localhost:7512',
+    // If using unix socket listener.
+    //api_url: 'http://unix:///run/moose/moose.socket',
     // URL displayed in irc messages
     // if unset, defaults to https://moose.ghetty.space
     moose_url: 'http://localhost:7512',

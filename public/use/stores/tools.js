@@ -34,6 +34,7 @@ function drawTool(state, action) {
 }
 
 function colorSelect(state, action) {
+    const wasExtended = state.moose.extended;
     state.moose.extended = action === '82c'
         ? !state.moose.extended
         : state.moose.extended;
@@ -54,11 +55,8 @@ function colorSelect(state, action) {
                     return colors.extendedColorsDefault;
                 }
                 else {
-                    // clamp color to max palette range, this does destroy the paining
-                    return Math.max(
-                        0,
-                        Math.min(color, colors.fullExtendedColors.length),
-                    );
+                    // convert legacy to extended
+                    return colors.fullToExtended[color];
                 }
             });
         });
@@ -66,12 +64,21 @@ function colorSelect(state, action) {
     else if (state.moose.shaded) {
         state.moose.extended = false;
         state.painter.palette = colors.fullPallete;
+        if (wasExtended) {
+            state.painter.painting = state.painter.painting.map(arr => {
+                return arr.map(color => {
+                    if (color === colors.extendedColorsDefault) return colors.defaultValue;
+                    else return colors.extendedToFull[color];
+                });
+            });
+        }
     }
     else if (!state.moose.shaded && !state.moose.extended) {
         state.painter.palette = colors.fullPallete;
         state.painter.painting = state.painter.painting.map(arr => {
             return arr.map(color => {
-                return (color % 17) + (3 * 17);
+                if (wasExtended) return colors.extendedToOrig[color];
+                else return (color % 17) + (3 * 17);
             });
         });
         state.painter.colour = (state.painter.colour % 17) + (3 * 17);
