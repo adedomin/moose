@@ -19,6 +19,7 @@ const {
     palettes: colors,
     defaultColor,
     setDefaultsOnClear,
+    convertShadedToExtended,
 } = require('../../lib/color-palette.js');
 const {
     newPainter,
@@ -50,15 +51,7 @@ function colorSelect(state, action) {
         state.moose.shaded = false;
         state.painter.palette = colors.fullExtendedColors;
         state.painter.painting = state.painter.painting.map(arr => {
-            return arr.map(color => {
-                if (color === colors.defaultValue) {
-                    return colors.extendedColorsDefault;
-                }
-                else {
-                    // convert legacy to extended
-                    return colors.fullToExtended[color];
-                }
-            });
+            return arr.map(convertShadedToExtended);
         });
         state.painter.colour = colors.fullToExtended[state.painter.colour];
     }
@@ -135,7 +128,7 @@ const tools = [
     'undo',
     'redo',
     'hd',
-    'shaded',
+    /* 'shaded', */
     '82c',
     'save png',
     'clear',
@@ -150,10 +143,10 @@ const toolsMobile = [
         'clear',
     ],
     [
-        /* 'redo', */
+        'redo',
         'grid',
         'hd',
-        'shaded',
+        /* 'shaded', */
         '82c',
         'save png',
     ],

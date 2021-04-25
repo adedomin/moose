@@ -17,8 +17,6 @@
 
 'use strict';
 
-const galleryPageSize = 12;
-
 const { getMoose, getGalleryPage } = require('../lib/api.js');
 const { GridPaint } = require('gridpaint');
 const {
@@ -28,6 +26,7 @@ const {
 } = require('../lib/moose-grid.js');
 const each = require('async.each');
 const sizeInfo = require('../lib/moose-size.js');
+const galleryPageSize = sizeInfo.galleryPageSize;
 const { palettes: colors } = require('../lib/color-palette.js');
 const { getParameterByName } = require('../lib/helpers.js');
 
@@ -53,6 +52,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
                 gallery.push({
                     name: moose.name,
                     image: blob,
+                    date: moose.created,
                     url: URL.createObjectURL(blob),
                 });
                 cb();
@@ -63,6 +63,7 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
                 gallery.push({
                     name: moose.name,
                     image: blob,
+                    date: moose.created,
                     url: URL.createObjectURL(blob),
                 });
                 cb();
@@ -73,12 +74,14 @@ function getGalleryPageCallback(state, emitter, action, err, body) {
                 gallery.push({
                     name: moose.name,
                     image: blob,
+                    date: moose.created,
                     url: URL.createObjectURL(blob),
                 });
                 cb();
             });
         }
     }, () => {
+        gallery.sort(({ date: d1 }, { date: d2 }) => d1 < d2 ? 1 : d1 === d2 ? 0 : -1);
         if (action === 'page') {
             state.galleryPage = state.galleryNextPage;
         }

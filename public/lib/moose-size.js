@@ -12,4 +12,5 @@ module.exports = {
     isHd: true,
     hasShade: true,
     hasExtended: true,
+    galleryPageSize: 12,
 };

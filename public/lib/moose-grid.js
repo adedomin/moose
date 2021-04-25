@@ -27,7 +27,7 @@ const { palettes: colors } = require('./color-palette');
 module.exports.mooseToGrid = function(image) {
     return image.split('\n').map(str => {
         return str.split('').map(char => {
-            return colors.colorToMooseString.indexOf(char)+51;
+            return colors.colorToMooseString.indexOf(char)+colors.defaultValue;
         });
     });
 };

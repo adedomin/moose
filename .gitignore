@@ -37,7 +37,7 @@ jspm_packages
 .node_repl_history
 
 # ignore moose.db
-*.db
+moose.db*
 .temp.dump.json
 dump.json
 invites.json

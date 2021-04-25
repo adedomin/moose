@@ -375,8 +375,24 @@ const setDefaultsOnClear = (state) => {
     }
 };
 
+/**
+ * Convert a shaded color in a grid to an extended one.
+ * @param {number} color
+ * @returns {number}
+ */
+const convertShadedToExtended = color => {
+    if (color === palettes.defaultValue) {
+        return palettes.extendedColorsDefault;
+    }
+    else {
+        // convert legacy to extended
+        return palettes.fullToExtended[color];
+    }
+};
+
 module.exports = {
     palettes,
     defaultColor,
     setDefaultsOnClear,
+    convertShadedToExtended,
 };
