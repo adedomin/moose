@@ -56,12 +56,25 @@ function mooseShadeToGrid(rowlen, charToColor, transDefault, image, shade) {
     });
 }
 
+/**
+   @see {mooseShadeToGrid}
+   @param {string} image
+   @param {string} shade
+   @return {number[][]}
+*/
 module.exports.mooseShadeToGrid = mooseShadeToGrid.bind(
     null,
     colors.legacyColorToMoose.length,
     colors.legacyColorToMoose,
     colors.defaultValue,
 );
+
+/**
+   @see {mooseShadeToGrid}
+   @param {string} image
+   @param {string} shade
+   @return {number[][]}
+*/
 module.exports.mooseExtendedToGrid = mooseShadeToGrid.bind(
     null,
     colors.smallExtendedToMoose.length - 1, // transparent is 83
