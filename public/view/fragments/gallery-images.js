@@ -38,9 +38,9 @@ module.exports = function(state, emit) {
 
                     (<a onclick=${(e) => copyLink(moose.name, e)}
                         href="#gallery?view=${moose.name}">
-                        ${ state.inClipboard !== moose.name
-                            ? 'Copy Link'
-                            : 'Copied' }
+                        ${state.inClipboard !== moose.name
+                ? 'Copy Link'
+                : 'Copied'}
                     </a>)
                 </div>
             </div>
@@ -51,7 +51,7 @@ module.exports = function(state, emit) {
         e.preventDefault();
         e.stopPropagation();
         if (mooseName === state.inClipboard) return;
-        const href=`${location.href}?view=${mooseName}`;
+        const href = `${location.href}?view=${encodeURIComponent(mooseName)}`;
         const fakeInput = document.createElement('textarea');
         fakeInput.value = href;
         document.body.appendChild(fakeInput);
